@@ -1,0 +1,23 @@
+<!--index.wxml-->
+<view class="container">
+    <view>msg: {{ msg }}</view>
+    <button bindtap="tapMsg">msg</button>
+    <view>a.b: {{ a.b }}</view>
+    <button bindtap="tapAB">a.b</button>
+
+    <view>arr: {{ arr }}</view>
+    <button bindtap="tapArr">arr</button>
+
+    <view>arr[0].c.d: {{ arr[0].c.d }}</view>
+    <button bindtap="tapArrNest">arrNest</button>
+
+    <view>arr[1]: {{ arr[1] }}</view>
+    <button bindtap="tapArrSp">arrSp</button>
+
+    <view>------ computed ------</view>
+    <view>g: {{ g }}</view>
+    <view>reversedG: {{ reversedG }}</view>
+    <button bindtap="tapReverseG">reverseG</button>
+
+    <view>gAndAB: {{ gAndAB }}</view>
+</view>
