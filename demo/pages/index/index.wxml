@@ -1,9 +1,9 @@
 <!--index.wxml-->
 <view class="container">
     <view>msg: {{ msg }}</view>
-    <button bindtap="tapMsg">msg</button>
+    <button bindtap="tapMsg">change msg</button>
     <view>a.b: {{ a.b }}</view>
-    <button bindtap="tapAB">a.b</button>
+    <button bindtap="tapAB">change a.b</button>
 
     <view>arr: {{ arr }}</view>
     <button bindtap="tapArr">arr</button>

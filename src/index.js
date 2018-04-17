@@ -5,16 +5,16 @@ import { version } from '../package.json'
 console.log(`Tua-Wx Version: ${version}`)
 
 /**
- * 将属性直接挂到 vm 上方便使用
- * @param {Object} data 被代理对象
- * @param {Page|Component} target 被代理目标
+ * 将 source 上的属性代理到 target 上
+ * @param {Object} source 被代理对象
+ * @param {Object} target 被代理目标
  */
-const proxyData = (data, target) => {
-    Object.keys(data).forEach((key) => {
+const proxyData = (source, target) => {
+    Object.keys(source).forEach((key) => {
         Object.defineProperty(
             target,
             key,
-            Object.getOwnPropertyDescriptor(data, key)
+            Object.getOwnPropertyDescriptor(source, key)
         )
     })
 }
@@ -22,9 +22,10 @@ const proxyData = (data, target) => {
 /**
  * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
  * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} watch 侦听器对象
  */
-const bindData = (vm) => {
-    const defineReactive = (obj, key, val) => {
+const bindData = (vm, watch) => {
+    const defineReactive = (obj, key, val, prefix) => {
         Object.defineProperty(obj, key, {
             enumerable: true,
             configurable: true,
@@ -32,19 +33,35 @@ const bindData = (vm) => {
             set (newVal) {
                 if (newVal === val) return
 
+                const oldVal = val
                 val = newVal
-                vm.setData($data)
+
+                vm.setData({
+                    // 因为不知道依赖所以更新整个 computed
+                    ...vm.$computed,
+                    // 直接设置
+                    [prefix]: newVal,
+                })
+
+                // 通过路径来找 watch 目标
+                const watchFn = watch[prefix]
+                if (typeof watchFn === 'function') {
+                    watchFn.call(vm, newVal, oldVal)
+                }
             },
         })
     }
 
     /**
-     * 劫持数组的方法
+     * 劫持数组的方法，其实可以挂到数组的 __proto__ 上，如果有的话
      * @param {Array} arr 原始数组
+     * @param {String} prefix 路径前缀
      * @return {Array} observedArray 被劫持方法后的数组
      */
-    const observeArray = (arr) => {
-        const observedArray = arr.map(observeDeep)
+    const observeArray = (arr, prefix) => {
+        const observedArray = arr.map(
+            (item, idx) => observeDeep(item, `${prefix}[${idx}]`)
+        )
 
         ;[
             'pop',
@@ -57,16 +74,15 @@ const bindData = (vm) => {
         ].forEach((method) => {
             const original = observedArray[method]
 
-            observedArray[method] = function () {
-                // http://jsperf.com/closure-with-arguments
-                let i = arguments.length
-                const args = new Array(i)
-                while (i--) {
-                    args[i] = arguments[i]
-                }
-
+            observedArray[method] = function (...args) {
                 const result = original.apply(this, args)
-                vm.setData($data)
+
+                vm.setData({
+                    // 因为不知道依赖所以更新整个 computed
+                    ...vm.$computed,
+                    // 直接设置
+                    [prefix]: observedArray,
+                })
 
                 return result
             }
@@ -78,11 +94,12 @@ const bindData = (vm) => {
     /**
      * 递归观察对象
      * @param {any} obj 待观察对象
+     * @param {String} prefix 路径前缀
      * @return {any} 已被观察的对象
      */
-    const observeDeep = (obj) => {
+    const observeDeep = (obj, prefix = '') => {
         if (Array.isArray(obj)) {
-            return observeArray(obj)
+            return observeArray(obj, prefix)
         }
 
         if (typeof obj === 'object') {
@@ -92,10 +109,15 @@ const bindData = (vm) => {
                 // 过滤 __wxWebviewId__ 等内部属性
                 if (/^__.*__$/.test(key)) return
 
+                const path = prefix === ''
+                    ? key
+                    : `${prefix}.${key}`
+
                 defineReactive(
                     observedObj,
                     key,
-                    observeDeep(obj[key])
+                    observeDeep(obj[key], path),
+                    path,
                 )
             })
 
@@ -115,22 +137,37 @@ const bindData = (vm) => {
 /**
  * 将 computed 中定义的新属性挂到 vm 上
  * @param {Page|Component} vm Page 或 Component 实例
- * @param {Object} computed
+ * @param {Object} computed 计算属性对象
+ * @param {Object} watch 侦听器对象
  */
-const bindComputed = (vm, computed) => {
+const bindComputed = (vm, computed, watch) => {
     const $computed = Object.create(null)
 
     Object.keys(computed).forEach((key) => {
+        const oldVal = computed[key].call(vm)
+
         Object.defineProperty($computed, key, {
             enumerable: true,
             configurable: true,
-            get: computed[key].bind(vm),
+            get () {
+                const newVal = computed[key].call(vm)
+
+                // 实现 watch computed 属性
+                const watchFn = watch[key]
+                if (typeof watchFn === 'function' && newVal !== oldVal) {
+                    watchFn.call(vm, newVal, oldVal)
+                }
+
+                return newVal
+            },
             set () {},
         })
     })
 
     proxyData($computed, vm)
-    proxyData($computed, vm.$data)
+
+    // 挂在 vm 上，在 data 变化时重新 setData
+    vm.$computed = $computed
 
     // 初始化
     vm.setData($computed)
@@ -138,12 +175,12 @@ const bindComputed = (vm, computed) => {
 
 /**
  * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）
- * TODO: 支持 computed、watch
  * @param {Object} args Page 参数
  */
 export const TuaWxPage = (args = {}) => {
     const {
         data: rawData = {},
+        watch = {},
         methods = {},
         computed = {},
         ...rest
@@ -157,16 +194,9 @@ export const TuaWxPage = (args = {}) => {
         ...rest,
         ...methods,
         data,
-        onLoad () {
-            // http://jsperf.com/closure-with-arguments
-            let i = arguments.length
-            const options = new Array(i)
-            while (i--) {
-                options[i] = arguments[i]
-            }
-
-            bindData(this)
-            bindComputed(this, computed)
+        onLoad (...options) {
+            bindData(this, watch)
+            bindComputed(this, computed, watch)
 
             rest.onLoad && rest.onLoad.apply(this, options)
         },

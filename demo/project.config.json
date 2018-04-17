@@ -10,7 +10,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "1.9.94",
 	"appid": "touristappid",
-	"projectname": "tua-wx",
+	"projectname": "github-tua-wx",
 	"condition": {
 		"search": {
 			"current": -1,

@@ -6,16 +6,17 @@
 ```
 $ npm i -S tua-wx
 
-$ tnpm i -S tua-wx
+$ tnpm i -S @tencent/tua-wx
 
 $ yarn add tua-wx
 ```
 
 ## 1.使用说明
 
-* 实现相同的组件配置（data、computed、methods）
+* 实现相同的组件配置（data、computed、methods、watch）
 * 实现直接对已绑定的数据赋值，而不是调用 `this.setData`
 * 实现 `computed` 功能
+* 实现 `watch` 功能
 
 ```js
 import { TuaWxPage } from 'tua-wx'
@@ -66,6 +67,34 @@ TuaWxPage({
         },
     },
 
+    // 侦听器
+    watch: {
+        // 监听 data
+        g (newVal, oldVal) {
+            console.log('newVal', newVal)
+            console.log('oldVal', oldVal)
+            // 异步操作
+            setTimeout(() => {
+                this.a.b = 'new a.b from watch'
+            }, 1000)
+        },
+
+        // 监听嵌套属性
+        'a.b' (newVal, oldVal) {
+            console.log('newVal', newVal)
+            console.log('oldVal', oldVal)
+            // 异步操作
+            setTimeout(() => {
+                this.msg = 'new msg from watch'
+            }, 1000)
+        }
+
+        // 监听 computed
+        reversedG (newVal, oldVal) {
+            // ...
+        },
+    },
+
     // 小程序原本的生命周期方法也能使用
     onLoad () {},
 })
@@ -73,4 +102,5 @@ TuaWxPage({
 
 ### TODO
 * 保留字
-* watch 功能
+* 收集 `computed` 的依赖，这样可以精确地对变化的 `computed` 属性 `setData`，而不是一股脑儿地将全部 `computed` 属性 `setData`
+* 性能优化，缓存变化数据，而不是频繁地 `setData`

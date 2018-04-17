@@ -23,10 +23,26 @@ TuaWxPage({
     },
     computed: {
         reversedG () {
-            return this.g.split('').reverse().join('')
+            return this.reverseStr(this.g)
         },
         gAndAB () {
             return this.g + ' + ' + this.a.b
+        },
+    },
+    watch: {
+        msg (newVal, oldVal) {
+            console.log('newVal', newVal)
+            console.log('oldVal', oldVal)
+        },
+        'a.b' (newVal, oldVal) {
+            setTimeout(() => {
+                this.msg = this.reverseStr(this.msg)
+            }, 1000)
+        },
+        'reversedG' (newVal, oldVal) {
+            setTimeout(() => {
+                this.a.b = 'reversedG'
+            }, 1000)
         },
     },
     methods: {
@@ -49,6 +65,9 @@ TuaWxPage({
             this.g = this.reversedG
 
             this.reversedG = 'aaa'
+        },
+        reverseStr (str) {
+            return str.split('').reverse().join('')
         },
     },
 })
