@@ -4,6 +4,41 @@ import { version } from '../package.json'
 
 console.log(`Tua-Wx Version: ${version}`)
 
+let newState = null
+
+/**
+ * 异步 setData 提高性能
+ */
+const asyncSetData = ({
+    vm,
+    newData,
+    watchFn,
+    prefix,
+    oldVal,
+}) => {
+    newState = {
+        ...newState,
+        ...newData,
+    }
+
+    // TODO: Promise -> MutationObserve -> setTimeout
+    Promise.resolve().then(() => {
+        if (!newState) return
+
+        vm.setData({
+            // 因为不知道依赖所以更新整个 computed
+            ...vm.$computed,
+            ...newState,
+        })
+
+        if (typeof watchFn === 'function') {
+            watchFn.call(vm, newState[prefix], oldVal)
+        }
+
+        newState = null
+    })
+}
+
 /**
  * 将 source 上的属性代理到 target 上
  * @param {Object} source 被代理对象
@@ -33,27 +68,25 @@ const bindData = (vm, watch) => {
             set (newVal) {
                 if (newVal === val) return
 
+                // 通过路径来找 watch 目标
+                const watchFn = watch[prefix]
+
                 const oldVal = val
                 val = newVal
 
-                vm.setData({
-                    // 因为不知道依赖所以更新整个 computed
-                    ...vm.$computed,
+                const newData = {
                     // 直接设置
                     [prefix]: newVal,
-                })
-
-                // 通过路径来找 watch 目标
-                const watchFn = watch[prefix]
-                if (typeof watchFn === 'function') {
-                    watchFn.call(vm, newVal, oldVal)
                 }
+
+                asyncSetData({ vm, newData, watchFn, prefix, oldVal })
             },
         })
     }
 
     /**
-     * 劫持数组的方法，其实可以挂到数组的 __proto__ 上，如果有的话
+     * 劫持数组的方法
+     * TODO: __proto__
      * @param {Array} arr 原始数组
      * @param {String} prefix 路径前缀
      * @return {Array} observedArray 被劫持方法后的数组
@@ -76,16 +109,17 @@ const bindData = (vm, watch) => {
 
             observedArray[method] = function (...args) {
                 const result = original.apply(this, args)
-
-                vm.setData({
-                    // 因为不知道依赖所以更新整个 computed
-                    ...vm.$computed,
+                const newData = {
                     // 直接设置
                     [prefix]: observedArray,
-                })
+                }
+
+                asyncSetData({ vm, newData })
 
                 return result
             }
+
+            // TODO: insert
         })
 
         return observedArray

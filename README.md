@@ -17,6 +17,7 @@ $ yarn add tua-wx
 * 实现直接对已绑定的数据赋值，而不是调用 `this.setData`
 * 实现 `computed` 功能
 * 实现 `watch` 功能
+* 实现异步 `setData`，提高性能
 
 ```js
 import { TuaWxPage } from 'tua-wx'
@@ -96,11 +97,15 @@ TuaWxPage({
     },
 
     // 小程序原本的生命周期方法也能使用
-    onLoad () {},
+    onLoad () {
+        for (let i = 100; i > 90; i--) {
+            // 只会触发一次 setData
+            this.g = i
+        }
+    },
 })
 ```
 
 ### TODO
 * 保留字
 * 收集 `computed` 的依赖，这样可以精确地对变化的 `computed` 属性 `setData`，而不是一股脑儿地将全部 `computed` 属性 `setData`
-* 性能优化，缓存变化数据，而不是频繁地 `setData`

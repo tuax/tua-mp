@@ -20,6 +20,10 @@ TuaWxPage({
     onLoad () {
         console.log('onLoad')
         console.log(this)
+
+        for (let i = 100; i > 90; i--) {
+            this.g = i
+        }
     },
     computed: {
         reversedG () {
@@ -40,9 +44,8 @@ TuaWxPage({
             }, 1000)
         },
         'reversedG' (newVal, oldVal) {
-            setTimeout(() => {
-                this.a.b = 'reversedG'
-            }, 1000)
+            console.log('newVal', newVal)
+            console.log('oldVal', oldVal)
         },
     },
     methods: {
@@ -67,7 +70,7 @@ TuaWxPage({
             this.reversedG = 'aaa'
         },
         reverseStr (str) {
-            return str.split('').reverse().join('')
+            return String(str).split('').reverse().join('')
         },
     },
 })
