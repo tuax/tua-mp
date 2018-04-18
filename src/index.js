@@ -4,16 +4,23 @@ import { version } from '../package.json'
 
 console.log(`Tua-Mp Version: ${version}`)
 
+const COMMON_PROP = {
+    enumerable: true,
+    configurable: true,
+}
+const isFn = fn => typeof fn === 'function'
+
+// 全局变量，缓存下一个状态的数据
 let newState = null
 
 /**
  * 异步 setData 提高性能
+ * @param {Page|Component} vm Page 或 Component 实例
  */
-const asyncSetData = ({
-    vm,
+const getAsyncSetData = (vm) => ({
     newData,
     watchFn,
-    prefix,
+    path,
     oldVal,
 }) => {
     newState = {
@@ -31,8 +38,8 @@ const asyncSetData = ({
             ...newState,
         })
 
-        if (typeof watchFn === 'function') {
-            watchFn.call(vm, newState[prefix], oldVal)
+        if (isFn(watchFn)) {
+            watchFn.call(vm, newState[path], oldVal)
         }
 
         newState = null
@@ -55,85 +62,99 @@ const proxyData = (source, target) => {
 }
 
 /**
- * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
- * @param {Page|Component} vm Page 或 Component 实例
- * @param {Object} watch 侦听器对象
+ * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
+ * @param {Object} param
+ * @param {Object} param.obj 被观察对象
+ * @param {String} param.key 被观察对象的属性
+ * @param {any} param.val 被观察对象的属性的值
+ * @param {String} param.path 被观察对象的属性的路径
+ * @param {fucntion} param.watchFn 被观察对象的属性的监听回调函数
+ * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  */
-const bindData = (vm, watch) => {
-    const defineReactive = (obj, key, val, prefix) => {
-        Object.defineProperty(obj, key, {
-            enumerable: true,
-            configurable: true,
-            get () { return val },
-            set (newVal) {
-                if (newVal === val) return
+const defineReactive = ({
+    obj,
+    key,
+    val,
+    path,
+    watchFn,
+    asyncSetData,
+}) => {
+    Object.defineProperty(obj, key, {
+        ...COMMON_PROP,
+        get () { return val },
+        set (newVal) {
+            if (newVal === val) return
 
-                // 通过路径来找 watch 目标
-                const watchFn = watch[prefix]
+            const oldVal = val
+            val = newVal
 
-                const oldVal = val
-                val = newVal
+            asyncSetData({
+                newData: { [path]: newVal },
+                watchFn,
+                path,
+                oldVal,
+            })
+        },
+    })
+}
 
-                const newData = {
-                    // 直接设置
-                    [prefix]: newVal,
-                }
+/**
+ * 劫持数组的方法
+ * TODO: __proto__
+ * @param {Object} param
+ * @param {Array} param.arr 原始数组
+ * @param {String} param.prefix 路径前缀
+ * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
+ * @return {Array} observedArr 被劫持方法后的数组
+ */
+const observeArray = ({
+    arr,
+    prefix,
+    asyncSetData,
+}) => {
+    ;[
+        'pop',
+        'push',
+        'sort',
+        'shift',
+        'splice',
+        'unshift',
+        'reverse',
+    ].forEach((method) => {
+        const original = arr[method]
 
-                asyncSetData({ vm, newData, watchFn, prefix, oldVal })
-            },
-        })
-    }
+        arr[method] = function (...args) {
+            const result = original.apply(this, args)
 
-    /**
-     * 劫持数组的方法
-     * TODO: __proto__
-     * @param {Array} arr 原始数组
-     * @param {String} prefix 路径前缀
-     * @return {Array} observedArray 被劫持方法后的数组
-     */
-    const observeArray = (arr, prefix) => {
-        const observedArray = arr.map(
-            (item, idx) => observeDeep(item, `${prefix}[${idx}]`)
-        )
+            asyncSetData({ newData: { [prefix]: arr } })
 
-        ;[
-            'pop',
-            'push',
-            'sort',
-            'shift',
-            'splice',
-            'unshift',
-            'reverse',
-        ].forEach((method) => {
-            const original = observedArray[method]
+            return result
+        }
 
-            observedArray[method] = function (...args) {
-                const result = original.apply(this, args)
-                const newData = {
-                    // 直接设置
-                    [prefix]: observedArray,
-                }
+        // TODO: insert
+    })
 
-                asyncSetData({ vm, newData })
+    return arr
+}
 
-                return result
-            }
-
-            // TODO: insert
-        })
-
-        return observedArray
-    }
-
-    /**
-     * 递归观察对象
-     * @param {any} obj 待观察对象
-     * @param {String} prefix 路径前缀
-     * @return {any} 已被观察的对象
-     */
-    const observeDeep = (obj, prefix = '') => {
+/**
+ * 得到递归观察对象
+ * @param {Object} watch 侦听器对象
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @return {function} observeDeep 递归观察函数
+ */
+const getObserveDeep = (watch) => (asyncSetData) => {
+    return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
-            return observeArray(obj, prefix)
+            const arr = obj.map((obj, idx) => (
+                observeDeep(obj, `${prefix}[${idx}]`)
+            ))
+
+            return observeArray({
+                arr,
+                prefix,
+                asyncSetData,
+            })
         }
 
         if (typeof obj === 'object') {
@@ -147,12 +168,14 @@ const bindData = (vm, watch) => {
                     ? key
                     : `${prefix}.${key}`
 
-                defineReactive(
-                    observedObj,
+                defineReactive({
+                    obj: observedObj,
                     key,
-                    observeDeep(obj[key], path),
+                    val: observeDeep(obj[key], path),
                     path,
-                )
+                    watchFn: watch[path],
+                    asyncSetData,
+                })
             })
 
             return observedObj
@@ -161,15 +184,23 @@ const bindData = (vm, watch) => {
         // 简单属性直接返回
         return obj
     }
+}
 
+/**
+ * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {function} observeDeep 递归观察函数
+ */
+const bindData = (vm, observeDeep) => {
     const $data = observeDeep(vm.data)
     vm.$data = $data
 
+    // 代理 $data 到 vm 上
     proxyData($data, vm)
 }
 
 /**
- * 将 computed 中定义的新属性挂到 vm 上
+ * 遍历观察 computed，绑定 watch 回调并将定义的新属性挂到 vm 上
  * @param {Page|Component} vm Page 或 Component 实例
  * @param {Object} computed 计算属性对象
  * @param {Object} watch 侦听器对象
@@ -181,14 +212,13 @@ const bindComputed = (vm, computed, watch) => {
         const oldVal = computed[key].call(vm)
 
         Object.defineProperty($computed, key, {
-            enumerable: true,
-            configurable: true,
+            ...COMMON_PROP,
             get () {
                 const newVal = computed[key].call(vm)
 
                 // 实现 watch computed 属性
                 const watchFn = watch[key]
-                if (typeof watchFn === 'function' && newVal !== oldVal) {
+                if (isFn(watchFn) && newVal !== oldVal) {
                     watchFn.call(vm, newVal, oldVal)
                 }
 
@@ -198,12 +228,13 @@ const bindComputed = (vm, computed, watch) => {
         })
     })
 
-    proxyData($computed, vm)
-
     // 挂在 vm 上，在 data 变化时重新 setData
     vm.$computed = $computed
 
-    // 初始化
+    // 代理 $computed 到 vm 上
+    proxyData($computed, vm)
+
+    // 初始化 computed 的数据
     vm.setData($computed)
 }
 
@@ -220,16 +251,20 @@ export const TuaPage = (args = {}) => {
         ...rest
     } = args
 
-    const data = typeof rawData === 'function'
-        ? rawData()
-        : rawData
+    const data = isFn(rawData) ? rawData() : rawData
 
     Page({
         ...rest,
         ...methods,
         data,
         onLoad (...options) {
-            bindData(this, watch)
+            const asyncSetData = getAsyncSetData(this)
+            const observeDeep = getObserveDeep(watch)(asyncSetData)
+
+            // 遍历递归观察 data
+            bindData(this, observeDeep)
+
+            // 遍历观察 computed
             bindComputed(this, computed, watch)
 
             rest.onLoad && rest.onLoad.apply(this, options)
