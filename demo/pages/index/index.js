@@ -1,9 +1,9 @@
 //index.js
-import { TuaWxPage } from '../../utils/index'
+import { TuaPage } from '../../utils/index'
 
 let n = 0
 
-TuaWxPage({
+TuaPage({
     data () {
         return {
             msg: 'msg',
