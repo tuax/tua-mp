@@ -2,7 +2,7 @@
 
 import { version } from '../package.json'
 
-console.log(`Tua-Wx Version: ${version}`)
+console.log(`Tua-Mp Version: ${version}`)
 
 let newState = null
 
@@ -211,7 +211,7 @@ const bindComputed = (vm, computed, watch) => {
  * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）
  * @param {Object} args Page 参数
  */
-export const TuaWxPage = (args = {}) => {
+export const TuaPage = (args = {}) => {
     const {
         data: rawData = {},
         watch = {},

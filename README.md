@@ -20,10 +20,10 @@ $ yarn add tua-mp
 * 实现异步 `setData`，提高性能
 
 ```js
-import { TuaWxPage } from 'tua-mp'
+import { TuaPage } from 'tua-mp'
 
-// 使用 TuaWxPage 替代小程序提供的 Page
-TuaWxPage({
+// 使用 TuaPage 替代小程序提供的 Page
+TuaPage({
     // data 可以是类似 Vue 的函数形式（推荐），也可以是类似小程序的对象形式
     // 注意：需要绑定的数据必须要先在 data 里声明！
     // 因为 ES5 的 getter/setter 方法无法感知添加新的属性
