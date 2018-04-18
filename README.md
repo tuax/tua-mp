@@ -1,14 +1,14 @@
-# tua-wx
+# tua-mp
 这个项目希望实现用类似写 Vue 的方式来编写小程序。
 
 ## 0.安装
 
 ```
-$ npm i -S tua-wx
+$ npm i -S tua-mp
 
-$ tnpm i -S @tencent/tua-wx
+$ tnpm i -S @tencent/tua-mp
 
-$ yarn add tua-wx
+$ yarn add tua-mp
 ```
 
 ## 1.使用说明
@@ -20,7 +20,7 @@ $ yarn add tua-wx
 * 实现异步 `setData`，提高性能
 
 ```js
-import { TuaWxPage } from 'tua-wx'
+import { TuaWxPage } from 'tua-mp'
 
 // 使用 TuaWxPage 替代小程序提供的 Page
 TuaWxPage({
