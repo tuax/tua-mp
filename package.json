@@ -10,6 +10,7 @@
         "prebuild": "npm run test",
         "build": "NODE_ENV=prod rollup -c",
         "watch": "NODE_ENV=prod rollup -c -w",
+        "start": "npm run watch",
         "pub": "npm run build && npm publish"
     },
     "jest": {

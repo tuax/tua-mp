@@ -16,16 +16,20 @@ let newState = null
 /**
  * 异步 setData 提高性能
  * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} watch 侦听器对象
+ * @param {Object} param
+ * @param {String} param.path 属性的路径
+ * @param {any} param.newVal 新值
+ * @param {any} param.oldVal 旧值
  */
-const getAsyncSetData = (vm) => ({
-    newData,
-    watchFn,
+const getAsyncSetData = (vm, watch) => ({
     path,
+    newVal,
     oldVal,
 }) => {
     newState = {
         ...newState,
-        ...newData,
+        [path]: newVal,
     }
 
     // TODO: Promise -> MutationObserve -> setTimeout
@@ -38,6 +42,7 @@ const getAsyncSetData = (vm) => ({
             ...newState,
         })
 
+        const watchFn = watch[path]
         if (isFn(watchFn)) {
             watchFn.call(vm, newState[path], oldVal)
         }
@@ -68,7 +73,6 @@ const proxyData = (source, target) => {
  * @param {String} param.key 被观察对象的属性
  * @param {any} param.val 被观察对象的属性的值
  * @param {String} param.path 被观察对象的属性的路径
- * @param {fucntion} param.watchFn 被观察对象的属性的监听回调函数
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  */
 const defineReactive = ({
@@ -76,7 +80,6 @@ const defineReactive = ({
     key,
     val,
     path,
-    watchFn,
     asyncSetData,
 }) => {
     Object.defineProperty(obj, key, {
@@ -89,9 +92,8 @@ const defineReactive = ({
             val = newVal
 
             asyncSetData({
-                newData: { [path]: newVal },
-                watchFn,
                 path,
+                newVal,
                 oldVal,
             })
         },
@@ -103,13 +105,13 @@ const defineReactive = ({
  * TODO: __proto__
  * @param {Object} param
  * @param {Array} param.arr 原始数组
- * @param {String} param.prefix 路径前缀
+ * @param {String} param.path 路径前缀
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  * @return {Array} observedArr 被劫持方法后的数组
  */
 const observeArray = ({
     arr,
-    prefix,
+    path,
     asyncSetData,
 }) => {
     ;[
@@ -126,7 +128,7 @@ const observeArray = ({
         arr[method] = function (...args) {
             const result = original.apply(this, args)
 
-            asyncSetData({ newData: { [prefix]: arr } })
+            asyncSetData({ path, newVal: arr })
 
             return result
         }
@@ -139,11 +141,10 @@ const observeArray = ({
 
 /**
  * 得到递归观察对象
- * @param {Object} watch 侦听器对象
  * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  * @return {function} observeDeep 递归观察函数
  */
-const getObserveDeep = (watch) => (asyncSetData) => {
+const getObserveDeep = (asyncSetData) => {
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
             const arr = obj.map((obj, idx) => (
@@ -152,7 +153,7 @@ const getObserveDeep = (watch) => (asyncSetData) => {
 
             return observeArray({
                 arr,
-                prefix,
+                path: prefix,
                 asyncSetData,
             })
         }
@@ -173,7 +174,6 @@ const getObserveDeep = (watch) => (asyncSetData) => {
                     key,
                     val: observeDeep(obj[key], path),
                     path,
-                    watchFn: watch[path],
                     asyncSetData,
                 })
             })
@@ -258,8 +258,8 @@ export const TuaPage = (args = {}) => {
         ...methods,
         data,
         onLoad (...options) {
-            const asyncSetData = getAsyncSetData(this)
-            const observeDeep = getObserveDeep(watch)(asyncSetData)
+            const asyncSetData = getAsyncSetData(this, watch)
+            const observeDeep = getObserveDeep(asyncSetData)
 
             // 遍历递归观察 data
             bindData(this, observeDeep)
