@@ -106,6 +106,9 @@ TuaPage({
 })
 ```
 
-### TODO
+## 2.文档
+* [1.小程序之告别 setData](https://github.com/tuateam/tua-mp/blob/master/doc/1.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%20setData.md)
+
+## TODO
 * 保留字
 * 收集 `computed` 的依赖，这样可以精确地对变化的 `computed` 属性 `setData`，而不是一股脑儿地将全部 `computed` 属性 `setData`
