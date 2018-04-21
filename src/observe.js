@@ -199,7 +199,7 @@ export const bindComputed = (vm, computed, watch) => {
     const $computed = Object.create(null)
 
     Object.keys(computed).forEach((key) => {
-        const oldVal = computed[key].call(vm)
+        let oldVal = computed[key].call(vm)
 
         Object.defineProperty($computed, key, {
             ...COMMON_PROP,
@@ -210,6 +210,9 @@ export const bindComputed = (vm, computed, watch) => {
                 const watchFn = watch[key]
                 if (isFn(watchFn) && newVal !== oldVal) {
                     watchFn.call(vm, newVal, oldVal)
+
+                    // 重置 oldVal
+                    oldVal = newVal
                 }
 
                 return newVal

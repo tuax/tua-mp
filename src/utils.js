@@ -5,4 +5,3 @@ export const COMMON_PROP = {
 }
 
 export const isFn = fn => typeof fn === 'function'
-
