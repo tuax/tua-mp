@@ -1,8 +1,12 @@
 {
     "name": "tua-mp",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "description": "A helper for coding miniprogram like Vue",
     "main": "demo/utils/index.js",
+    "files": [
+        "src",
+        "demo/utils/index.js"
+    ],
     "scripts": {
         "tdd": "NODE_ENV=test jest --watch",
         "test": "NODE_ENV=test jest --no-cache",
@@ -26,8 +30,25 @@
     "eslintIgnore": [
         "package.json"
     ],
-    "author": "StEve",
-    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tuateam/tua-mp.git"
+    },
+    "keywords": [
+        "vue",
+        "tua-mp",
+        "mp",
+        "wx",
+        "miniprogram",
+        "wxmp",
+        "weapp"
+    ],
+    "author": "StEve Young",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/tuateam/tua-mp/issues"
+    },
+    "homepage": "https://github.com/tuateam/tua-mp#readme",
     "devDependencies": {
         "babel-core": "^6.26.0",
         "babel-eslint": "^8.2.2",

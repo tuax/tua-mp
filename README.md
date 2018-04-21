@@ -1,6 +1,9 @@
 # tua-mp
 这个项目希望实现用类似写 Vue 的方式来编写小程序。
 
+<a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/v/tua-mp.svg" alt="Version"></a>
+<a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/l/tua-mp.svg" alt="License"></a>
+
 ## 0.安装
 
 ```
@@ -112,3 +115,9 @@ TuaPage({
 ## TODO
 * 保留字
 * 收集 `computed` 的依赖，这样可以精确地对变化的 `computed` 属性 `setData`，而不是一股脑儿地将全部 `computed` 属性 `setData`
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2018-present, StEve Young
