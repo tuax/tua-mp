@@ -1,7 +1,7 @@
 /* global Page */
 
 import { version } from '../package.json'
-import { isFn, COMMON_PROP } from './utils'
+import { isFn } from './utils'
 import {
     bindData,
     bindComputed,
