@@ -1,5 +1,11 @@
-//index.js
+// index.js
 import { TuaPage } from '../../utils/index'
+import {
+    testArrayData,
+    testSimpleData,
+    testNestedData,
+    testNestedArrayData,
+} from '../../test/data'
 
 let n = 0
 
@@ -15,15 +21,37 @@ TuaPage({
                 1, 2, 3,
             ],
             g: 'hello world',
+
+            nestedData: {
+                steve: 'steve',
+                young: {
+                    young: 'young',
+                },
+            },
+            arrayData: [],
+            nestedArrayData: [
+                {
+                    steve: 'steve',
+                    young: {
+                        young: 'young',
+                    },
+                },
+            ],
         }
     },
     onLoad () {
-        console.log('onLoad')
         console.log(this)
+        global = this
 
         for (let i = 100; i > 90; i--) {
             this.g = i
         }
+
+        // feature test
+        testArrayData(this)
+        testSimpleData(this)
+        testNestedData(this)
+        testNestedArrayData(this)
     },
     computed: {
         reversedG () {
@@ -67,6 +95,7 @@ TuaPage({
         tapReverseG () {
             this.g = this.reversedG
 
+            // 对于 computed 属性赋值不起作用
             this.reversedG = 'aaa'
         },
         reverseStr (str) {

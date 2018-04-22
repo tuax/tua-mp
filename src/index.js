@@ -1,7 +1,7 @@
 /* global Page */
 
 import { version } from '../package.json'
-import { isFn, COMMON_PROP } from './utils'
+import { isFn } from './utils'
 import {
     bindData,
     bindComputed,
@@ -15,9 +15,9 @@ console.log(`Tua-Mp Version: ${version}`)
  * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）
  * @param {Object} args Page 参数
  */
-export const TuaPage = (args = {}) => {
+export const TuaPage = (args) => {
     const {
-        data: rawData = {},
+        data: rawData,
         watch = {},
         methods = {},
         computed = {},
@@ -26,7 +26,7 @@ export const TuaPage = (args = {}) => {
 
     const data = isFn(rawData) ? rawData() : rawData
 
-    Page({
+    return Page({
         ...rest,
         ...methods,
         data,
