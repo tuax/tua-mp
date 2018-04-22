@@ -20,12 +20,17 @@
     "jest": {
         "bail": true,
         "clearMocks": true,
-        "setupFiles": [],
+        "setupFiles": [
+            "./test/pageMock.js"
+        ],
         "transform": {
             "^.+\\.js$": "babel-jest"
         },
         "collectCoverage": true,
-        "coveragePathIgnorePatterns": []
+        "coveragePathIgnorePatterns": [
+            "test/utils.js",
+            "test/pageMock.js"
+        ]
     },
     "eslintIgnore": [
         "package.json"

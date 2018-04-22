@@ -1,4 +1,8 @@
-import { isFn, COMMON_PROP } from './utils'
+import {
+    isFn,
+    proxyData,
+    COMMON_PROP,
+} from './utils'
 
 // 全局变量，缓存下一个状态的数据
 let newState = null
@@ -42,21 +46,6 @@ export const getAsyncSetData = (vm, watch) => ({
 }
 
 /**
- * 将 source 上的属性代理到 target 上
- * @param {Object} source 被代理对象
- * @param {Object} target 被代理目标
- */
-const proxyData = (source, target) => {
-    Object.keys(source).forEach((key) => {
-        Object.defineProperty(
-            target,
-            key,
-            Object.getOwnPropertyDescriptor(source, key)
-        )
-    })
-}
-
-/**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
  * @param {Object} param
  * @param {Object} param.obj 被观察对象
@@ -65,7 +54,7 @@ const proxyData = (source, target) => {
  * @param {String} param.path 被观察对象的属性的路径
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  */
-const defineReactive = ({
+export const defineReactive = ({
     obj,
     key,
     val,
@@ -99,7 +88,7 @@ const defineReactive = ({
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  * @return {Array} observedArr 被劫持方法后的数组
  */
-const observeArray = ({
+export const observeArray = ({
     arr,
     path,
     asyncSetData,
