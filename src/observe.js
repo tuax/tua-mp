@@ -199,10 +199,10 @@ export const bindComputed = (vm, computed, watch) => {
                 const watchFn = watch[key]
                 if (isFn(watchFn) && newVal !== oldVal) {
                     watchFn.call(vm, newVal, oldVal)
-
-                    // 重置 oldVal
-                    oldVal = newVal
                 }
+
+                // 重置 oldVal
+                oldVal = newVal
 
                 return newVal
             },

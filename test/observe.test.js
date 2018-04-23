@@ -51,17 +51,20 @@ describe('observe functions', () => {
         const watch = {
             sAndY: jest.fn(() => {}),
         }
+        const oldVal = 'steveyoung'
+        const newVal = 'abcyoung'
         const observeDeep = getObserveDeep(asyncSetData)
         bindData(vm, observeDeep)
         bindComputed(vm, computed, watch)
 
         expect(vm.sAndY).toBe(vm.data.sAndY)
         expect(vm.sAndY).toBe(vm.$computed.sAndY)
-        expect(vm.sAndY).toBe('steveyoung')
+        expect(vm.sAndY).toBe(oldVal)
         vm.steve = 'abc'
 
         afterSetData(() => {
-            expect(vm.sAndY).toBe('abcyoung')
+            expect(vm.sAndY).toBe(newVal)
+            expect(watch.sAndY).toBeCalledWith(newVal, oldVal)
             done()
         })
     })
