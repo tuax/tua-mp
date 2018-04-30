@@ -16,25 +16,19 @@ let newState = null
  * @param {String} param.path 属性的路径
  * @param {any} param.newVal 新值
  * @param {any} param.oldVal 旧值
+ * @param {Boolean} param.isArrDirty 数组下标发生变化
  */
 export const getAsyncSetData = (vm, watch) => ({
     path,
     newVal,
     oldVal,
-    isInsert = false,
+    isArrDirty = false,
 }) => {
-    newState = {
-        ...newState,
-        [path]: newVal,
-    }
+    newState = { ...newState, [path]: newVal }
 
-    // 数组中插入新数据，同步修改数组
-    if (isInsert) {
-        setObjByPath({
-            obj: vm,
-            val: newVal,
-            path,
-        })
+    // 数组下标发生变化，同步修改数组
+    if (isArrDirty) {
+        setObjByPath({ obj: vm, val: newVal, path })
     }
 
     // TODO: Promise -> MutationObserve -> setTimeout
@@ -58,7 +52,6 @@ export const getAsyncSetData = (vm, watch) => ({
 
 /**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
- * @param {Object} param
  * @param {Object} param.obj 被观察对象
  * @param {String} param.key 被观察对象的属性
  * @param {any} param.val 被观察对象的属性的值
@@ -96,6 +89,7 @@ export const defineReactive = ({
  * @param {Object} param
  * @param {Array} param.arr 原始数组
  * @param {String} param.path 路径前缀
+ * @param {fucntion} param.observeDeep 递归观察函数
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  * @return {Array} observedArr 被劫持方法后的数组
  */
@@ -119,14 +113,14 @@ export const observeArray = ({
         arr[method] = function (...args) {
             const result = original.apply(arr, args)
 
-            if ('pop' === method) {
+            if (method === 'pop') {
                 asyncSetData({ path, newVal: arr })
             } else {
                 asyncSetData({
                     path,
                     // 重新观察数组
                     newVal: observeDeep(arr, path),
-                    isInsert: true,
+                    isArrDirty: true,
                 })
             }
 

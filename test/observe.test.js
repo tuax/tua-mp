@@ -113,11 +113,14 @@ describe('observe functions', () => {
 
         arr.push({ a: 'inserted value' })
         arr[0].a = 'a'
+        arr.unshift([{ arrObj: 'arrObj' }])
+        arr[0][0].arrObj = 'b'
 
         afterSetData(() => {
-            expect(arr[0].a).toBe('a')
-            expect(asyncSetData).toHaveBeenCalledTimes(1)
-            expect(observeDeep).toHaveBeenCalledTimes(1)
+            expect(arr[0][0].arrObj).toBe('b')
+            expect(arr[1].a).toBe('a')
+            expect(asyncSetData).toHaveBeenCalledTimes(2)
+            expect(observeDeep).toHaveBeenCalledTimes(2)
             expect(observeDeep).toBeCalledWith(arr, path)
             done()
         })
@@ -138,10 +141,10 @@ describe('observe functions', () => {
 
         arr.push(1)
         expect(observeDeep).toBeCalledWith(arr, path)
-
-        arr.sort()
+        arr.pop()
         expect(asyncSetData).toBeCalledWith({ path, newVal: arr })
-
+        arr.sort()
+        expect(observeDeep).toBeCalledWith(arr, path)
         arr.splice(0, 0, 2)
         expect(observeDeep).toBeCalledWith(arr, path)
     })
