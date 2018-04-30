@@ -2,6 +2,7 @@ import {
     isFn,
     proxyData,
     COMMON_PROP,
+    setObjByPath,
 } from './utils'
 
 // 全局变量，缓存下一个状态的数据
@@ -15,15 +16,19 @@ let newState = null
  * @param {String} param.path 属性的路径
  * @param {any} param.newVal 新值
  * @param {any} param.oldVal 旧值
+ * @param {Boolean} param.isArrDirty 数组下标发生变化
  */
 export const getAsyncSetData = (vm, watch) => ({
     path,
     newVal,
     oldVal,
+    isArrDirty = false,
 }) => {
-    newState = {
-        ...newState,
-        [path]: newVal,
+    newState = { ...newState, [path]: newVal }
+
+    // 数组下标发生变化，同步修改数组
+    if (isArrDirty) {
+        setObjByPath({ obj: vm, val: newVal, path })
     }
 
     // TODO: Promise -> MutationObserve -> setTimeout
@@ -47,7 +52,6 @@ export const getAsyncSetData = (vm, watch) => ({
 
 /**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
- * @param {Object} param
  * @param {Object} param.obj 被观察对象
  * @param {String} param.key 被观察对象的属性
  * @param {any} param.val 被观察对象的属性的值
@@ -85,12 +89,14 @@ export const defineReactive = ({
  * @param {Object} param
  * @param {Array} param.arr 原始数组
  * @param {String} param.path 路径前缀
+ * @param {fucntion} param.observeDeep 递归观察函数
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  * @return {Array} observedArr 被劫持方法后的数组
  */
 export const observeArray = ({
     arr,
     path,
+    observeDeep,
     asyncSetData,
 }) => {
     ;[
@@ -105,14 +111,21 @@ export const observeArray = ({
         const original = arr[method]
 
         arr[method] = function (...args) {
-            const result = original.apply(this, args)
+            const result = original.apply(arr, args)
 
-            asyncSetData({ path, newVal: arr })
+            if (method === 'pop') {
+                asyncSetData({ path, newVal: arr })
+            } else {
+                asyncSetData({
+                    path,
+                    // 重新观察数组
+                    newVal: observeDeep(arr, path),
+                    isArrDirty: true,
+                })
+            }
 
             return result
         }
-
-        // TODO: insert
     })
 
     return arr
@@ -126,13 +139,14 @@ export const observeArray = ({
 export const getObserveDeep = (asyncSetData) => {
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
-            const arr = obj.map((obj, idx) => (
-                observeDeep(obj, `${prefix}[${idx}]`)
-            ))
+            const arr = obj.map((item, idx) =>
+                observeDeep(item, `${prefix}[${idx}]`)
+            )
 
             return observeArray({
                 arr,
                 path: prefix,
+                observeDeep,
                 asyncSetData,
             })
         }

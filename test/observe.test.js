@@ -12,7 +12,7 @@ const watch = {
     steve: jest.fn(() => {}),
 }
 
-let vm = Page({
+const getVm = () => Page({
     data: {
         steve: 'steve',
         young: 'young',
@@ -21,24 +21,16 @@ let vm = Page({
             young: 'young',
             __wxWebviewId__: 1,
         },
+        nestedArr: [],
     },
 })
+
+let vm = getVm()
 let asyncSetData = jest.fn(getAsyncSetData(vm, watch))
 
 describe('observe functions', () => {
     afterEach(() => {
-        vm = Page({
-            data: {
-                steve: 'steve',
-                young: 'young',
-                array: [1, 2, 3],
-                nested: {
-                    young: 'young',
-                    __wxWebviewId__: 1,
-                },
-            },
-        })
-
+        vm = getVm()
         asyncSetData = jest.fn(getAsyncSetData(vm, watch))
     })
 
@@ -107,20 +99,54 @@ describe('observe functions', () => {
         })
     })
 
+    test('observe new value inserted into Array', (done) => {
+        const arr = []
+        const path = 'arr'
+        const observeDeep = jest.fn(getObserveDeep(asyncSetData))
+
+        observeArray({
+            arr,
+            path,
+            observeDeep,
+            asyncSetData,
+        })
+
+        arr.push({ a: 'inserted value' })
+        arr[0].a = 'a'
+        arr.unshift([{ arrObj: 'arrObj' }])
+        arr[0][0].arrObj = 'b'
+
+        afterSetData(() => {
+            expect(arr[0][0].arrObj).toBe('b')
+            expect(arr[1].a).toBe('a')
+            expect(asyncSetData).toHaveBeenCalledTimes(2)
+            expect(observeDeep).toHaveBeenCalledTimes(2)
+            expect(observeDeep).toBeCalledWith(arr, path)
+            done()
+        })
+    })
+
     test('observeArray', () => {
         const arr = []
-        const val = 'this is a'
         const path = 'arr'
         const newVal = 'this is new a'
+        const observeDeep = jest.fn(getObserveDeep(asyncSetData))
 
-        observeArray({ arr, path, asyncSetData })
+        observeArray({
+            arr,
+            path,
+            observeDeep,
+            asyncSetData,
+        })
 
         arr.push(1)
+        expect(observeDeep).toBeCalledWith(arr, path)
+        arr.pop()
         expect(asyncSetData).toBeCalledWith({ path, newVal: arr })
         arr.sort()
-        expect(asyncSetData).toBeCalledWith({ path, newVal: arr })
+        expect(observeDeep).toBeCalledWith(arr, path)
         arr.splice(0, 0, 2)
-        expect(asyncSetData).toBeCalledWith({ path, newVal: arr })
+        expect(observeDeep).toBeCalledWith(arr, path)
     })
 
     test('defineReactive', () => {

@@ -1,11 +1,11 @@
 {
     "name": "tua-mp",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "A helper for coding miniprogram like Vue",
-    "main": "demo/utils/index.js",
+    "main": "demo/utils/tua-mp.js",
     "files": [
         "src",
-        "demo/utils/index.js"
+        "demo/utils/tua-mp.js"
     ],
     "scripts": {
         "tdd": "NODE_ENV=test jest --watch",

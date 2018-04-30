@@ -20,3 +20,38 @@ export const proxyData = (source, target) => {
         )
     })
 }
+
+/**
+ * 将对象属性路径字符串转换成路径数组
+ * @param {String} str
+ * @returns {Array}
+ */
+export const pathStr2Arr = (str) => str
+    .split('.')
+    .map(x => x
+        .split(/\[(.*?)\]/)
+        .filter(x => x)
+    )
+    .reduce((acc, cur) => acc.concat(cur), [])
+
+/**
+ * 根据 path 将目标值 val 设置到目标对象 obj 上
+ * @param {Object} obj 目标对象
+ * @param {String} path 路径字符串
+ * @param {any} val 目标值
+ * @returns {Object} obj
+ */
+export const setObjByPath = ({ obj, path, val }) => pathStr2Arr(path)
+    .reduce((acc, cur, idx, { length }) => {
+        if (idx === length - 1) {
+            acc[cur] = val
+            return
+        }
+
+        // 当前属性在目标对象上并不存在
+        if (!acc[cur]) {
+            acc[cur] = /\d/.test(cur) ? [] : {}
+        }
+
+        return acc[cur]
+    }, obj)
