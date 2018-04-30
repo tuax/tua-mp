@@ -6,7 +6,7 @@ import uglify from 'rollup-plugin-uglify'
 export default {
     input: 'src/index.js',
     output: {
-        file: 'demo/utils/index.js',
+        file: 'demo/utils/tua-mp.js',
         name: 'TuaWx',
         format: 'umd',
         exports: 'named',

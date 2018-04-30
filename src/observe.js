@@ -2,6 +2,7 @@ import {
     isFn,
     proxyData,
     COMMON_PROP,
+    setObjByPath,
 } from './utils'
 
 // 全局变量，缓存下一个状态的数据
@@ -20,10 +21,20 @@ export const getAsyncSetData = (vm, watch) => ({
     path,
     newVal,
     oldVal,
+    isInsert = false,
 }) => {
     newState = {
         ...newState,
         [path]: newVal,
+    }
+
+    // 数组中插入新数据，同步修改数组
+    if (isInsert) {
+        setObjByPath({
+            obj: vm,
+            val: newVal,
+            path,
+        })
     }
 
     // TODO: Promise -> MutationObserve -> setTimeout
@@ -91,6 +102,7 @@ export const defineReactive = ({
 export const observeArray = ({
     arr,
     path,
+    observeDeep,
     asyncSetData,
 }) => {
     ;[
@@ -105,14 +117,21 @@ export const observeArray = ({
         const original = arr[method]
 
         arr[method] = function (...args) {
-            const result = original.apply(this, args)
+            const result = original.apply(arr, args)
 
-            asyncSetData({ path, newVal: arr })
+            if ('pop' === method) {
+                asyncSetData({ path, newVal: arr })
+            } else {
+                asyncSetData({
+                    path,
+                    // 重新观察数组
+                    newVal: observeDeep(arr, path),
+                    isInsert: true,
+                })
+            }
 
             return result
         }
-
-        // TODO: insert
     })
 
     return arr
@@ -126,13 +145,14 @@ export const observeArray = ({
 export const getObserveDeep = (asyncSetData) => {
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
-            const arr = obj.map((obj, idx) => (
-                observeDeep(obj, `${prefix}[${idx}]`)
-            ))
+            const arr = obj.map((item, idx) =>
+                observeDeep(item, `${prefix}[${idx}]`)
+            )
 
             return observeArray({
                 arr,
                 path: prefix,
+                observeDeep,
                 asyncSetData,
             })
         }
