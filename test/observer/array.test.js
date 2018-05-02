@@ -31,7 +31,7 @@ describe('observe functions', () => {
         asyncSetData = jest.fn(getAsyncSetData(vm, watch))
     })
 
-    test('observe new value inserted into Array', (done) => {
+    test('observe new value inserted into array', (done) => {
         const arr = []
         const path = 'arr'
         const observeDeep = jest.fn(getObserveDeep(asyncSetData))

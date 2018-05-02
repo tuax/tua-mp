@@ -54,8 +54,9 @@ export const getAsyncSetData = (vm, watch) => ({
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
  * @param {Object} param.obj 被观察对象
  * @param {String} param.key 被观察对象的属性
- * @param {any} param.val 被观察对象的属性的值
  * @param {String} param.path 被观察对象的属性的路径
+ * @param {any} param.val 被观察对象的属性的值
+ * @param {function} param.observeDeep 递归观察函数
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  */
 export const defineReactive = ({
@@ -63,6 +64,7 @@ export const defineReactive = ({
     key,
     val,
     path,
+    observeDeep,
     asyncSetData,
 }) => {
     Object.defineProperty(obj, key, {
@@ -72,7 +74,7 @@ export const defineReactive = ({
             if (newVal === val) return
 
             const oldVal = val
-            val = newVal
+            val = observeDeep(newVal, path)
 
             asyncSetData({
                 path,
@@ -125,6 +127,7 @@ export const getObserveDeep = (asyncSetData) => {
                     key,
                     val: observeDeep(obj[key], path),
                     path,
+                    observeDeep,
                     asyncSetData,
                 })
             })

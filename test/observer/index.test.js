@@ -24,11 +24,13 @@ const getVm = () => Page({
 
 let vm = getVm()
 let asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+let observeDeep = jest.fn(getObserveDeep(asyncSetData))
 
 describe('observe functions', () => {
     afterEach(() => {
         vm = getVm()
         asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+        observeDeep = jest.fn(getObserveDeep(asyncSetData))
     })
 
     test('getObserveDeep', () => {
@@ -41,21 +43,36 @@ describe('observe functions', () => {
             },
         }
         const newVal = 'StEve'
-        const newArr = []
-        const observeDeep = getObserveDeep(asyncSetData)
+        const newNested = { young: 'yo' }
+        const newArr = [{ msg: 'abc' }]
         const ob = observeDeep(obj)
 
+        ob.array = newArr
+        ob.array[0].msg = 'young'
+
         ob.steve = newVal
+        ob.nested = newNested
         ob.nested.young = newVal
+
+        expect(asyncSetData).toBeCalledWith({
+            newVal: 'young',
+            path: 'array[0].msg',
+            oldVal: 'abc',
+        })
         expect(asyncSetData).toBeCalledWith({
             newVal,
             path: 'steve',
             oldVal: 'steve',
         })
         expect(asyncSetData).toBeCalledWith({
+            newVal: newNested,
+            path: 'nested',
+            oldVal: { young: 'young' },
+        })
+        expect(asyncSetData).toBeCalledWith({
             newVal,
             path: 'nested.young',
-            oldVal: 'young',
+            oldVal: 'yo',
         })
     })
 
@@ -70,6 +87,7 @@ describe('observe functions', () => {
             key,
             val,
             path: key,
+            observeDeep,
             asyncSetData,
         })
 
