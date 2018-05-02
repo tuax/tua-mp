@@ -3,11 +3,13 @@
 import { version } from '../package.json'
 import { isFn } from './utils'
 import {
-    bindData,
-    bindComputed,
     getObserveDeep,
     getAsyncSetData,
-} from './observe'
+} from './observer/index'
+import {
+    bindData,
+    bindComputed,
+} from './init'
 
 console.log(`Tua-Mp Version: ${version}`)
 

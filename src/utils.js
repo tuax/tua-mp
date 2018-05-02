@@ -1,10 +1,13 @@
-// constants
+/* -- constants -- */
 export const COMMON_PROP = {
     enumerable: true,
     configurable: true,
 }
 
+/* -- functions -- */
 export const isFn = fn => typeof fn === 'function'
+
+export const hasProto = '__proto__' in {}
 
 /**
  * 将 source 上的属性代理到 target 上
