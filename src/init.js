@@ -45,7 +45,9 @@ export const bindComputed = (vm, computed, watch) => {
 
                 return newVal
             },
-            set () {},
+            set () {
+                console.warn(`[TUA-MP]: 请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
+            },
         })
     })
 

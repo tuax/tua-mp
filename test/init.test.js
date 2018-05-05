@@ -34,6 +34,24 @@ describe('observe functions', () => {
         asyncSetData = jest.fn(getAsyncSetData(vm, watch))
     })
 
+    test('assign value to computed', (done) => {
+        const computed = {
+            sAndY () {
+                return this.steve + this.young
+            },
+        }
+        const observeDeep = getObserveDeep(asyncSetData)
+        bindData(vm, observeDeep)
+        bindComputed(vm, computed, {})
+
+        vm.sAndY = 'sth'
+
+        afterSetData(() => {
+            expect(vm.sAndY).toBe('steveyoung')
+            done()
+        })
+    })
+
     test('bindComputed', (done) => {
         const computed = {
             sAndY () {

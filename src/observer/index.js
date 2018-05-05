@@ -1,7 +1,9 @@
 import {
     isFn,
+    __TUA_PATH,
     COMMON_PROP,
     setObjByPath,
+    getPathByPrefix,
 } from '../utils'
 import { observeArray } from './array'
 
@@ -54,7 +56,6 @@ export const getAsyncSetData = (vm, watch) => ({
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
  * @param {Object} param.obj 被观察对象
  * @param {String} param.key 被观察对象的属性
- * @param {String} param.path 被观察对象的属性的路径
  * @param {any} param.val 被观察对象的属性的值
  * @param {function} param.observeDeep 递归观察函数
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
@@ -63,17 +64,20 @@ export const defineReactive = ({
     obj,
     key,
     val,
-    path,
     observeDeep,
     asyncSetData,
 }) => {
     Object.defineProperty(obj, key, {
         ...COMMON_PROP,
-        get () { return val },
+        get: () => val,
         set (newVal) {
             if (newVal === val) return
 
             const oldVal = val
+            const prefix = obj[__TUA_PATH] || ''
+            const path = getPathByPrefix(prefix, key)
+
+            // 重新观察
             val = observeDeep(newVal, path)
 
             asyncSetData({
@@ -103,9 +107,11 @@ export const getObserveDeep = (asyncSetData) => {
                 observeDeep(item, `${prefix}[${idx}]`)
             )
 
+            // 每个数组挂载自己的路径
+            arr[__TUA_PATH] = prefix
+
             return observeArray({
                 arr,
-                path: prefix,
                 observeDeep,
                 asyncSetData,
             })
@@ -114,19 +120,23 @@ export const getObserveDeep = (asyncSetData) => {
         if (typeof obj === 'object') {
             const observedObj = Object.create(null)
 
+            // 将路径前缀挂在父节点上
+            Object.defineProperty(observedObj, __TUA_PATH, {
+                enumerable: false,
+                value: prefix,
+            })
+
             Object.keys(obj).forEach((key) => {
                 // 过滤 __wxWebviewId__ 等内部属性
                 if (/^__.*__$/.test(key)) return
 
-                const path = prefix === ''
-                    ? key
-                    : `${prefix}.${key}`
-
                 defineReactive({
                     obj: observedObj,
                     key,
-                    val: observeDeep(obj[key], path),
-                    path,
+                    val: observeDeep(
+                        obj[key],
+                        getPathByPrefix(prefix, key)
+                    ),
                     observeDeep,
                     asyncSetData,
                 })

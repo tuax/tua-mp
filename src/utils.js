@@ -4,10 +4,16 @@ export const COMMON_PROP = {
     configurable: true,
 }
 
+// 每个对象上挂载自己路径前缀的 key
+export const __TUA_PATH = '__TUA_PATH'
+
 /* -- functions -- */
 export const isFn = fn => typeof fn === 'function'
 
-export const hasProto = '__proto__' in {}
+export const hasProtoInObj = obj => '__proto__' in obj
+
+export const getPathByPrefix = (prefix, key) =>
+    prefix === '' ? key : `${prefix}.${key}`
 
 /**
  * 将 source 上的属性代理到 target 上

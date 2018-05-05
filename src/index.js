@@ -11,7 +11,7 @@ import {
     bindComputed,
 } from './init'
 
-console.log(`Tua-Mp Version: ${version}`)
+console.log(`[TUA-MP]: Version ${version}`)
 
 /**
  * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）

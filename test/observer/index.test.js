@@ -86,7 +86,6 @@ describe('observe functions', () => {
             obj,
             key,
             val,
-            path: key,
             observeDeep,
             asyncSetData,
         })

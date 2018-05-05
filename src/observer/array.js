@@ -1,4 +1,8 @@
-import { hasProto, proxyData } from '../utils'
+import {
+    proxyData,
+    __TUA_PATH,
+    hasProtoInObj,
+} from '../utils'
 
 const arrayProto = Array.prototype
 const arrayMethods = Object.create(arrayProto)
@@ -16,14 +20,12 @@ const methodsToPatch = [
  * 劫持数组的可变方法方法
  * @param {Object} param
  * @param {Array} param.arr 原始数组
- * @param {String} param.path 路径前缀
  * @param {fucntion} param.observeDeep 递归观察函数
  * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
  * @return {Array} observedArr 被劫持方法后的数组
  */
 export const observeArray = ({
     arr,
-    path,
     observeDeep,
     asyncSetData,
 }) => {
@@ -31,6 +33,7 @@ export const observeArray = ({
         const original = arrayProto[method]
 
         arrayMethods[method] = function (...args) {
+            const path = this[__TUA_PATH]
             const result = original.apply(this, args)
 
             if (method === 'pop') {
@@ -48,15 +51,16 @@ export const observeArray = ({
         }
     })
 
-    // 如果有 __proto__ 就挂原型链上，否则劫持原方法
-    // if (hasProto) {
-    //     /* eslint-enable no-proto */
-    //     arr.__proto__ = arrayMethods
-    //     /* eslint-enable no-proto */
-    // } else {
-    //     proxyData(arrayMethods, arr)
-    // }
-    proxyData(arrayMethods, arr)
+    // 优先挂原型链上，否则劫持原方法
+    if (Object.setPrototypeOf) {
+        Object.setPrototypeOf(arr, arrayMethods)
+    } else if (hasProtoInObj(arr)) {
+        /* eslint-disable no-proto */
+        arr.__proto__ = arrayMethods
+        /* eslint-enable no-proto */
+    } else {
+        proxyData(arrayMethods, arr)
+    }
 
     return arr
 }
