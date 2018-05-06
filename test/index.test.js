@@ -6,7 +6,7 @@ describe('TuaPage', () => {
     })
 
     test('use it just like MP', (done) => {
-        const onLoad = jest.fn(() => {})
+        const onLoad = jest.fn()
         const vm = TuaPage({
             data: {
                 nestedData: {
@@ -37,7 +37,7 @@ describe('TuaPage', () => {
     })
 
     test('use it just like Vue', (done) => {
-        const watchFn = jest.fn(() => {})
+        const watchFn = jest.fn()
         const vm = TuaPage({
             data () {
                 return {

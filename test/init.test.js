@@ -9,7 +9,7 @@ import {
 import { afterSetData } from './utils'
 
 const watch = {
-    steve: jest.fn(() => {}),
+    steve: jest.fn(),
 }
 
 const getVm = () => Page({
@@ -59,7 +59,7 @@ describe('observe functions', () => {
             },
         }
         const watch = {
-            sAndY: jest.fn(() => {}),
+            sAndY: jest.fn(),
         }
         const oldVal = 'steveyoung'
         const newVal = 'abcyoung'

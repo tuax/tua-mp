@@ -1,4 +1,7 @@
 /* -- constants -- */
+// 小程序内部属性的判断正则
+const innerAttrRe = /^__.*__$/
+
 export const COMMON_PROP = {
     enumerable: true,
     configurable: true,
@@ -12,6 +15,9 @@ export const isFn = fn => typeof fn === 'function'
 
 export const hasProtoInObj = obj => '__proto__' in obj
 
+export const isNotInnerAttr = key => !innerAttrRe.test(key)
+
+// 根据路径前缀和 key 得到当前路径
 export const getPathByPrefix = (prefix, key) =>
     prefix === '' ? key : `${prefix}.${key}`
 

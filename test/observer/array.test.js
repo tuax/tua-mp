@@ -3,11 +3,14 @@ import {
     getAsyncSetData,
 } from '../../src/observer'
 import { __TUA_PATH } from '../../src/utils'
-import { observeArray } from '../../src/observer/array'
+import {
+    getArrayMethods,
+    patchMethods2Array,
+} from '../../src/observer/array'
 import { afterSetData } from '../utils'
 
 const watch = {
-    steve: jest.fn(() => {}),
+    steve: jest.fn(),
 }
 
 const getVm = () => Page({
@@ -25,27 +28,32 @@ const getVm = () => Page({
 
 let vm = getVm()
 let asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+let observeDeep = jest.fn(getObserveDeep(asyncSetData))
+let arrayMethods = getArrayMethods({
+    observeDeep,
+    asyncSetData,
+})
 
-describe('observe functions', () => {
+describe('patch methods to array', () => {
     afterEach(() => {
         vm = getVm()
         asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+        observeDeep = jest.fn(getObserveDeep(asyncSetData))
+        arrayMethods = getArrayMethods({
+            observeDeep,
+            asyncSetData,
+        })
     })
 
     test('no __proto__', (done) => {
         const arr = []
         const path = 'arr'
-        const observeDeep = jest.fn(getObserveDeep(asyncSetData))
         arr[__TUA_PATH] = path
         Object.setPrototypeOf = null
         arr.__proto__ = null
         arr.map = [].map
 
-        observeArray({
-            arr,
-            observeDeep,
-            asyncSetData,
-        })
+        patchMethods2Array({ arr, arrayMethods })
 
         // 插入对象
         arr.splice(0, 0, { a: 'inserted value' })
@@ -69,15 +77,10 @@ describe('observe functions', () => {
     test('no Object.setPrototypeOf', (done) => {
         const arr = []
         const path = 'arr'
-        const observeDeep = jest.fn(getObserveDeep(asyncSetData))
         arr[__TUA_PATH] = path
         Object.setPrototypeOf = null
 
-        observeArray({
-            arr,
-            observeDeep,
-            asyncSetData,
-        })
+        patchMethods2Array({ arr, arrayMethods })
 
         // 插入对象
         arr.splice(0, 0, { a: 'inserted value' })
@@ -101,14 +104,9 @@ describe('observe functions', () => {
     test('observe new value inserted into array', (done) => {
         const arr = []
         const path = 'arr'
-        const observeDeep = jest.fn(getObserveDeep(asyncSetData))
         arr[__TUA_PATH] = path
 
-        observeArray({
-            arr,
-            observeDeep,
-            asyncSetData,
-        })
+        patchMethods2Array({ arr, arrayMethods })
 
         // 插入对象
         arr.push({ a: 'inserted value' })
@@ -132,14 +130,9 @@ describe('observe functions', () => {
         const arr = []
         const path = 'arr'
         const newVal = 'this is new a'
-        const observeDeep = jest.fn(getObserveDeep(asyncSetData))
         arr[__TUA_PATH] = path
 
-        observeArray({
-            arr,
-            observeDeep,
-            asyncSetData,
-        })
+        patchMethods2Array({ arr, arrayMethods })
 
         arr.push(1)
         expect(observeDeep).toBeCalledWith(arr, path)

@@ -6,7 +6,7 @@ import {
 import { afterSetData } from '../utils'
 
 const watch = {
-    steve: jest.fn(() => {}),
+    steve: jest.fn(),
 }
 
 const getVm = () => Page({

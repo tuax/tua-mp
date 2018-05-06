@@ -3,12 +3,19 @@ import {
     __TUA_PATH,
     COMMON_PROP,
     setObjByPath,
+    isNotInnerAttr,
     getPathByPrefix,
 } from '../utils'
-import { observeArray } from './array'
+import {
+    getArrayMethods,
+    patchMethods2Array,
+} from './array'
 
 // 全局变量，缓存下一个状态的数据
 let newState = null
+
+// 缓存数组可变方法
+let arrayMethods = null
 
 /**
  * 异步 setData 提高性能
@@ -110,11 +117,14 @@ export const getObserveDeep = (asyncSetData) => {
             // 每个数组挂载自己的路径
             arr[__TUA_PATH] = prefix
 
-            return observeArray({
-                arr,
-                observeDeep,
-                asyncSetData,
-            })
+            // 缓存数组可变方法，不用每次重复求值
+            arrayMethods = arrayMethods ||
+                getArrayMethods({
+                    observeDeep,
+                    asyncSetData,
+                })
+
+            return patchMethods2Array({ arr, arrayMethods })
         }
 
         if (typeof obj === 'object') {
@@ -126,11 +136,10 @@ export const getObserveDeep = (asyncSetData) => {
                 value: prefix,
             })
 
-            Object.keys(obj).forEach((key) => {
+            Object.keys(obj)
                 // 过滤 __wxWebviewId__ 等内部属性
-                if (/^__.*__$/.test(key)) return
-
-                defineReactive({
+                .filter(isNotInnerAttr)
+                .map((key) => ({
                     obj: observedObj,
                     key,
                     val: observeDeep(
@@ -139,8 +148,8 @@ export const getObserveDeep = (asyncSetData) => {
                     ),
                     observeDeep,
                     asyncSetData,
-                })
-            })
+                }))
+                .forEach(defineReactive)
 
             return observedObj
         }
