@@ -3,13 +3,15 @@
 import { version } from '../package.json'
 import { isFn } from './utils'
 import {
-    bindData,
-    bindComputed,
     getObserveDeep,
     getAsyncSetData,
-} from './observe'
+} from './observer/index'
+import {
+    bindData,
+    bindComputed,
+} from './init'
 
-console.log(`Tua-Mp Version: ${version}`)
+console.log(`[TUA-MP]: Version ${version}`)
 
 /**
  * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）

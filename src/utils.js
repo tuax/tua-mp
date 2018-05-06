@@ -1,10 +1,25 @@
-// constants
+/* -- constants -- */
+// 小程序内部属性的判断正则
+const innerAttrRe = /^__.*__$/
+
 export const COMMON_PROP = {
     enumerable: true,
     configurable: true,
 }
 
+// 每个对象上挂载自己路径前缀的 key
+export const __TUA_PATH = '__TUA_PATH'
+
+/* -- functions -- */
 export const isFn = fn => typeof fn === 'function'
+
+export const hasProtoInObj = obj => '__proto__' in obj
+
+export const isNotInnerAttr = key => !innerAttrRe.test(key)
+
+// 根据路径前缀和 key 得到当前路径
+export const getPathByPrefix = (prefix, key) =>
+    prefix === '' ? key : `${prefix}.${key}`
 
 /**
  * 将 source 上的属性代理到 target 上
