@@ -6,7 +6,29 @@
 <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/v/tua-mp.svg" alt="Version"></a>
 <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/l/tua-mp.svg" alt="License"></a>
 
-## 0.安装
+## 0.介绍
+`tua-mp` 是一个用于开发微信小程序的**渐进式框架**，它与其他小程序框架不同的是，`tua-mp` 可以由浅入深地用于你的小程序项目。
+
+## 1.安装
+## 1.1.最基础的使用方式
+下载 [https://github.com/tuateam/tua-mp/blob/master/demo/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/demo/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。（具体参考 `demo/`，可以直接用微信开发者工具打开）
+
+在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
+
+```js
+// pages/index/index.js
+import { TuaPage } from '../../utils/tua-mp'
+
+// 用 TuaPage 替代 Page
+TuaPage({ ... })
+```
+
+采用这种侵入性最小的方式，可以用于改写优化已有的小程序项目，即在部分页面中使用 `tua-mp`。
+
+## 1.2.利用 webpack 打包源码
+使用 `npm` 下载 `tua-mp`，然后直接 `import`。
+
+由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`，微信开发者工具打开的也是 `dist/` 目录。
 
 ```
 $ npm i -S tua-mp
@@ -16,13 +38,16 @@ $ tnpm i -S @tencent/tua-mp
 $ yarn add tua-mp
 ```
 
-## 1.使用说明
+这种使用方式的例子待补充...
+
+## 2.使用说明
+使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
 
 * 实现相同的组件配置（data、computed、methods、watch）
-* 实现直接对已绑定的数据赋值，而不是调用 `this.setData`
+* 实现赋值改变数据和界面，而不是调用小程序原生的 `this.setData`
 * 实现 `computed` 功能
 * 实现 `watch` 功能
-* 实现异步 `setData`，提高性能
+* 实现异步 `setData` 功能，即假如在一个事件循环周期内多次对于同一个属性赋值，只会触发一次小程序原生的 `setData` 函数以及相关的 `watch` 函数（详见下面例子中的 `onLoad` 函数）
 
 ```js
 import { TuaPage } from 'tua-mp'
@@ -38,6 +63,13 @@ TuaPage({
             c: [{ d: { e: 'e' } }],
             f: 'f',
             g: 'hello world',
+
+            // 注意：因为小程序会使用类似 /^__.*__$/
+            // 这样的属性保存内部状态，例如：
+            // __webviewId__、__route__、__wxWebviewId__
+            // 所以这样的前后两个下划线起名的属性
+            // 在初始化观察数据时会被略过，即不会生成 getter/setter
+            __foo__: 'bar',
         }
     },
 
@@ -51,6 +83,20 @@ TuaPage({
         gAndAB () {
             return this.g + ' + ' + this.a.b
         },
+        // 还可以由 computed 继续派生新的数据
+        dataAndComputed () {
+            return this.g + ' + ' + this.reversedG
+        },
+    },
+
+    // 小程序原本的生命周期方法也能使用
+    // 建议不要放在 methods 里，
+    // 因为就像 Vue 中的 created、mounted 等生命周期方法一样
+    onLoad () {
+        for (let i = 100; i > 90; i--) {
+            // 只会触发一次 setData
+            this.g = i
+        }
     },
 
     // 方法建议都挂在 methods 下
@@ -77,8 +123,7 @@ TuaPage({
     watch: {
         // 监听 data
         g (newVal, oldVal) {
-            console.log('newVal', newVal)
-            console.log('oldVal', oldVal)
+            console.log(`g: ${oldVal} -> ${newVal}`)
             // 异步操作
             setTimeout(() => {
                 this.a.b = 'new a.b from watch'
@@ -87,8 +132,7 @@ TuaPage({
 
         // 监听嵌套属性
         'a.b' (newVal, oldVal) {
-            console.log('newVal', newVal)
-            console.log('oldVal', oldVal)
+            console.log(`a.b: ${oldVal} -> ${newVal}`)
             // 异步操作
             setTimeout(() => {
                 this.msg = 'new msg from watch'
@@ -100,21 +144,14 @@ TuaPage({
             // ...
         },
     },
-
-    // 小程序原本的生命周期方法也能使用
-    onLoad () {
-        for (let i = 100; i > 90; i--) {
-            // 只会触发一次 setData
-            this.g = i
-        }
-    },
 })
 ```
 
-## 2.文档
+## 3.文档
 * [1.小程序之告别 setData](https://github.com/tuateam/tua-mp/blob/master/doc/1.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%20setData.md)
 
 ## TODO
+* webpack 例子
 * 保留字
 * 收集 `computed` 的依赖，这样可以精确地对变化的 `computed` 属性 `setData`，而不是一股脑儿地将全部 `computed` 属性 `setData`
 

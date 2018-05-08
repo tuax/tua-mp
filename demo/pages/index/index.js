@@ -71,6 +71,9 @@ TuaPage({
         gAndAB () {
             return this.g + ' + ' + this.a.b
         },
+        dataAndComputed() {
+            return this.g + ' + ' + this.reversedG
+        },
     },
     watch: {
         msg (newVal, oldVal) {

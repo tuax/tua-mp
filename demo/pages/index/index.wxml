@@ -42,6 +42,7 @@
 
     <view>a.b: {{ a.b }}</view>
     <view>gAndAB: {{ gAndAB }}</view>
+    <view>dataAndComputed: {{ dataAndComputed }}</view>
     <button type="primary" size="mini" bindtap="tapAB">
         this.a.b = 'a.b' + n++
     </button>
