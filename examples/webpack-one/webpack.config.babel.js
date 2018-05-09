@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import EslintFriendlyFormatter from 'eslint-friendly-formatter'
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 
 const join = (...urls) => path.join(__dirname, ...urls)
@@ -23,10 +24,16 @@ const pageBase = 'src/pages'
 const pages = fs.readdirSync(resolve(pageBase))
 const pageEntry = getEntry(pages, pageBase)
 
-export default {
-    mode: 'development',
-    stats: 'errors-only',
-    devtool: 'source-map',
+export default ({ isDev }) => ({
+    mode: isDev ? 'development' : 'production',
+    stats: isDev ? 'none' : {
+        colors: true,
+        modules: false,
+        children: false,
+        chunks: false,
+        chunkModules: false
+    },
+    devtool: isDev && 'source-map',
     entry: {
         // app 应用入口
         app: 'src/app',
@@ -43,8 +50,17 @@ export default {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                loader: 'eslint-loader',
+                enforce: 'pre',
+                include: [resolve('src')],
+                options: {
+                    formatter: EslintFriendlyFormatter,
+                }
+            },
+            {
+                test: /\.js$/,
                 loader: 'babel-loader',
+                include: [resolve('src')],
             },
         ],
     },
@@ -67,4 +83,7 @@ export default {
         ]),
         new FriendlyErrorsWebpackPlugin(),
     ],
-}
+    watchOptions: {
+        aggregateTimeout: 300,
+    },
+})

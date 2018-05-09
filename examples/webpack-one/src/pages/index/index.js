@@ -44,7 +44,9 @@ TuaPage({
     },
     onLoad () {
         log(this)
+        /* eslint-disable no-global-assign */
         global = this
+        /* eslint-enable no-global-assign */
 
         for (let i = 100; i > 90; i--) {
             this.g = i
@@ -58,7 +60,7 @@ TuaPage({
         gAndAB () {
             return this.g + ' + ' + this.a.b
         },
-        dataAndComputed() {
+        dataAndComputed () {
             return this.g + ' + ' + this.reversedG
         },
     },

@@ -3,9 +3,9 @@
     "version": "0.1.0",
     "description": "A simple example of using tua-mp with webpack",
     "scripts": {
-        "start": "webpack -w",
-        "build": "webpack --mode=production",
-        "clean": "rm -rf dist/*"
+        "start": "webpack -w --env.isDev",
+        "build": "npm run clean && webpack --env",
+        "clean": "rimraf dist"
     },
     "keywords": [
         "tua-mp",
@@ -19,10 +19,15 @@
     "devDependencies": {
         "babel-core": "^6.26.3",
         "babel-loader": "^7.1.4",
+        "babel-plugin-transform-runtime": "^6.23.0",
         "babel-preset-env": "^1.6.1",
         "babel-preset-stage-0": "^6.24.1",
         "copy-webpack-plugin": "^4.5.1",
+        "eslint": "^4.19.1",
+        "eslint-friendly-formatter": "^4.0.1",
+        "eslint-loader": "^2.0.0",
         "friendly-errors-webpack-plugin": "^1.7.0",
+        "rimraf": "^2.6.2",
         "webpack": "^4.8.1",
         "webpack-cli": "^2.1.3"
     }

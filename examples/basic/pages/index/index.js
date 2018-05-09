@@ -71,7 +71,7 @@ TuaPage({
         gAndAB () {
             return this.g + ' + ' + this.a.b
         },
-        dataAndComputed() {
+        dataAndComputed () {
             return this.g + ' + ' + this.reversedG
         },
     },
