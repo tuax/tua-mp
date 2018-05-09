@@ -10,7 +10,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "1.9.94",
 	"appid": "touristappid",
-	"projectname": "github-tua-mp",
+	"projectname": "github-tua-mp-basic",
 	"condition": {
 		"search": {
 			"current": -1,
