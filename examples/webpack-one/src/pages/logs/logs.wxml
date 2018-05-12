@@ -1,5 +1,7 @@
 <!--logs.wxml-->
 <view class="container log-list">
+    <image src="/assets/vue-logo.png" />
+
     <block
         wx:for="{{ logs }}"
         wx:for-item="log"

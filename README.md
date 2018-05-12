@@ -39,11 +39,11 @@ $ yarn add tua-mp
 ### 1.只打包处理 js
 由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`。
 
-但对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝.
+**但对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝**
 
 > 具体参考 `examples/webpack-one/`，用微信开发者工具打开 `dist/` 目录
 
-### 2.增加对于 css/sass/less/stylus/postcss 等文件支持
+### 2.增加对于 css/sass/less/stylus 等文件支持
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
 
 > 具体参考 `examples/webpack-two/`，用微信开发者工具打开 `dist/` 目录
