@@ -1,0 +1,49 @@
+<!--index.wxml-->
+<view class="container">
+    <view>msg: {{ msg }}</view>
+    <button type="primary" size="mini" bindtap="tapMsg">
+        this.msg += n++
+    </button>
+
+    <view>a.b: {{ a.b }}</view>
+    <button type="primary" size="mini" bindtap="tapAB">
+        this.a.b += n++
+    </button>
+
+    <view>arr: {{ arr }}</view>
+    <button type="primary" size="mini" bindtap="tapArr">
+        this.arr.push(n++)
+    </button>
+    <button type="primary" size="mini" bindtap="unshiftNested">
+        this.arr.unshift({ c: { d: 'hey' } })
+    </button>
+
+    <view>arr[0].c.d: {{ arr[0].c.d }}</view>
+    <button type="primary" size="mini" bindtap="tapArrNest0">
+        this.arr[0].c.d = n++
+    </button>
+
+    <view>arr[1].c.d: {{ arr[1].c.d }}</view>
+    <button type="primary" size="mini" bindtap="tapArrNest1">
+        this.arr[1].c.d = n++
+    </button>
+
+    <view>arr[1]: {{ arr[1] }}</view>
+    <button type="primary" size="mini" bindtap="tapArrSp">
+        this.arr.splice(2, 2, n++)
+    </button>
+
+    <view>------ computed ------</view>
+    <view>g: {{ g }}</view>
+    <view>reversedG: {{ reversedG }}</view>
+    <button type="primary" size="mini" bindtap="tapReverseG">
+        this.g = this.reversedG
+    </button>
+
+    <view>a.b: {{ a.b }}</view>
+    <view>gAndAB: {{ gAndAB }}</view>
+    <view>dataAndComputed: {{ dataAndComputed }}</view>
+    <button type="primary" size="mini" bindtap="tapAB">
+        this.a.b = 'a.b' + n++
+    </button>
+</view>

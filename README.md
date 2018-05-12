@@ -11,7 +11,7 @@
 
 ## 1.安装
 ## 1.1.最基础的使用方式
-下载 [https://github.com/tuateam/tua-mp/blob/master/demo/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/demo/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。（具体参考 `demo/`，可以直接用微信开发者工具打开）
+下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。（具体参考 `examples/basic/`，可以直接用微信开发者工具打开）
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
 
@@ -28,8 +28,6 @@ TuaPage({ ... })
 ## 1.2.利用 webpack 打包源码
 使用 `npm` 下载 `tua-mp`，然后直接 `import`。
 
-由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`，微信开发者工具打开的也是 `dist/` 目录。
-
 ```
 $ npm i -S tua-mp
 
@@ -38,7 +36,17 @@ $ tnpm i -S @tencent/tua-mp
 $ yarn add tua-mp
 ```
 
-这种使用方式的例子待补充...
+### 1.只打包处理 js
+由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`。
+
+但对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝.
+
+> 具体参考 `examples/webpack-one/`，用微信开发者工具打开 `dist/` 目录
+
+### 2.增加对于 css/sass/less/stylus/postcss 等文件支持
+添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
+
+> 具体参考 `examples/webpack-two/`，用微信开发者工具打开 `dist/` 目录
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
