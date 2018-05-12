@@ -1,49 +1,49 @@
 <!--index.wxml-->
-<view class="container">
+<view class="container" catchtap="gotoLogs">
     <view>msg: {{ msg }}</view>
-    <button type="primary" size="mini" bindtap="tapMsg">
+    <button type="primary" size="mini" catchtap="tapMsg">
         this.msg += n++
     </button>
 
     <view>a.b: {{ a.b }}</view>
-    <button type="primary" size="mini" bindtap="tapAB">
+    <button type="primary" size="mini" catchtap="tapAB">
         this.a.b += n++
     </button>
 
     <view>arr: {{ arr }}</view>
-    <button type="primary" size="mini" bindtap="tapArr">
+    <button type="primary" size="mini" catchtap="tapArr">
         this.arr.push(n++)
     </button>
-    <button type="primary" size="mini" bindtap="unshiftNested">
+    <button type="primary" size="mini" catchtap="unshiftNested">
         this.arr.unshift({ c: { d: 'hey' } })
     </button>
 
     <view>arr[0].c.d: {{ arr[0].c.d }}</view>
-    <button type="primary" size="mini" bindtap="tapArrNest0">
+    <button type="primary" size="mini" catchtap="tapArrNest0">
         this.arr[0].c.d = n++
     </button>
 
     <view>arr[1].c.d: {{ arr[1].c.d }}</view>
-    <button type="primary" size="mini" bindtap="tapArrNest1">
+    <button type="primary" size="mini" catchtap="tapArrNest1">
         this.arr[1].c.d = n++
     </button>
 
     <view>arr[1]: {{ arr[1] }}</view>
-    <button type="primary" size="mini" bindtap="tapArrSp">
+    <button type="primary" size="mini" catchtap="tapArrSp">
         this.arr.splice(2, 2, n++)
     </button>
 
     <view>------ computed ------</view>
     <view>g: {{ g }}</view>
     <view>reversedG: {{ reversedG }}</view>
-    <button type="primary" size="mini" bindtap="tapReverseG">
+    <button type="primary" size="mini" catchtap="tapReverseG">
         this.g = this.reversedG
     </button>
 
     <view>a.b: {{ a.b }}</view>
     <view>gAndAB: {{ gAndAB }}</view>
     <view>dataAndComputed: {{ dataAndComputed }}</view>
-    <button type="primary" size="mini" bindtap="tapAB">
+    <button type="primary" size="mini" catchtap="tapAB">
         this.a.b = 'a.b' + n++
     </button>
 </view>

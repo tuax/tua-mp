@@ -1,5 +1,3 @@
-/* global Page */
-
 import { version } from '../package.json'
 import { isFn } from './utils'
 import {

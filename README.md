@@ -10,7 +10,7 @@
 `tua-mp` 是一个用于开发微信小程序的**渐进式框架**，它与其他小程序框架不同的是，`tua-mp` 可以由浅入深地用于你的小程序项目。
 
 ## 1.安装
-## 1.1.最基础的使用方式
+## 1.1.最基础的使用方式 -- `examples/basic/`
 下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。（具体参考 `examples/basic/`，可以直接用微信开发者工具打开）
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
@@ -36,14 +36,14 @@ $ tnpm i -S @tencent/tua-mp
 $ yarn add tua-mp
 ```
 
-### 1.只打包处理 js
+### 1.只打包处理 js -- `examples/webpack-one/`
 由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`。
 
-但对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝.
+但 webpack 仅仅对于 js 进行打包，**对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝**
 
 > 具体参考 `examples/webpack-one/`，用微信开发者工具打开 `dist/` 目录
 
-### 2.增加对于 css/sass/less/stylus/postcss 等文件支持
+### 2.支持预处理器 -- `examples/webpack-two/`
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
 
 > 具体参考 `examples/webpack-two/`，用微信开发者工具打开 `dist/` 目录

@@ -1,5 +1,3 @@
-export const log = txt => console.log(`[log from utils]: ${txt}`)
-
 export const formatTime = date => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1

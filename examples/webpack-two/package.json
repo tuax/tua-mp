@@ -1,7 +1,7 @@
 {
-    "name": "tua-mp-example-webpack-one",
+    "name": "tua-mp-example-webpack-two",
     "version": "0.1.0",
-    "description": "A simple example of using tua-mp with webpack",
+    "description": "An example of using tua-mp with webpack",
     "scripts": {
         "start": "webpack -w --env.isDev",
         "build": "npm run clean && webpack --env",
@@ -24,6 +24,7 @@
         "babel-preset-env": "^1.6.1",
         "babel-preset-stage-0": "^6.24.1",
         "copy-webpack-plugin": "^4.5.1",
+        "css-loader": "^0.28.11",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-friendly-formatter": "^4.0.1",
@@ -32,8 +33,16 @@
         "eslint-plugin-node": "^6.0.1",
         "eslint-plugin-promise": "^3.7.0",
         "eslint-plugin-standard": "^3.1.0",
+        "extract-text-webpack-plugin": "^4.0.0-beta.0",
         "friendly-errors-webpack-plugin": "^1.7.0",
+        "less": "^3.0.4",
+        "less-loader": "^4.1.0",
+        "node-sass": "^4.9.0",
         "rimraf": "^2.6.2",
+        "sass-loader": "^7.0.1",
+        "style-loader": "^0.21.0",
+        "stylus": "^0.54.5",
+        "stylus-loader": "^3.0.2",
         "webpack": "^4.8.1",
         "webpack-cli": "^2.1.3"
     }

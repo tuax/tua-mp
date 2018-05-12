@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view class="container" catchtap="gotoLogs">
-    <view>msg: {{ msg }}</view>
+    <view class="box">msg: {{ msg }}</view>
     <button type="primary" size="mini" catchtap="tapMsg">
         this.msg += n++
     </button>

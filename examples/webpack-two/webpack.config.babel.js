@@ -2,10 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import { BannerPlugin } from 'webpack'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import EslintFriendlyFormatter from 'eslint-friendly-formatter'
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 
-import { pages } from './src/app.json'
+import { pages } from './src/app/app.json'
 
 const resolve = (...dir) => path.resolve(__dirname, ...dir)
 
@@ -14,8 +15,7 @@ const fromPrefix = 'src/pages/*/*'
 const toPrefix = 'pages/[name]/[name]'
 const copyCfgArr = [
     { from: 'src/assets', to: 'assets' },
-    { from: 'src/app.json', to: 'app.json' },
-    { from: 'src/app.wxss', to: 'app.wxss' },
+    { from: 'src/app/app.json', to: 'app.json' },
     { from: `${fromPrefix}.wxml`, to: `${toPrefix}.wxml` },
     { from: `${fromPrefix}.json`, to: `${toPrefix}.json` },
     { from: `${fromPrefix}.wxss`, to: `${toPrefix}.wxss` },
@@ -40,7 +40,7 @@ export default ({ isDev }) => ({
     devtool: isDev && 'source-map',
     entry: {
         // app 应用入口
-        app: './src/app',
+        app: './src/app/app',
         // pages 页面入口
         ...pagesEntry,
     },
@@ -65,11 +65,50 @@ export default ({ isDev }) => ({
                 loader: 'babel-loader',
                 include: [resolve('src')],
             },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader',
+                }),
+            },
+            {
+                test: /\.less$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        'css-loader',
+                        'less-loader',
+                    ],
+                }),
+            },
+            {
+                test: /\.s[ac]ss$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        'css-loader',
+                        'sass-loader',
+                    ],
+                }),
+            },
+            {
+                test: /\.styl$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        'css-loader',
+                        'stylus-loader',
+                    ],
+                }),
+            },
         ],
     },
     resolve: {
         alias: {
             '@': resolve('src'),
+            '@const': resolve('src/scripts/const'),
+            '@utils': resolve('src/scripts/utils'),
         },
     },
     watchOptions: {
@@ -89,9 +128,9 @@ export default ({ isDev }) => ({
                     chunks: 'all',
                 },
                 // 项目公共函数
-                utils: {
-                    test: /[\\/]src[\\/]utils[\\/]/,
-                    name: 'chunks/utils',
+                scripts: {
+                    test: /[\\/]src[\\/]scripts[\\/]/,
+                    name: 'chunks/scripts',
                     chunks: 'all',
                     // 强制提取
                     enforce: true,
@@ -101,12 +140,13 @@ export default ({ isDev }) => ({
     },
     plugins: [
         new CopyWebpackPlugin(copyCfgArr),
+        new ExtractTextPlugin('[name].wxss'),
         new FriendlyErrorsWebpackPlugin(),
         new BannerPlugin({
             raw: true,
             // 因为无法通过 html 的 script 标签插入
             // 所以只好在入口文件 app.js 前插入公共依赖
-            banner: `require('./chunks/runtime');require('./chunks/vendors');require('./chunks/utils');`,
+            banner: `require('./chunks/runtime');require('./chunks/vendors');require('./chunks/scripts');`,
             include: 'app.js',
         })
     ],

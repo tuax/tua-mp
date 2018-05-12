@@ -1,6 +1,8 @@
 // index.js
 import { TuaPage } from 'tua-mp'
-import { log } from '@/utils'
+import { log } from '@utils'
+
+import './index.less'
 
 let n = 0
 
