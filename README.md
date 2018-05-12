@@ -10,8 +10,8 @@
 `tua-mp` 是一个用于开发微信小程序的**渐进式框架**，它与其他小程序框架不同的是，`tua-mp` 可以由浅入深地用于你的小程序项目。
 
 ## 1.安装
-## 1.1.最基础的使用方式 -- `examples/basic/`
-下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。（具体参考 `examples/basic/`，可以直接用微信开发者工具打开）
+## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)
+下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。（具体参考 [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)，可以直接用微信开发者工具打开）
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
 
@@ -36,17 +36,23 @@ $ tnpm i -S @tencent/tua-mp
 $ yarn add tua-mp
 ```
 
-### 1.只打包处理 js -- `examples/webpack-one/`
+### 1.只打包处理 js -- [examples/webpack-one/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-one)
 由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`。
 
 但 webpack 仅仅对于 js 进行打包，**对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝**
 
-> 具体参考 `examples/webpack-one/`，用微信开发者工具打开 `dist/` 目录
+> 具体参考 [examples/webpack-one/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-one)，用微信开发者工具打开 `dist/` 目录
 
-### 2.支持预处理器 -- `examples/webpack-two/`
+### 2.支持预处理器 -- [examples/webpack-two/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-two)
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
 
-> 具体参考 `examples/webpack-two/`，用微信开发者工具打开 `dist/` 目录
+* wxss: 会被拷贝到 dist/ 下的对应路径
+* css: 需要在 js 中引入，生成对应的 wxss
+* less: 需要在 js 中引入，生成对应的 wxss
+* scss/sass: 需要在 js 中引入，生成对应的 wxss
+* stylus: 需要在 js 中引入，生成对应的 wxss
+
+> 具体参考 [examples/webpack-two/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-two)，用微信开发者工具打开 `dist/` 目录
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
@@ -159,9 +165,7 @@ TuaPage({
 * [1.小程序之告别 setData](https://github.com/tuateam/tua-mp/blob/master/doc/1.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%20setData.md)
 
 ## TODO
-* webpack 例子
-* 保留字
-* 收集 `computed` 的依赖，这样可以精确地对变化的 `computed` 属性 `setData`，而不是一股脑儿地将全部 `computed` 属性 `setData`
+详见 [issues](https://github.com/tuateam/tua-mp/issues)
 
 ## License
 

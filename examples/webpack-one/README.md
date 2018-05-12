@@ -3,6 +3,7 @@
 
 注意我们只会对于 js 文件进行处理，**但对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝。**
 
+## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
 * 发布时运行 `npm run build`，`webpack` 会先删除 `dist/` 然后将源码压缩生成到其中
 
