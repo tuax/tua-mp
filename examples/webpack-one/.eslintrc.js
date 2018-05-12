@@ -7,9 +7,9 @@ module.exports = {
         "comma-dangle": [2, "always-multiline"],
     },
     globals: {
+        wx: true,
         App: true,
         Page: true,
-        wx: true,
         getApp: true,
         getPage: true,
     },

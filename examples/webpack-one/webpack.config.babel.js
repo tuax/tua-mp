@@ -4,25 +4,27 @@ import CopyWebpackPlugin from 'copy-webpack-plugin'
 import EslintFriendlyFormatter from 'eslint-friendly-formatter'
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 
-const join = (...urls) => path.join(__dirname, ...urls)
-const resolve = (...urls) => path.resolve(__dirname, ...urls)
+import { pages } from './src/app.json'
 
-const getEntry = (files, base) => files
-    .map((path) => ({
-        path,
-        url: join(base, path)
+const resolve = (...dir) => path.resolve(__dirname, ...dir)
+
+// 从 src/ 直接拷贝到 dist/
+const fromPrefix = 'src/pages/*/*'
+const toPrefix = 'pages/[name]/[name]'
+const copyCfgArr = [
+    { from: 'src/app.json', to: 'app.json' },
+    { from: 'src/app.wxss', to: 'app.wxss' },
+    { from: `${fromPrefix}.wxml`, to: `${toPrefix}.wxml` },
+    { from: `${fromPrefix}.json`, to: `${toPrefix}.json` },
+    { from: `${fromPrefix}.wxss`, to: `${toPrefix}.wxss` },
+]
+
+// 页面入口
+const pagesEntry = pages
+    .map((page) => ({
+        [page]: resolve('src', page),
     }))
-    .filter(({ url }) => fs.statSync(url).isDirectory())
-    .reduce((acc, { path, url }) => ({
-        ...acc,
-        // 生成类似 pages/index/index
-        // 这样的路径作为 name
-        [`${base.split('/')[1]}/${path}/${path}`]: url,
-    }), {})
-
-const pageBase = 'src/pages'
-const pages = fs.readdirSync(resolve(pageBase))
-const pageEntry = getEntry(pages, pageBase)
+    .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 
 export default ({ isDev }) => ({
     mode: isDev ? 'development' : 'production',
@@ -36,14 +38,13 @@ export default ({ isDev }) => ({
     devtool: isDev && 'source-map',
     entry: {
         // app 应用入口
-        app: 'src/app',
+        app: './src/app',
         // pages 页面入口
-        ...pageEntry,
+        ...pagesEntry,
     },
     output: {
         filename: `[name].js`,
-        publicPath: '/assets/',
-        path: join('dist'),
+        path: resolve('dist'),
         globalObject: 'global',
     },
     module: {
@@ -65,22 +66,12 @@ export default ({ isDev }) => ({
         ],
     },
     resolve: {
-        modules: [
-            resolve(__dirname),
-            'node_modules',
-        ],
         alias: {
-            '@': join('src'),
+            '@': resolve('src'),
         },
     },
     plugins: [
-        new CopyWebpackPlugin([
-            { from: 'src/app.json', to: 'app.json' },
-            { from: 'src/app.wxss', to: 'app.wxss' },
-            { from: 'src/pages/*/*.wxml', to: `pages/[name]/[name].wxml` },
-            { from: 'src/pages/*/*.json', to: `pages/[name]/[name].json` },
-            { from: 'src/pages/*/*.wxss', to: `pages/[name]/[name].wxss` },
-        ]),
+        new CopyWebpackPlugin(copyCfgArr),
         new FriendlyErrorsWebpackPlugin(),
     ],
     watchOptions: {

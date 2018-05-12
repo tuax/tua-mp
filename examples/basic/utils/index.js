@@ -1,6 +1,4 @@
-export const log = txt => console.log(`[log from utils]: ${txt}`)
-
-export const formatTime = date => {
+const formatTime = date => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
@@ -14,4 +12,8 @@ export const formatTime = date => {
 const formatNumber = n => {
     n = n.toString()
     return n[1] ? n : '0' + n
+}
+
+module.exports = {
+    formatTime: formatTime
 }

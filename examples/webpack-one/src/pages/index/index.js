@@ -112,5 +112,8 @@ TuaPage({
         unshiftNested () {
             this.arr.unshift({ c: { d: 'hey' } })
         },
+        gotoLogs () {
+            wx.navigateTo({ url: '/pages/logs/logs' })
+        },
     },
 })
