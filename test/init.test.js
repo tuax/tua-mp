@@ -34,6 +34,64 @@ describe('observe functions', () => {
         asyncSetData = jest.fn(getAsyncSetData(vm, watch))
     })
 
+    test('computed from computed', (done) => {
+        const plusHey = x => x + 'hey'
+        const computed = {
+            sAndY () {
+                return this.steve + this.young
+            },
+            sFirst () {
+                return this.steve.split('')[0]
+            },
+            syPlusHey () {
+                return plusHey(this.sAndY)
+            },
+            nestedArrLen () {
+                return this.nestedArr.length
+            },
+            sAndsyPlusHey () {
+                return this.sFirst + this.syPlusHey
+            },
+        }
+        const watch = {
+            syPlusHey: jest.fn(),
+            nestedArrLen: jest.fn(),
+            sAndsyPlusHey: jest.fn(),
+        }
+        const oldVal = 'steveyoung'
+        const newVal1 = 'yoyoung'
+        const newVal2 = 'yowow'
+        const asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+        const observeDeep = getObserveDeep(asyncSetData)
+
+        bindData(vm, observeDeep)
+        bindComputed(vm, computed, asyncSetData)
+
+        expect(vm.syPlusHey).toBe(plusHey(oldVal))
+        expect(vm.sAndsyPlusHey).toBe('s' + plusHey(oldVal))
+        vm.steve = 'yo'
+
+        afterSetData(() => {
+            expect(vm.syPlusHey).toBe(plusHey(newVal1))
+            expect(watch.syPlusHey).toBeCalledWith(plusHey(newVal1), plusHey(oldVal))
+
+            expect(vm.sAndsyPlusHey).toBe('y' + plusHey(newVal1))
+            expect(watch.sAndsyPlusHey).toBeCalledWith('y' + plusHey(newVal1), 's' + plusHey(oldVal))
+
+            vm.young = 'wow'
+            afterSetData(() => {
+                expect(vm.syPlusHey).toBe(plusHey(newVal2))
+                expect(watch.syPlusHey).toBeCalledWith(plusHey(newVal2), plusHey(newVal1))
+
+                expect(vm.sAndsyPlusHey).toBe('y' + plusHey(newVal2))
+                expect(watch.sAndsyPlusHey).toBeCalledWith('y' + plusHey(newVal2), 'y' + plusHey(newVal1))
+                expect(watch.nestedArrLen).toHaveBeenCalledTimes(0)
+
+                done()
+            })
+        })
+    })
+
     test('assign value to computed', (done) => {
         const computed = {
             sAndY () {
@@ -41,8 +99,9 @@ describe('observe functions', () => {
             },
         }
         const observeDeep = getObserveDeep(asyncSetData)
+
         bindData(vm, observeDeep)
-        bindComputed(vm, computed, {})
+        bindComputed(vm, computed, asyncSetData)
 
         vm.sAndY = 'sth'
 
@@ -62,10 +121,13 @@ describe('observe functions', () => {
             sAndY: jest.fn(),
         }
         const oldVal = 'steveyoung'
-        const newVal = 'abcyoung'
+        const newVal1 = 'abcyoung'
+        const newVal2 = 'abc123'
+        const asyncSetData = jest.fn(getAsyncSetData(vm, watch))
         const observeDeep = getObserveDeep(asyncSetData)
+
         bindData(vm, observeDeep)
-        bindComputed(vm, computed, watch)
+        bindComputed(vm, computed, asyncSetData)
 
         expect(vm.sAndY).toBe(vm.data.sAndY)
         expect(vm.sAndY).toBe(vm.$computed.sAndY)
@@ -73,9 +135,15 @@ describe('observe functions', () => {
         vm.steve = 'abc'
 
         afterSetData(() => {
-            expect(vm.sAndY).toBe(newVal)
-            expect(watch.sAndY).toBeCalledWith(newVal, oldVal)
-            done()
+            expect(vm.sAndY).toBe(newVal1)
+            expect(watch.sAndY).toBeCalledWith(newVal1, oldVal)
+
+            vm.young = '123'
+            afterSetData(() => {
+                expect(vm.sAndY).toBe(newVal2)
+                expect(watch.sAndY).toBeCalledWith(newVal2, newVal1)
+                done()
+            })
         })
     })
 
