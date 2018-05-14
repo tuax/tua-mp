@@ -7,7 +7,7 @@ export default {
     input: 'src/index.js',
     output: {
         file: 'examples/basic/utils/tua-mp.js',
-        name: 'TuaWx',
+        name: 'TuaMp',
         format: 'umd',
         exports: 'named',
     },
