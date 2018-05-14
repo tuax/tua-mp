@@ -38,7 +38,7 @@ export const TuaPage = (args) => {
             bindData(this, observeDeep)
 
             // 遍历观察 computed
-            bindComputed(this, computed, watch)
+            bindComputed(this, computed, asyncSetData)
 
             rest.onLoad && rest.onLoad.apply(this, options)
         },

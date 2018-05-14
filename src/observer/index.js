@@ -10,9 +10,14 @@ import {
     getArrayMethods,
     patchMethods2Array,
 } from './array'
+import Dep from './dep'
 
 // 全局变量，缓存下一个状态的数据
 let newState = null
+
+// 全局变量，缓存传给 asyncSetData 的 oldVal 值
+// 以便在触发 watch 时获取
+let oldState = null
 
 // 缓存数组可变方法
 let arrayMethods = null
@@ -34,6 +39,7 @@ export const getAsyncSetData = (vm, watch) => ({
     isArrDirty = false,
 }) => {
     newState = { ...newState, [path]: newVal }
+    oldState = { [path]: oldVal, ...oldState }
 
     // 数组下标发生变化，同步修改数组
     if (isArrDirty) {
@@ -44,18 +50,21 @@ export const getAsyncSetData = (vm, watch) => ({
     Promise.resolve().then(() => {
         if (!newState) return
 
-        vm.setData({
-            // 因为不知道依赖所以更新整个 computed
-            ...vm.$computed,
-            ...newState,
-        })
+        vm.setData(newState)
 
-        const watchFn = watch[path]
-        if (isFn(watchFn)) {
-            watchFn.call(vm, newState[path], oldVal)
-        }
+        // 触发 watch
+        Object.keys(newState)
+            .filter(key => isFn(watch[key]))
+            .forEach((key) => {
+                const watchFn = watch[key]
+                const newVal = newState[key]
+                const oldVal = oldState[key]
+
+                watchFn.call(vm, newVal, oldVal)
+            })
 
         newState = null
+        oldState = null
     })
 }
 
@@ -74,9 +83,19 @@ export const defineReactive = ({
     observeDeep,
     asyncSetData,
 }) => {
+    const dep = new Dep()
+
     Object.defineProperty(obj, key, {
         ...COMMON_PROP,
-        get: () => val,
+        get: () => {
+            // 正在依赖收集
+            if (Dep.targetCb) {
+                // 当前属性被依赖
+                dep.addSub(Dep.targetCb)
+            }
+
+            return val
+        },
         set (newVal) {
             if (newVal === val) return
 
@@ -92,6 +111,9 @@ export const defineReactive = ({
                 newVal,
                 oldVal,
             })
+
+            // 触发依赖回调
+            dep.notify()
         },
     })
 }
