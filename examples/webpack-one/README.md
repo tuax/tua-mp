@@ -1,4 +1,7 @@
 # tua-mp-example-webpack-one
+
+![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
+
 在这个例子中我们将源码放在了 `src/` 下，利用 `webpack` 将其打包生成到 `dist/` 目录下。
 
 注意我们只会对于 js 文件进行处理，**但对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝。**
