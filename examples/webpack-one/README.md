@@ -12,7 +12,15 @@
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
 
-代码片段地址为：**[wechatide://minicode/riXectmM6TZj](wechatide://minicode/riXectmM6TZj)**
+代码片段地址为：**wechatide://minicode/riXectmM6TZj**
+
+> 可以尝试复制以上片段地址到浏览器地址栏中打开
+
+<image src="../../doc/imgs/open-by-tab.png" width="400" alt="open-by-tab" />
+
+[如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
+
+<image src="../../doc/imgs/minicode.png" width="400" alt="minicode" />
 
 ## 文件结构
 

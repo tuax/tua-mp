@@ -23,9 +23,13 @@
 ## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)
 下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
 
-代码片段地址为：**[wechatide://minicode/bGXx7tmO6iZx](wechatide://minicode/bGXx7tmO6iZx)**
+代码片段地址为：**wechatide://minicode/bGXx7tmO6iZx**
 
-[如果以上链接无法打开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
+> 可以尝试复制以上片段地址到浏览器地址栏中打开
+
+<image src="./doc/imgs/open-by-tab.png" width="400" alt="open-by-tab" />
+
+[如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 
 <image src="./doc/imgs/minicode.png" width="400" alt="minicode" />
 
