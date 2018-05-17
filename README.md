@@ -23,7 +23,11 @@
 ## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)
 下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
 
-**[点我直接用微信开发者工具打开](wechatide://minicode/bGXx7tmO6iZx)**
+代码片段地址为：**[wechatide://minicode/bGXx7tmO6iZx](wechatide://minicode/bGXx7tmO6iZx)**
+
+[如果以上链接无法打开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
+
+<image src="./doc/imgs/minicode.png" width="400" alt="minicode" />
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
 
@@ -53,9 +57,10 @@ $ yarn add tua-mp
 
 但 webpack 仅仅对于 js 进行打包，**对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝**
 
-**[点我直接用微信开发者工具打开 `dist/` 目录](wechatide://minicode/riXectmM6TZj)**
+代码片段地址为：**[wechatide://minicode/riXectmM6TZj](wechatide://minicode/riXectmM6TZj)**
 
-> 为了传 `minicode`（不超过 100k） 使用 `npm run build` 进行了压缩，在开发过程中运行 `npm start` 不会压缩代码
+> 注意：打开的是`dist/` 目录
+> 并且为了分享 `minicode`（不超过 100k） 使用 `npm run build` 进行了压缩，在开发过程中运行 `npm start` 不会压缩代码
 
 ### 2.支持预处理器 -- [examples/webpack-two/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-two)
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
@@ -66,7 +71,7 @@ $ yarn add tua-mp
 * scss/sass: 需要在 js 中引入，生成对应的 wxss
 * stylus: 需要在 js 中引入，生成对应的 wxss
 
-**[点我直接用微信开发者工具打开 `dist/` 目录](wechatide://minicode/aBYKvtmM6EZJ)**
+代码片段地址为：**[wechatide://minicode/aBYKvtmM6EZJ](wechatide://minicode/aBYKvtmM6EZJ)**
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)

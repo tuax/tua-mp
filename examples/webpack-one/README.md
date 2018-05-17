@@ -12,7 +12,7 @@
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
 
-**[点我直接用微信开发者工具打开 `dist/` 目录](wechatide://minicode/riXectmM6TZj)**
+代码片段地址为：**[wechatide://minicode/riXectmM6TZj](wechatide://minicode/riXectmM6TZj)**
 
 ## 文件结构
 
