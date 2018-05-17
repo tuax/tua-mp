@@ -1,4 +1,4 @@
-# tua-mp-example-webpack-two
+# [tua-mp-example-webpack-two](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-two)
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 
@@ -17,6 +17,8 @@
 * 发布时运行 `npm run build`，`webpack` 会先删除 `dist/` 然后将源码压缩生成到其中
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
+
+代码片段地址为：**[wechatide://minicode/aBYKvtmM6EZJ](wechatide://minicode/aBYKvtmM6EZJ)**
 
 ## 文件结构
 
