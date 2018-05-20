@@ -95,7 +95,9 @@ $ yarn add tua-mp
 在这个例子中的单文件组件和一般 web 端的单文件组件有所不同：
 
 1.页面的模板我们使用的不是 `<template>` 而是自定义块 `<wxml>`（因为没法禁用 `vue-template-compiler`）
+
 2.添加了一个 `<config>` 的自定义块，用于填写**页面**的配置（即原来的 `.json`）
+
 3.由于 webpack 或其他地方需要读取 `app.json` 中的某些字段，所以在不编写 loader 的情况下只好维持原状，不将其放到 `app.vue` 中的 `<config>` 中。
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
