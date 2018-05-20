@@ -57,6 +57,9 @@ $ yarn add tua-mp
 ```
 
 ### 1.只打包处理 js -- [examples/webpack-one/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-one)
+
+![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
+
 由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`。
 
 但 webpack 仅仅对于 js 进行打包，**对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝**
@@ -67,6 +70,9 @@ $ yarn add tua-mp
 > 并且为了分享 `minicode`（不超过 100k） 使用 `npm run build` 进行了压缩，在开发过程中运行 `npm start` 不会压缩代码
 
 ### 2.支持预处理器 -- [examples/webpack-two/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-two)
+
+![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
+
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
 
 * wxss: 会被拷贝到 dist/ 下的对应路径
@@ -76,6 +82,25 @@ $ yarn add tua-mp
 * stylus: 需要在 js 中引入，生成对应的 wxss
 
 代码片段地址为：**[wechatide://minicode/aBYKvtmM6EZJ](wechatide://minicode/aBYKvtmM6EZJ)**
+
+### 3.利用 vue-loader 支持单文件组件 -- [examples/webpack-three/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-three)
+
+![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
+![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
+
+在这个例子中我们添加了 `vue-loader`，让我们能够使用文件扩展名为 `.vue` 的 `single-file components`(单文件组件) 。
+
+[单文件组件就是将模板（template）、脚本（script）、样式（style）写在一个文件中。](https://cn.vuejs.org/v2/guide/single-file-components.html)
+
+在这个例子中的单文件组件和一般 web 端的单文件组件有所不同：
+
+1.页面的模板我们使用的不是 `<template>` 而是自定义块 `<wxml>`（因为没法禁用 `vue-template-compiler`）
+2.添加了一个 `<config>` 的自定义块，用于填写**页面**的配置（即原来的 `.json`）
+3.由于 webpack 或其他地方需要读取 `app.json` 中的某些字段，所以在不编写 loader 的情况下只好维持原状，不将其放到 `app.vue` 中的 `<config>` 中。
+
+> [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
+
+<image src="./doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
