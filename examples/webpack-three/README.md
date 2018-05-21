@@ -9,7 +9,7 @@
 
 在这个例子中的单文件组件和一般 web 端的单文件组件有所不同：
 
-1.页面的模板我们使用的不是 `<template>` 而是自定义块 `<wxml>`（因为没法禁用 `vue-template-compiler`）
+1.页面的模板我们使用的是 `<template lang="wxml">...</template>`
 
 2.添加了一个 `<config>` 的自定义块，用于填写**页面**的配置（即原来的 `.json`）
 

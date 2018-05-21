@@ -4,7 +4,7 @@
 }
 </config>
 
-<wxml>
+<template lang="wxml">
     <view class="container" catchtap="gotoLogs">
         <view class="box">msg: {{ msg }}</view>
         <button type="primary" size="mini" catchtap="tapMsg">
@@ -53,7 +53,7 @@
             this.a.b = 'a.b' + n++
         </button>
     </view>
-</wxml>
+</template>
 
 <script>
 import { log } from '@utils'

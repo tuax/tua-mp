@@ -4,7 +4,7 @@
 }
 </config>
 
-<wxml>
+<template lang="wxml">
     <!--logs.wxml-->
     <view class="container log-list">
         <image src="/assets/vue-logo.png" />
@@ -19,7 +19,7 @@
             </text>
         </block>
     </view>
-</wxml>
+</template>
 
 <script>
 import { formatTime } from '@utils'

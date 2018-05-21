@@ -72,7 +72,13 @@ export default ({ isDev }) => ({
                         extract: true,
                         debug: isDev,
                     }),
-                }
+                    compiler: {
+                        // mock vue-template-compiler
+                        compile: () => ({
+                            staticRenderFns: [],
+                        })
+                    },
+                },
             },
             {
                 // 处理 <config>{...}</config> 代码块
@@ -88,9 +94,9 @@ export default ({ isDev }) => ({
                 },
             },
             {
-                // 处理 <wxml>{...}</wxml> 代码块
+                // 处理 <template lang="wxml">{...}</template>
                 // 生成 .wxml 文件
-                resourceQuery: /blockType=wxml/,
+                test: /\.wxml$/,
                 use: {
                     loader: 'file-loader',
                     options: {
