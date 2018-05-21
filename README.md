@@ -102,7 +102,7 @@ $ yarn add tua-mp
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="./doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
+<image src="./doc/imgs/Logs.vue.png" width="400" alt="Logs.vue" />
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)

@@ -30,6 +30,16 @@ const pagesEntry = pages
     }))
     .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 
+// 由后缀和完整文件路径，得到输出的文件名
+// 用于 file-loader 输出文件
+const getNameByFilePathAndExt = (ext) => (filePath) => [
+    // 从 pags 中找比较稳
+    pages.find(page => page.includes(
+        filePath.split('/').slice(-2, -1).pop()
+    )),
+    ext,
+].join('')
+
 export default ({ isDev }) => ({
     mode: isDev ? 'development' : 'production',
     stats: isDev ? 'none' : {
@@ -87,9 +97,7 @@ export default ({ isDev }) => ({
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: `[name].json`,
-                        useRelativePath: true,
-                        context: resolve('src'),
+                        name: getNameByFilePathAndExt('.json'),
                     },
                 },
             },
@@ -100,9 +108,7 @@ export default ({ isDev }) => ({
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: `[name].wxml`,
-                        useRelativePath: true,
-                        context: resolve('src'),
+                        name: getNameByFilePathAndExt('.wxml'),
                     },
                 },
             },

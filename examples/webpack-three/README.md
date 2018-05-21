@@ -17,7 +17,7 @@
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="../../doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
+<image src="../../doc/imgs/Logs.vue.png" width="400" alt="Logs.vue" />
 
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
@@ -37,8 +37,8 @@
 
 ## 文件结构
 
-* index.wxml/index.less/index.json -> index.vue
-* logs.wxml/logs.scss/logs.json -> logs.vue
+* index.wxml/index.less/index.json -> Index.vue
+* logs.wxml/logs.scss/logs.json -> Logs.vue
 
 ```
 .
@@ -73,18 +73,18 @@
 ├── package.json
 ├── src
 │   ├── app
+│   │   ├── App.vue
 │   │   ├── app.js
-│   │   ├── app.json
-│   │   └── app.vue
+│   │   └── app.json
 │   ├── assets
 │   │   └── vue-logo.png
 │   ├── pages
 │   │   ├── index
-│   │   │   ├── index.js
-│   │   │   └── index.vue
+│   │   │   ├── Index.vue
+│   │   │   └── index.js
 │   │   └── logs
-│   │       ├── logs.js
-│   │       └── logs.vue
+│   │       ├── Logs.vue
+│   │       └── logs.js
 │   ├── scripts
 │   │   ├── const
 │   │   │   └── README.md

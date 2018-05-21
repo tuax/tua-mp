@@ -1,3 +1,3 @@
-import AppCfg from './app.vue'
+import AppCfg from './App.vue'
 
 App(AppCfg)

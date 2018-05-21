@@ -1,5 +1,5 @@
 // index.js
 import { TuaPage } from 'tua-mp'
-import indexCfg from './index.vue'
+import indexCfg from './Index.vue'
 
 TuaPage(indexCfg)
