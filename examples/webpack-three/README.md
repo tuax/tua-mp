@@ -17,7 +17,7 @@
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="../../doc/imgs/Logs.vue.png" width="400" alt="Logs.vue" />
+<image src="../../doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
 
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
