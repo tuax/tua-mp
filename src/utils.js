@@ -7,15 +7,22 @@ export const COMMON_PROP = {
     configurable: true,
 }
 
+const _toString = Object.prototype.toString
+
 // 每个对象上挂载自己路径前缀的 key
 export const __TUA_PATH = '__TUA_PATH'
 
 /* -- functions -- */
+export const warn = msg => console.warn(`[TUA-MP warn]: ${msg}`)
+
 export const isFn = fn => typeof fn === 'function'
 
 export const hasProtoInObj = obj => '__proto__' in obj
 
 export const isNotInnerAttr = key => !innerAttrRe.test(key)
+
+export const toRawType = value =>
+    _toString.call(value).slice(8, -1)
 
 // 根据路径前缀和 key 得到当前路径
 export const getPathByPrefix = (prefix, key) =>

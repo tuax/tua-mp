@@ -1,7 +1,7 @@
 <h1 align="center">tua-mp</h1>
 
 <h5 align="center">
-  让我们一步步地陷入用 Vue 写小程序的深渊...
+    让我们一步步地陷入用 Vue 写小程序的深渊...
 </h5>
 
 <p align="center">

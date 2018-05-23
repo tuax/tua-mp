@@ -1,4 +1,5 @@
 import {
+    warn,
     proxyData,
     COMMON_PROP,
 } from './utils'
@@ -69,7 +70,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                 return oldVal
             },
             set () {
-                console.warn(`[TUA-MP]: 请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
+                warn(`请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
             },
         })
     })
