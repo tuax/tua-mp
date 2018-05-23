@@ -1,8 +1,10 @@
 import {
     warn,
     proxyData,
-    COMMON_PROP,
 } from './utils'
+import {
+    COMMON_PROP,
+} from './constants'
 import Dep from './observer/dep'
 
 /**

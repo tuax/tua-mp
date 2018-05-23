@@ -1,11 +1,13 @@
 import {
     isFn,
-    __TUA_PATH,
-    COMMON_PROP,
     setObjByPath,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils'
+import {
+    __TUA_PATH,
+    COMMON_PROP,
+} from '../constants'
 import {
     getArrayMethods,
     patchMethods2Array,

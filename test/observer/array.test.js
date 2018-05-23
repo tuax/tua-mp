@@ -2,7 +2,7 @@ import {
     getObserveDeep,
     getAsyncSetData,
 } from '../../src/observer'
-import { __TUA_PATH } from '../../src/utils'
+import { __TUA_PATH } from '../../src/constants'
 import {
     getArrayMethods,
     patchMethods2Array,
