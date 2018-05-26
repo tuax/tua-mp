@@ -42,7 +42,7 @@ export const getArrayMethods = ({
                 // 直接改 this 就行了
                 Object.assign(this, newVal)
 
-                asyncSetData({ path, newVal })
+                asyncSetData({ path, newVal, isArrDirty: true })
             }
 
             return result

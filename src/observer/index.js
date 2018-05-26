@@ -1,5 +1,6 @@
 import {
     isFn,
+    setObjByPath,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils/index'
@@ -31,14 +32,21 @@ let arrayMethods = null
  * @param {String} param.path 属性的路径
  * @param {any} param.newVal 新值
  * @param {any} param.oldVal 旧值
+ * @param {Boolean} param.isArrDirty 数组下标发生变化
  */
 export const getAsyncSetData = (vm, watch) => ({
     path,
     newVal,
     oldVal,
+    isArrDirty = false,
 }) => {
     newState = { ...newState, [path]: newVal }
     oldState = { [path]: oldVal, ...oldState }
+
+    // 数组下标发生变化，同步修改数组
+    if (isArrDirty) {
+        setObjByPath({ obj: vm, val: newVal, path })
+    }
 
     // TODO: Promise -> MutationObserve -> setTimeout
     Promise.resolve().then(() => {
@@ -139,7 +147,7 @@ export const getObserveDeep = (asyncSetData) => {
             return patchMethods2Array({ arr, arrayMethods })
         }
 
-        if (typeof obj === 'object') {
+        if (obj !== null && typeof obj === 'object') {
             const observedObj = Object.create(null)
 
             // 将路径前缀挂在父节点上
