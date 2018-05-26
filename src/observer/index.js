@@ -3,7 +3,7 @@ import {
     setObjByPath,
     isNotInnerAttr,
     getPathByPrefix,
-} from '../utils'
+} from '../utils/index'
 import {
     __TUA_PATH,
     COMMON_PROP,

@@ -1,14 +1,7 @@
 import {
-    warn,
     isFn,
-    toRawType,
-    assertProp,
-    isPlainObject,
     getPropertiesFromProps,
-} from './utils'
-import {
-    TYPES,
-} from './constants'
+} from './utils/index'
 import {
     getObserveDeep,
     getAsyncSetData,
@@ -19,12 +12,12 @@ import {
 } from './init'
 
 /**
- * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）
+ * 适配 Vue 风格代码，生成小程序原生组件
  * @param {Object} args Component 参数
  */
 export const TuaComp = (args) => {
     const {
-        data: rawData,
+        data: rawData = {},
         props = {},
         watch = {},
         methods = {},
@@ -59,12 +52,12 @@ export const TuaComp = (args) => {
 }
 
 /**
- * 适配 Vue 风格代码，使其支持在小程序中运行（告别不方便的 setData）
+ * 适配 Vue 风格代码，生成小程序页面
  * @param {Object} args Page 参数
  */
 export const TuaPage = (args) => {
     const {
-        data: rawData,
+        data: rawData = {},
         watch = {},
         methods = {},
         computed = {},

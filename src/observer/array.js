@@ -1,7 +1,7 @@
 import {
     proxyData,
     hasProtoInObj,
-} from '../utils'
+} from '../utils/index'
 import { __TUA_PATH } from '../constants'
 
 const arrayProto = Array.prototype

@@ -1,12 +1,79 @@
-import { TuaPage } from '../src'
+import { TuaComp, TuaPage } from '../src'
 import { afterSetData } from './utils'
 
-describe('TuaPage', () => {
-    afterEach(() => {
+describe('TuaComp', () => {
+    test('use it just like MINA', () => {
+        const vm = TuaComp({
+            properties: {
+                propA: String,
+                propB: {
+                    type: Number,
+                },
+                propC: {
+                    type: String,
+                    value: 'steve',
+                },
+            },
+        })
+
+        expect(vm.propA).toBe('')
+        expect(vm.propB).toBe(0)
+        expect(vm.propC).toBe('steve')
     })
 
-    test('use it just like MP', (done) => {
-        const onLoad = jest.fn()
+    test('use it just like Vue', () => {
+        const watchFn = jest.fn()
+        const vm = TuaComp({
+            props: {
+                propA: Number,
+                propB: [String, Number],
+                propC: {
+                    type: String,
+                    required: true,
+                },
+                propD: {
+                    type: Number,
+                    default: 100,
+                },
+                propE: {
+                    type: Object,
+                    default: () => ({ message: 'hello' }),
+                },
+                propF: {
+                    validator (value) {
+                        return ['success', 'warning', 'danger'].indexOf(value) !== -1
+                    },
+                },
+            },
+            computed: {
+                dAndE () {
+                    return this.propD + this.propE.message
+                },
+            },
+        })
+        const newVal = 'StEve'
+
+        expect(vm.propA).toBe(0)
+        expect(vm.propB).toBe('')
+        expect(vm.propC).toBe('')
+        expect(vm.propD).toBe(100)
+        expect(vm.propE.message).toBe('hello')
+        expect(vm.propF).toBe('')
+        expect(vm.dAndE).toBe('100hello')
+    })
+
+    test('edge case', () => {
+        const data = jest.fn()
+        const attached = jest.fn()
+        TuaComp({ data, attached })
+
+        expect(data).toBeCalled()
+        expect(attached).toBeCalled()
+    })
+})
+
+describe('TuaPage', () => {
+    test('use it just like MINA', (done) => {
         const vm = TuaPage({
             data: {
                 nestedData: {
@@ -24,7 +91,6 @@ describe('TuaPage', () => {
                     },
                 ],
             },
-            onLoad,
         })
 
         vm.nestedArrayData[0].young.young = 'hey man'
@@ -82,5 +148,12 @@ describe('TuaPage', () => {
 
             done()
         })
+    })
+
+    test('edge case', () => {
+        const onLoad = jest.fn()
+        TuaPage({ onLoad })
+
+        expect(onLoad).toBeCalled()
     })
 })

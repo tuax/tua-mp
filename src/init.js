@@ -1,7 +1,7 @@
 import {
     warn,
     proxyData,
-} from './utils'
+} from './utils/index'
 import {
     COMMON_PROP,
 } from './constants'

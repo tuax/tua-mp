@@ -20,7 +20,7 @@
         "bail": true,
         "clearMocks": true,
         "setupFiles": [
-            "./test/pageMock.js"
+            "./test/wxMock.js"
         ],
         "transform": {
             "^.+\\.js$": "babel-jest"
@@ -28,7 +28,8 @@
         "collectCoverage": true,
         "coveragePathIgnorePatterns": [
             "test/utils.js",
-            "test/pageMock.js"
+            "test/wxMock.js",
+            "src/utils/index.js"
         ]
     },
     "eslintIgnore": [
