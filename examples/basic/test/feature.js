@@ -1,13 +1,15 @@
-const copyObj = obj => JSON.parse(
-    JSON.stringify(obj)
-)
+const stringify = JSON.stringify.bind(JSON)
+
+const copyObj = (obj) => JSON.parse(stringify(obj))
 
 const isSimpleAttr = val => !Array.isArray(val) && typeof val !== 'object'
 
 const asset = (a, b, MSG) => {
     if (a === b) return
 
-    throw Error(`${MSG} fail!!!\n${a} !== ${b}`)
+    const strA = stringify(a)
+    const strB = stringify(b)
+    throw Error(`${MSG} fail!!!\n${strA} !== ${strB}`)
 }
 
 const afterSeData = fn => setTimeout(fn, 0)

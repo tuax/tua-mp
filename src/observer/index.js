@@ -1,6 +1,5 @@
 import {
     isFn,
-    setObjByPath,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils/index'

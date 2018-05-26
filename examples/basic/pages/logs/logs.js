@@ -1,4 +1,3 @@
-// logs.js
 import { TuaPage } from '../../utils/tua-mp'
 import { formatTime } from '../../utils/index'
 
@@ -12,5 +11,12 @@ TuaPage({
         this.logs = logs
             .map(log => new Date(log))
             .map(formatTime)
+    },
+    methods: {
+        gotoTest () {
+            wx.navigateTo({
+                url: '/pages/test/test'
+            })
+        },
     },
 })
