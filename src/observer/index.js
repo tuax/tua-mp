@@ -32,21 +32,14 @@ let arrayMethods = null
  * @param {String} param.path 属性的路径
  * @param {any} param.newVal 新值
  * @param {any} param.oldVal 旧值
- * @param {Boolean} param.isArrDirty 数组下标发生变化
  */
 export const getAsyncSetData = (vm, watch) => ({
     path,
     newVal,
     oldVal,
-    isArrDirty = false,
 }) => {
     newState = { ...newState, [path]: newVal }
     oldState = { [path]: oldVal, ...oldState }
-
-    // 数组下标发生变化，同步修改数组
-    if (isArrDirty) {
-        setObjByPath({ obj: vm, val: newVal, path })
-    }
 
     // TODO: Promise -> MutationObserve -> setTimeout
     Promise.resolve().then(() => {
@@ -108,11 +101,7 @@ export const defineReactive = ({
             // 重新观察
             val = observeDeep(newVal, path)
 
-            asyncSetData({
-                path,
-                newVal,
-                oldVal,
-            })
+            asyncSetData({ path, newVal, oldVal })
 
             // 触发依赖回调
             dep.notify()

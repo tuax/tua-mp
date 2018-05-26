@@ -37,12 +37,12 @@ export const getArrayMethods = ({
             if (method === 'pop') {
                 asyncSetData({ path, newVal: this })
             } else {
-                asyncSetData({
-                    path,
-                    // 因为下标变了，所以要重新观察数组
-                    newVal: observeDeep(this, path),
-                    isArrDirty: true,
-                })
+                const newVal = observeDeep(this, path)
+
+                // 直接改 this 就行了
+                Object.assign(this, newVal)
+
+                asyncSetData({ path, newVal })
             }
 
             return result

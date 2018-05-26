@@ -25,6 +25,7 @@
         "transform": {
             "^.+\\.js$": "babel-jest"
         },
+        "testPathIgnorePatterns": ["/examples/"],
         "collectCoverage": true,
         "coveragePathIgnorePatterns": [
             "test/utils.js",
