@@ -1,121 +1,96 @@
-// index.js
-import { TuaPage } from 'tua-mp'
-import { log } from '@utils'
+import { TuaPage } from '@/../../../src/'
 
+import '@/styles/todomvc-common-base.css'
+import '@/styles/todomvc-app-css.css'
 import './index.less'
 
-let n = 0
+const filters = {
+    all: todos => todos,
+    active: todos => todos.filter(todo => !todo.completed),
+    completed: todos => todos.filter(todo => todo.completed),
+}
 
 TuaPage({
     data () {
         return {
-            msg: 'msg',
-            a: {
-                b: 'a.b',
-            },
-            arr: [
-                { c: { d: 'd0' } },
-                { c: { d: 'd1' } },
-                1, 2, 3,
-            ],
-            g: 'hello world',
-
-            // 测试所需数据
-            testData: {
-                nested: {
-                    steve: 'steve',
-                    young: {
-                        young: 'young',
-                    },
-                },
-                arr: [],
-                nestedArr: [
-                    {
-                        name: 'steve',
-                        nick: {
-                            young: 'young',
-                        },
-                    },
-                    {
-                        name: 'jame',
-                    },
-                ],
-                insertNestedArr: [],
-            },
-        }
-    },
-    onLoad () {
-        log(this)
-        /* eslint-disable no-global-assign */
-        global = this
-        /* eslint-enable no-global-assign */
-
-        for (let i = 100; i > 90; i--) {
-            this.g = i
-            this['g'] = i + 1
+            todos: [],
+            newTodo: '',
+            editedTodo: '',
+            visibility: 'all',
         }
     },
     computed: {
-        reversedG () {
-            return this.reverseStr(this.g)
+        filteredTodos () {
+            return filters[this.visibility](this.todos)
         },
-        gAndAB () {
-            return this.g + ' + ' + this.a.b
+        remaining () {
+            return filters.active(this.todos).length
         },
-        dataAndComputed () {
-            return this.g + ' + ' + this.reversedG
+        remainingStr () {
+            return this.pluralize('item', this.remaining)
+        },
+        // allDone: {
+        //     get () {
+        //         return this.remaining === 0
+        //     },
+        //     set (value) {
+        //         this.todos.forEach((todo) => {
+        //             todo.completed = value
+        //         })
+        //     },
+        // },
+        filteredTodosClass () {
+            // completed: todo.completed, editing: todo == editedTodo
+            return ''
         },
     },
     watch: {
-        msg (newVal, oldVal) {
-            log(`msg: ${oldVal} -> ${newVal}`)
-        },
-        'a.b' (newVal, oldVal) {
-            log(`a.b: ${oldVal} -> ${newVal}`)
-            setTimeout(() => {
-                this.msg = this.reverseStr(this.msg)
-            }, 1000)
-        },
-        'g' (newVal, oldVal) {
-            log(`g: ${oldVal} -> ${newVal}`)
-        },
-        'reversedG' (newVal, oldVal) {
-            log(`reversedG: ${oldVal} -> ${newVal}`)
-        },
-        'gAndAB' (newVal, oldVal) {
-            log(`gAndAB: ${oldVal} -> ${newVal}`)
-        },
+    },
+    onLoad () {
+        console.log(this)
     },
     methods: {
-        tapMsg () {
-            this.msg += n++
+        inputTodo ({ detail: { value } }) {
+            this.newTodo = value
         },
-        tapAB () {
-            this.a.b += n++
+        pluralize (word, count) {
+            return word + (count === 1 ? '' : 's')
         },
-        tapArr () {
-            this.arr.push(n++)
+        addTodo () {
+            const value = this.newTodo && this.newTodo.trim()
+            if (!value) return
+
+            this.todos.push({
+                id: this.todos.length + 1,
+                title: value,
+                completed: false,
+            })
+            this.newTodo = ''
         },
-        tapArrNest0 () {
-            this.arr[0].c.d = n++
+        removeTodo (todo) {
+            const index = this.todos.indexOf(todo)
+            this.todos.splice(index, 1)
         },
-        tapArrNest1 () {
-            this.arr[1].c.d = n++
+        editTodo (todo) {
+            this.beforeEditCache = todo.title
+            this.editedTodo = todo
         },
-        tapArrSp () {
-            this.arr.splice(2, 2, n++)
+        doneEdit (todo) {
+            if (!this.editedTodo) return
+
+            this.editedTodo = null
+            todo.title = todo.title.trim()
+
+            if (!todo.title) {
+                this.removeTodo(todo)
+            }
         },
-        tapReverseG () {
-            this.g = this.reversedG
+        cancelEdit (todo) {
+            this.editedTodo = null
+            todo.title = this.beforeEditCache
         },
-        reverseStr (str) {
-            return String(str).split('').reverse().join('')
-        },
-        unshiftNested () {
-            this.arr.unshift({ c: { d: 'hey' } })
-        },
-        gotoLogs () {
-            wx.navigateTo({ url: '/pages/logs/logs' })
+        removeCompleted () {
+            this.todos = filters.active(this.todos)
         },
     },
 })

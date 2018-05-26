@@ -1,49 +1,80 @@
-<!--index.wxml-->
-<view class="container" catchtap="gotoLogs">
-    <view class="box">msg: {{ msg }}</view>
-    <button type="primary" size="mini" catchtap="tapMsg">
-        this.msg += n++
-    </button>
+<view class="todoapp">
+    <view class="header">
+        <view class="h1">todos</view>
+        <input
+            focus
+            value="{{ newTodo }}"
+            class="new-todo"
+            bindinput="inputTodo"
+            bindconfirm="addTodo"
+            placeholder="What needs to be done?"
+        />
+    </view>
 
-    <view>a.b: {{ a.b }}</view>
-    <button type="primary" size="mini" catchtap="tapAB">
-        this.a.b += n++
-    </button>
+    <view class="main" hidden="{{ !todos.length }}">
+        <checkbox
+            id="toggle-all"
+            class="toggle-all"
+            checked="{{ allDone }}"
+        />
+        <label for="toggle-all">Mark all as complete</label>
+        <view class="todo-list">
+            <view
+                class="li todo {{ filteredTodosClass }}"
+                wx:for="{{ filteredTodos }}"
+                wx:for-item="todo"
+                wx:key="id"
+            >
+                <view class="view">
+                    <checkbox
+                        class="toggle"
+                        checked="{{ todo.completed }}"
+                    />
+                    <label bindlongpress="editTodo(todo)">
+                        {{ todo.title }}
+                    </label>
+                    <view
+                        class="destroy"
+                        bindtap="removeTodo(todo)"
+                    />
+                </view>
+                <input
+                    class="edit"
+                    value="{{ todo.title }}"
+                    bindblur="doneEdit(todo)"
+                    bindconfirm="doneEdit(todo)"
+                />
+            </view>
+        </view>
+    </view>
 
-    <view>arr: {{ arr }}</view>
-    <button type="primary" size="mini" catchtap="tapArr">
-        this.arr.push(n++)
-    </button>
-    <button type="primary" size="mini" catchtap="unshiftNested">
-        this.arr.unshift({ c: { d: 'hey' } })
-    </button>
+    <view class="footer" hidden="{{ !todos.length }}">
+        <text class="todo-count">
+            {{ remaining }} {{ remainingStr }} left
+        </text>
+        <text class="filters">
+            <text class="li">
+                <text class="a" :class="{selected: visibility == 'all'}">All</text>
+            </text>
+            <text class="li">
+                <text class="a" :class="{selected: visibility == 'active'}">Active</text>
+            </text>
+            <text class="li">
+                <text class="a" :class="{selected: visibility == 'completed'}">Completed</text>
+            </text>
+        </text>
+        <button
+            class="clear-completed"
+            bindtap="removeCompleted"
+            hidden="todos.length <= remaining"
+        >
+            Clear completed
+        </button>
+    </view>
+</view>
 
-    <view>arr[0].c.d: {{ arr[0].c.d }}</view>
-    <button type="primary" size="mini" catchtap="tapArrNest0">
-        this.arr[0].c.d = n++
-    </button>
-
-    <view>arr[1].c.d: {{ arr[1].c.d }}</view>
-    <button type="primary" size="mini" catchtap="tapArrNest1">
-        this.arr[1].c.d = n++
-    </button>
-
-    <view>arr[1]: {{ arr[1] }}</view>
-    <button type="primary" size="mini" catchtap="tapArrSp">
-        this.arr.splice(2, 2, n++)
-    </button>
-
-    <view>------ computed ------</view>
-    <view>g: {{ g }}</view>
-    <view>reversedG: {{ reversedG }}</view>
-    <button type="primary" size="mini" catchtap="tapReverseG">
-        this.g = this.reversedG
-    </button>
-
-    <view>a.b: {{ a.b }}</view>
-    <view>gAndAB: {{ gAndAB }}</view>
-    <view>dataAndComputed: {{ dataAndComputed }}</view>
-    <button type="primary" size="mini" catchtap="tapAB">
-        this.a.b = 'a.b' + n++
-    </button>
+<view class="info">
+    <view>Long-press to edit a todo</view>
+    <view>长按编辑一个 todo</view>
+    <view>Written by StEve Young(httviews://github.com/BuviewtStEve)</view>
 </view>
