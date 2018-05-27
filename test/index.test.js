@@ -145,7 +145,6 @@ describe('TuaPage', () => {
             expect(vm.nestedArrayData[0].steve).toBe(newVal)
             expect(watchFn).toHaveBeenCalledTimes(1)
             expect(watchFn).toBeCalledWith(newVal, 'steve')
-
             done()
         })
     })
@@ -155,5 +154,43 @@ describe('TuaPage', () => {
         TuaPage({ onLoad })
 
         expect(onLoad).toBeCalled()
+    })
+
+    test('array item change should change computed', (done) => {
+        let n = 0
+
+        const vm = TuaPage({
+            data () {
+                return {
+                    nestedArr: [],
+                }
+            },
+            computed: {
+                fromNestedArr () {
+                    return this.nestedArr.filter(x => x.num > 1)
+                },
+            },
+        })
+
+        vm.nestedArr = [
+            { num: n++ },
+            { num: n++ },
+            { num: n++ },
+            { num: n++ },
+        ]
+
+        expect(vm.fromNestedArr.length).toBe(2)
+        vm.nestedArr.forEach(x => x.num++)
+        expect(vm.fromNestedArr.length).toBe(3)
+        expect(vm.data.fromNestedArr.length).toBe(0)
+        vm.nestedArr.forEach(x => x.num++)
+        console.log('vm.fromNestedArr.length', vm.fromNestedArr.length)
+        expect(vm.fromNestedArr.length).toBe(4)
+        expect(vm.data.fromNestedArr.length).toBe(0)
+
+        afterSetData(() => {
+            // expect(vm.data.fromNestedArr.length).toBe(4)
+            done()
+        })
     })
 })

@@ -1,12 +1,12 @@
 import {
     isFn,
-    setObjByPath,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils/index'
 import {
-    __TUA_PATH,
+    __dep__,
     COMMON_PROP,
+    __TUA_PATH__,
 } from '../constants'
 import {
     getArrayMethods,
@@ -14,69 +14,16 @@ import {
 } from './array'
 import Dep from './dep'
 
-// 全局变量，缓存下一个状态的数据
-let newState = null
-
-// 全局变量，缓存传给 asyncSetData 的 oldVal 值
-// 以便在触发 watch 时获取
-let oldState = null
-
 // 缓存数组可变方法
 let arrayMethods = null
 
 /**
- * 异步 setData 提高性能
- * @param {Page|Component} vm Page 或 Component 实例
- * @param {Object} watch 侦听器对象
- * @param {Object} param
- * @param {String} param.path 属性的路径
- * @param {any} param.newVal 新值
- * @param {any} param.oldVal 旧值
- * @param {Boolean} param.isArrDirty 数组下标发生变化
- */
-export const getAsyncSetData = (vm, watch) => ({
-    path,
-    newVal,
-    oldVal,
-    isArrDirty = false,
-}) => {
-    newState = { ...newState, [path]: newVal }
-    oldState = { [path]: oldVal, ...oldState }
-
-    // 数组下标发生变化，同步修改数组
-    if (isArrDirty) {
-        setObjByPath({ obj: vm, val: newVal, path })
-    }
-
-    // TODO: Promise -> MutationObserve -> setTimeout
-    Promise.resolve().then(() => {
-        if (!newState) return
-
-        vm.setData(newState)
-
-        // 触发 watch
-        Object.keys(newState)
-            .filter(key => isFn(watch[key]))
-            .forEach((key) => {
-                const watchFn = watch[key]
-                const newVal = newState[key]
-                const oldVal = oldState[key]
-
-                watchFn.call(vm, newVal, oldVal)
-            })
-
-        newState = null
-        oldState = null
-    })
-}
-
-/**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
- * @param {Object} param.obj 被观察对象
- * @param {String} param.key 被观察对象的属性
- * @param {any} param.val 被观察对象的属性的值
- * @param {function} param.observeDeep 递归观察函数
- * @param {fucntion} param.asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {Object} obj 被观察对象
+ * @param {String} key 被观察对象的属性
+ * @param {any} val 被观察对象的属性的值
+ * @param {function} observeDeep 递归观察函数
+ * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 export const defineReactive = ({
     obj,
@@ -85,7 +32,13 @@ export const defineReactive = ({
     observeDeep,
     asyncSetData,
 }) => {
-    const dep = new Dep()
+    const dep = obj[__dep__] || new Dep()
+
+    Object.defineProperty(obj, __dep__, {
+        value: dep,
+        enumerable: false,
+        configurable: true,
+    })
 
     Object.defineProperty(obj, key, {
         ...COMMON_PROP,
@@ -94,6 +47,15 @@ export const defineReactive = ({
             if (Dep.targetCb) {
                 // 当前属性被依赖
                 dep.addSub(Dep.targetCb)
+
+                // 同时子属性也被依赖
+                if (Array.isArray(val)) {
+                    val.forEach((item) => {
+                        if (item[__dep__]) {
+                            item[__dep__].addSub(Dep.targetCb)
+                        }
+                    })
+                }
             }
 
             return val
@@ -102,7 +64,7 @@ export const defineReactive = ({
             if (newVal === val) return
 
             const oldVal = val
-            const prefix = obj[__TUA_PATH] || ''
+            const prefix = obj[__TUA_PATH__] || ''
             const path = getPathByPrefix(prefix, key)
 
             // 重新观察
@@ -135,7 +97,7 @@ export const getObserveDeep = (asyncSetData) => {
             )
 
             // 每个数组挂载自己的路径
-            arr[__TUA_PATH] = prefix
+            arr[__TUA_PATH__] = prefix
 
             // 缓存数组可变方法，不用每次重复求值
             arrayMethods = arrayMethods ||
@@ -150,8 +112,17 @@ export const getObserveDeep = (asyncSetData) => {
         if (obj !== null && typeof obj === 'object') {
             const observedObj = Object.create(null)
 
+            // 继承遗产
+            if (obj[__dep__]) {
+                Object.defineProperty(observedObj, __dep__, {
+                    value: obj[__dep__],
+                    enumerable: false,
+                    configurable: true,
+                })
+            }
+
             // 将路径前缀挂在父节点上
-            Object.defineProperty(observedObj, __TUA_PATH, {
+            Object.defineProperty(observedObj, __TUA_PATH__, {
                 enumerable: false,
                 value: prefix,
             })

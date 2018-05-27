@@ -12,4 +12,7 @@ export const COMMON_PROP = {
 export const _toString = Object.prototype.toString
 
 // 每个对象上挂载自己路径前缀的 key
-export const __TUA_PATH = '__TUA_PATH'
+export const __TUA_PATH__ = '__TUA_PATH__'
+
+// 每个对象上挂载自己的依赖对象
+export const __dep__ = '__dep__'

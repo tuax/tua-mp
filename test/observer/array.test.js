@@ -1,8 +1,10 @@
 import {
     getObserveDeep,
+} from '../../src/observer/'
+import {
     getAsyncSetData,
-} from '../../src/observer'
-import { __TUA_PATH } from '../../src/constants'
+} from '../../src/utils/'
+import { __TUA_PATH__ } from '../../src/constants'
 import {
     getArrayMethods,
     patchMethods2Array,
@@ -48,7 +50,7 @@ describe('patch methods to array', () => {
     test('no __proto__', (done) => {
         const arr = []
         const path = 'arr'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
         Object.setPrototypeOf = null
         arr.__proto__ = null
         arr.map = [].map
@@ -77,7 +79,7 @@ describe('patch methods to array', () => {
     test('no Object.setPrototypeOf', (done) => {
         const arr = []
         const path = 'arr'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
         Object.setPrototypeOf = null
 
         patchMethods2Array({ arr, arrayMethods })
@@ -104,7 +106,7 @@ describe('patch methods to array', () => {
     test('observe new value inserted into array', (done) => {
         const arr = []
         const path = 'arr'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
 
         patchMethods2Array({ arr, arrayMethods })
 
@@ -130,7 +132,7 @@ describe('patch methods to array', () => {
         const arr = []
         const path = 'arr'
         const newVal = 'this is new a'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
 
         patchMethods2Array({ arr, arrayMethods })
 

@@ -4,8 +4,10 @@ import {
 } from '../src/init'
 import {
     getObserveDeep,
+} from '../src/observer/'
+import {
     getAsyncSetData,
-} from '../src/observer'
+} from '../src/utils/'
 import { afterSetData } from './utils'
 
 const watch = {
@@ -55,7 +57,7 @@ describe('observe functions', () => {
         }
         const watch = {
             syPlusHey: jest.fn(),
-            nestedArrLen: jest.fn(),
+            nestedArrLen: jest.fn(console.log),
             sAndsyPlusHey: jest.fn(),
         }
         const oldVal = 'steveyoung'
@@ -85,8 +87,7 @@ describe('observe functions', () => {
 
                 expect(vm.sAndsyPlusHey).toBe('y' + plusHey(newVal2))
                 expect(watch.sAndsyPlusHey).toBeCalledWith('y' + plusHey(newVal2), 'y' + plusHey(newVal1))
-                expect(watch.nestedArrLen).toHaveBeenCalledTimes(0)
-
+                expect(watch.nestedArrLen).toHaveBeenCalledTimes(2)
                 done()
             })
         })

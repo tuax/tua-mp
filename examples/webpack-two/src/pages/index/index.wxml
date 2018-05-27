@@ -12,27 +12,34 @@
     </view>
 
     <view class="main" hidden="{{ !todos.length }}">
-        <checkbox
-            id="toggle-all"
-            class="toggle-all"
-            checked="{{ allDone }}"
-        />
-        <label for="toggle-all">Mark all as complete</label>
+        <checkbox-group bindchange="toggleAll">
+            <checkbox
+                id="toggle-all"
+                class="toggle-all {{ allDone ? 'checked' : '' }}"
+                value="{{ allDone }}"
+                checked="{{ allDone }}"
+            />
+            <label for="toggle-all">Mark all as complete</label>
+        </checkbox-group>
+
         <view class="todo-list">
             <view
-                class="li todo {{ filteredTodosClass }}"
+                class="li todo {{ todo.completed ? 'completed' : '' }} {{ todo.id === editedTodo.id ? 'editing' : '' }}"
                 wx:for="{{ filteredTodos }}"
                 wx:for-item="todo"
+                wx:for-index="index"
                 wx:key="id"
             >
                 <view class="view">
-                    <checkbox
-                        class="toggle"
-                        checked="{{ todo.completed }}"
-                    />
-                    <label bindlongpress="editTodo(todo)">
-                        {{ todo.title }}
-                    </label>
+                    <checkbox-group data-idx="{{ index }}" bindchange="toggleTodo">
+                        <checkbox
+                            class="toggle {{ todo.completed ? 'checked' : '' }}"
+                            checked="{{ todo.completed }}"
+                        />
+                        <label data-idx="{{ index }}" bindlongpress="onPressTodo">
+                            {{ todo.title }}
+                        </label>
+                    </checkbox-group>
                     <view
                         class="destroy"
                         bindtap="removeTodo(todo)"
@@ -41,18 +48,18 @@
                 <input
                     class="edit"
                     value="{{ todo.title }}"
-                    bindblur="doneEdit(todo)"
-                    bindconfirm="doneEdit(todo)"
+                    data-idx="{{ index }}"
+                    bindblur="onBlurTodo"
                 />
             </view>
         </view>
     </view>
 
     <view class="footer" hidden="{{ !todos.length }}">
-        <text class="todo-count">
+        <view class="todo-count">
             {{ remaining }} {{ remainingStr }} left
-        </text>
-        <text class="filters">
+        </view>
+        <view class="filters">
             <text class="li">
                 <text class="a" :class="{selected: visibility == 'all'}">All</text>
             </text>
@@ -62,11 +69,11 @@
             <text class="li">
                 <text class="a" :class="{selected: visibility == 'completed'}">Completed</text>
             </text>
-        </text>
+        </view>
         <button
             class="clear-completed"
             bindtap="removeCompleted"
-            hidden="todos.length <= remaining"
+            hidden="{{ todos.length <= remaining }}"
         >
             Clear completed
         </button>

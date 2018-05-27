@@ -1,10 +1,10 @@
 import {
     isFn,
+    getAsyncSetData,
     getPropertiesFromProps,
 } from './utils/index'
 import {
     getObserveDeep,
-    getAsyncSetData,
 } from './observer/index'
 import {
     bindData,

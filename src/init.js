@@ -3,6 +3,7 @@ import {
     proxyData,
 } from './utils/index'
 import {
+    __dep__,
     COMMON_PROP,
 } from './constants'
 import Dep from './observer/dep'
@@ -32,6 +33,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
     Object.keys(computed).forEach((key) => {
         const dep = new Dep()
         const getVal = computed[key].bind(vm)
+
         let oldVal = getVal()
         let isInit = true
 
@@ -61,6 +63,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                     dep.notify()
                 }
+                Dep.targetCb.key = key
 
                 // 重置 oldVal
                 oldVal = getVal()
