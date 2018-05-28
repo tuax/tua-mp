@@ -42,7 +42,8 @@
                     </checkbox-group>
                     <view
                         class="destroy"
-                        bindtap="removeTodo(todo)"
+                        data-idx="{{ index }}"
+                        bindtap="onTapRemove"
                     />
                 </view>
                 <input
@@ -59,24 +60,41 @@
         <view class="todo-count">
             {{ remaining }} {{ remainingStr }} left
         </view>
-        <view class="filters">
-            <text class="li">
-                <text class="a" :class="{selected: visibility == 'all'}">All</text>
-            </text>
-            <text class="li">
-                <text class="a" :class="{selected: visibility == 'active'}">Active</text>
-            </text>
-            <text class="li">
-                <text class="a" :class="{selected: visibility == 'completed'}">Completed</text>
-            </text>
+
+        <view class="filters" bindtap="changeFilter">
+            <view
+                class="li"
+            >
+                <view
+                    class="a {{ visibility == 'all' ? 'selected' : '' }}"
+                    data-filter="all"
+                    catchtap="changeFilter"
+                >
+                    All</view>
+            </view>
+            <view
+                class="li"
+                data-filter="active"
+                catchtap="changeFilter"
+            >
+                <view class="a {{ visibility == 'active' ? 'selected' : '' }}">Active</view>
+            </view>
+            <view
+                class="li"
+                data-filter="completed"
+                catchtap="changeFilter"
+            >
+                <view class="a {{ visibility == 'completed' ? 'selected' : '' }}">Completed</view>
+            </view>
         </view>
-        <button
+
+        <view
             class="clear-completed"
             bindtap="removeCompleted"
             hidden="{{ todos.length <= remaining }}"
         >
             Clear completed
-        </button>
+        </view>
     </view>
 </view>
 

@@ -69,6 +69,11 @@ export const defineReactive = ({
             // 重新观察
             val = observeDeep(newVal, path)
 
+            // 继承依赖
+            if (oldVal && val && oldVal[__dep__]) {
+                val[__dep__] = oldVal[__dep__]
+            }
+
             asyncSetData({ path, newVal, oldVal })
 
             // 触发依赖回调
@@ -92,6 +97,7 @@ export const getObserveDeep = (asyncSetData) => {
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
             const arr = obj.map((item, idx) => {
+
                 // 继承依赖
                 if (!item[__dep__] && obj[__dep__]) {
                     item[__dep__] = obj[__dep__]

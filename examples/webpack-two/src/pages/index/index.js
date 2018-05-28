@@ -43,9 +43,8 @@ TuaPage({
         console.log(this.todos)
     },
     methods: {
+        // 小程序新增
         toggleAll ({ detail: { value } }) {
-            console.log('value', value)
-
             if (value[0] === 'false') {
                 this.todos.forEach((todo) => {
                     todo.completed = true
@@ -80,8 +79,17 @@ TuaPage({
             this.editedTodo = null
             this.todos[idx].title = value
         },
+        onTapRemove ({ target: { dataset: { idx } } }) {
+            this.removeTodo(this.todos[idx])
+        },
+        changeFilter (e) {
+            console.log('e', e)
+            const { currentTarget: { dataset: { filter } } } = e
+            console.log('changeFilter')
+            this.visibility = filter
+        },
 
-        // 非小程序特有函数
+        // 原始函数
         pluralize (word, count) {
             return word + (count === 1 ? '' : 's')
         },
@@ -95,8 +103,6 @@ TuaPage({
                 completed: false,
             })
             this.newTodo = ''
-            console.log(this)
-            console.log(this.todos)
         },
         removeTodo (todo) {
             const index = this.todos.indexOf(todo)

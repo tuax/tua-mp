@@ -27,11 +27,50 @@ input {
     font-size: 48rpx;
 }
 
-.todo-count {
-    float: none;
-    text-align: center;
+.todo-list {
+    .li {
+        font-size: 48rpx;
+
+        label {
+            padding: 30rpx 30rpx 30rpx 120rpx;
+        }
+
+        &.editing .edit {
+            width: calc(100% - 43px);
+        }
+    }
 }
 
-.todo-list .li.editing .edit {
-    width: calc(100% - 43px);
+
+.footer {
+    padding: 20rpx 30rpx;
+    height: 40rpx;
+
+    display: flex;
+    justify-content: space-between;
+
+    .todo-count {
+        float: none;
+        flex: 0 0 auto;
+    }
+
+    .filters {
+        position: static;
+        display: inline-block;
+        flex: 0 0 auto;
+
+        .li {
+            display: inline-block;
+
+            .a {
+                display: inline;
+                padding: 6rpx 10rpx;
+            }
+        }
+    }
+
+    .clear-completed {
+        float: none;
+        flex: 0 0 auto;
+    }
 }
