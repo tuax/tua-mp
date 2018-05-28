@@ -12,7 +12,7 @@ import {
     bindComputed,
 } from './init'
 
-onsole.log(`[TUA-MP]: Version ${version}`)
+console.log(`[TUA-MP]: Version ${version}`)
 
 /**
  * 适配 Vue 风格代码，生成小程序原生组件
