@@ -38,9 +38,7 @@ export const getArrayMethods = ({
             } else {
                 const newVal = observeDeep(this, path)
 
-                // 直接改 this 就行了
                 Object.assign(this, newVal)
-
                 asyncSetData({ path, newVal, isArrDirty: true })
             }
 

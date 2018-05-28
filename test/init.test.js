@@ -57,7 +57,7 @@ describe('observe functions', () => {
         }
         const watch = {
             syPlusHey: jest.fn(),
-            nestedArrLen: jest.fn(console.log),
+            nestedArrLen: jest.fn(),
             sAndsyPlusHey: jest.fn(),
         }
         const oldVal = 'steveyoung'

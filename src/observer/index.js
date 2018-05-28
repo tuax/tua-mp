@@ -1,5 +1,4 @@
 import {
-    isFn,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils/index'
@@ -51,10 +50,10 @@ export const defineReactive = ({
                 // 同时子属性也被依赖
                 if (Array.isArray(val)) {
                     val.forEach((item) => {
-                        if (item[__dep__]) {
-                            item[__dep__].addSub(Dep.targetCb)
-                        }
+                        item[__dep__] && item[__dep__].addSub(Dep.targetCb)
                     })
+
+                    val[__dep__] = dep
                 }
             }
 
@@ -92,9 +91,14 @@ export const getObserveDeep = (asyncSetData) => {
      */
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
-            const arr = obj.map((item, idx) =>
-                observeDeep(item, `${prefix}[${idx}]`)
-            )
+            const arr = obj.map((item, idx) => {
+                // 继承依赖
+                if (!item[__dep__] && obj[__dep__]) {
+                    item[__dep__] = obj[__dep__]
+                }
+
+                return observeDeep(item, `${prefix}[${idx}]`)
+            })
 
             // 每个数组挂载自己的路径
             arr[__TUA_PATH__] = prefix
@@ -112,7 +116,7 @@ export const getObserveDeep = (asyncSetData) => {
         if (obj !== null && typeof obj === 'object') {
             const observedObj = Object.create(null)
 
-            // 继承遗产
+            // 继承依赖
             if (obj[__dep__]) {
                 Object.defineProperty(observedObj, __dep__, {
                     value: obj[__dep__],

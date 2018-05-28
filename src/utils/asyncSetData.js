@@ -37,8 +37,6 @@ export const getAsyncSetData = (vm, watch) => ({
     Promise.resolve().then(() => {
         if (!newState) return
 
-        console.log('newState', newState)
-
         vm.setData(newState)
 
         // 触发 watch

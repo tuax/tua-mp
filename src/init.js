@@ -3,7 +3,6 @@ import {
     proxyData,
 } from './utils/index'
 import {
-    __dep__,
     COMMON_PROP,
 } from './constants'
 import Dep from './observer/dep'
