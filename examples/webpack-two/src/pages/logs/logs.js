@@ -1,5 +1,5 @@
 // logs.js
-import { TuaPage } from 'tua-mp'
+import { TuaPage } from '@/../../../src/'
 import { formatTime } from '@utils'
 
 import './logs.scss'

@@ -4,6 +4,8 @@ import '@/styles/todomvc-common-base.css'
 import '@/styles/todomvc-app-css.css'
 import './index.less'
 
+let uid = 0
+
 const filters = {
     all: todos => todos,
     active: todos => todos.filter(todo => !todo.completed),
@@ -14,8 +16,8 @@ TuaPage({
     data () {
         return {
             todos: [
-                { id: 1, title: 'a', completed: true },
-                { id: 2, title: 'b', completed: false },
+                { id: uid++, title: 'a', completed: true },
+                { id: uid++, title: 'b', completed: false },
             ],
             newTodo: '',
             editedTodo: '',
@@ -77,15 +79,16 @@ TuaPage({
             if (!this.editedTodo) return
 
             this.editedTodo = null
-            this.todos[idx].title = value
+            this.todos[idx].title = value.trim()
+
+            if (!this.todos[idx].title) {
+                this.removeTodo(this.todos[idx])
+            }
         },
         onTapRemove ({ target: { dataset: { idx } } }) {
             this.removeTodo(this.todos[idx])
         },
-        changeFilter (e) {
-            console.log('e', e)
-            const { currentTarget: { dataset: { filter } } } = e
-            console.log('changeFilter')
+        changeFilter ({ currentTarget: { dataset: { filter } } }) {
             this.visibility = filter
         },
 
@@ -98,7 +101,7 @@ TuaPage({
             if (!value) return
 
             this.todos.push({
-                id: this.todos.length + 1,
+                id: uid++,
                 title: value,
                 completed: false,
             })

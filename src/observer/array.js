@@ -2,7 +2,7 @@ import {
     proxyData,
     hasProtoInObj,
 } from '../utils/index'
-import { __dep__, __TUA_PATH__ } from '../constants'
+import { __TUA_PATH__ } from '../constants'
 
 const arrayProto = Array.prototype
 const methodsToPatch = [

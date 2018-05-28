@@ -61,37 +61,40 @@
             {{ remaining }} {{ remainingStr }} left
         </view>
 
-        <view class="filters" bindtap="changeFilter">
-            <view
-                class="li"
-            >
+        <view class="filters">
+            <view class="li">
                 <view
                     class="a {{ visibility == 'all' ? 'selected' : '' }}"
                     data-filter="all"
-                    catchtap="changeFilter"
+                    bindtap="changeFilter"
                 >
-                    All</view>
+                    All
+                </view>
             </view>
-            <view
-                class="li"
-                data-filter="active"
-                catchtap="changeFilter"
-            >
-                <view class="a {{ visibility == 'active' ? 'selected' : '' }}">Active</view>
+            <view class="li">
+                <view
+                    class="a {{ visibility == 'active' ? 'selected' : '' }}"
+                    data-filter="active"
+                    bindtap="changeFilter"
+                >
+                    Active
+                </view>
             </view>
-            <view
-                class="li"
-                data-filter="completed"
-                catchtap="changeFilter"
-            >
-                <view class="a {{ visibility == 'completed' ? 'selected' : '' }}">Completed</view>
+            <view class="li">
+                <view
+                    class="a {{ visibility == 'completed' ? 'selected' : '' }}"
+                    data-filter="completed"
+                    bindtap="changeFilter"
+                >
+                    Completed
+                </view>
             </view>
         </view>
 
         <view
             class="clear-completed"
             bindtap="removeCompleted"
-            hidden="{{ todos.length <= remaining }}"
+            style="visibility: {{ todos.length <= remaining ? 'hidden' : 'visible' }};"
         >
             Clear completed
         </view>
@@ -101,5 +104,5 @@
 <view class="info">
     <view>Long-press to edit a todo</view>
     <view>长按编辑一个 todo</view>
-    <view>Written by StEve Young(httviews://github.com/BuviewtStEve)</view>
+    <view>Written by StEve Young\n(https://github.com/BuviewtStEve)</view>
 </view>
