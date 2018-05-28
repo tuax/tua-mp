@@ -1,3 +1,4 @@
+import { version } from '../package.json'
 import {
     isFn,
     getAsyncSetData,
@@ -10,6 +11,8 @@ import {
     bindData,
     bindComputed,
 } from './init'
+
+onsole.log(`[TUA-MP]: Version ${version}`)
 
 /**
  * 适配 Vue 风格代码，生成小程序原生组件
