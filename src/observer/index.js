@@ -69,6 +69,17 @@ export const defineReactive = ({
             // 重新观察
             val = observeDeep(newVal, path)
 
+            const isNeedInheritDep =
+                val &&
+                oldVal &&
+                !val[__dep__] &&
+                oldVal[__dep__]
+
+            // 继承依赖
+            if (isNeedInheritDep) {
+                val[__dep__] = oldVal[__dep__]
+            }
+
             asyncSetData({ path, newVal, oldVal })
 
             // 触发依赖回调

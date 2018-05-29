@@ -6,27 +6,46 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import EslintFriendlyFormatter from 'eslint-friendly-formatter'
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
 
-import { pages } from './src/app/app.json'
-
 const resolve = (...dir) => path.resolve(__dirname, ...dir)
 
 // 从 src/ 直接拷贝到 dist/
-const fromPrefix = 'src/pages/*/*'
-const toPrefix = 'pages/[name]/[name]'
+const getCopyCfg = (base, ext) => ({
+    from: `${base}/**/*${ext}`,
+    to: `[path]/[name]${ext}`,
+})
 const copyCfgArr = [
-    { from: 'src/assets', to: 'assets' },
-    { from: 'src/app/app.json', to: 'app.json' },
-    { from: `${fromPrefix}.wxml`, to: `${toPrefix}.wxml` },
-    { from: `${fromPrefix}.json`, to: `${toPrefix}.json` },
-    { from: `${fromPrefix}.wxss`, to: `${toPrefix}.wxss` },
+    // 图片
+    { from: 'assets/', to: 'assets/' },
+    // 模板
+    { from: 'templates/', to: 'templates/' },
+    // 配置
+    { from: 'app/app.json', to: 'app.json' },
+    // pages
+    getCopyCfg('pages', '.wxml'),
+    getCopyCfg('pages', '.json'),
+    // comps
+    getCopyCfg('comps', '.wxml'),
+    getCopyCfg('comps', '.json'),
 ]
 
-// 页面入口
-const pagesEntry = pages
-    .map((page) => ({
-        [page]: resolve('src', page),
+/**
+ * 通过 base 下的中间路径，生成类似
+ * pages/index/index
+ * comps/tua-image/tua-image
+ * 这样的路径作为 name，以便后续生成对应路径上的 js 和 wxss
+ * @param {String} base 基础路径 pages|comps
+ * @return {Object} 对象形式的 entry
+ */
+const getEntryByDirPath = (base) => fs.readdirSync(resolve('src', base))
+    .map((dirPath) => ({
+        dirPath,
+        url: resolve('src', base, dirPath),
     }))
-    .reduce((acc, cur) => ({ ...acc, ...cur }), {})
+    .filter(({ url }) => fs.statSync(url).isDirectory())
+    .reduce((acc, { dirPath, url }) => ({
+        ...acc,
+        [`${base}/${dirPath}/${dirPath}`]: resolve(url, dirPath),
+    }), {})
 
 export default ({ isDev }) => ({
     mode: isDev ? 'development' : 'production',
@@ -42,7 +61,7 @@ export default ({ isDev }) => ({
         // app 应用入口
         app: './src/app/app',
         // pages 页面入口
-        ...pagesEntry,
+        ...getEntryByDirPath('pages'),
     },
     output: {
         filename: `[name].js`,
@@ -139,7 +158,9 @@ export default ({ isDev }) => ({
         },
     },
     plugins: [
-        new CopyWebpackPlugin(copyCfgArr),
+        new CopyWebpackPlugin(copyCfgArr, {
+            context: resolve('src'),
+        }),
         new ExtractTextPlugin('[name].wxss'),
         new FriendlyErrorsWebpackPlugin(),
         new BannerPlugin({

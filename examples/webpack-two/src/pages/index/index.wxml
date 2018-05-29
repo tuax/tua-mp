@@ -103,6 +103,6 @@
 
 <view class="info">
     <view>Long-press to edit a todo</view>
-    <view>长按编辑一个 todo</view>
-    <view>Written by StEve Young\n(https://github.com/BuviewtStEve)</view>
+    <view><text style="font-weight: 400;">长按</text>编辑一个 todo</view>
+    <view class="a">Written by StEve Young\n(https://github.com/BuviewtStEve)</view>
 </view>

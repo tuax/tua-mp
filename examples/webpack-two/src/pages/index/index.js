@@ -106,10 +106,13 @@ TuaPage({
                 completed: false,
             })
             this.newTodo = ''
+
+            console.log('this.todos.__dep__', this.todos.__dep__)
         },
         removeTodo (todo) {
             const index = this.todos.indexOf(todo)
             this.todos.splice(index, 1)
+            console.log('this.todos.__dep__', this.todos.__dep__)
         },
         editTodo (todo) {
             this.beforeEditCache = todo.title

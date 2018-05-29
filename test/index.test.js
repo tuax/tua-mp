@@ -164,8 +164,6 @@ describe('TuaPage', () => {
                 return {
                     nestedArr: [
                         { num: n++ },
-                        { num: n++ },
-                        { num: n++ },
                     ],
                 }
             },
@@ -176,17 +174,22 @@ describe('TuaPage', () => {
             },
         })
 
+        vm.nestedArr = [
+            { num: n++ },
+            { num: n++ },
+        ]
+
         vm.nestedArr.push({ num: n++ })
 
         expect(vm.fromNestedArr.length).toBe(2)
         vm.nestedArr.forEach(x => x.num++)
         expect(vm.fromNestedArr.length).toBe(3)
         vm.nestedArr.forEach(x => x.num++)
-        expect(vm.fromNestedArr.length).toBe(4)
-        expect(vm.data.fromNestedArr.length).toBe(1)
+        expect(vm.fromNestedArr.length).toBe(3)
+        expect(vm.data.fromNestedArr.length).toBe(0)
 
         afterSetData(() => {
-            expect(vm.fromNestedArr.length).toBe(4)
+            expect(vm.fromNestedArr.length).toBe(3)
             done()
         })
     })

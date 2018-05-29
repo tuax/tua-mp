@@ -40,16 +40,122 @@ input {
     padding: 32rpx 32rpx 32rpx 100rpx;
 }
 
+.toggle-all.checked + label:before {
+	color: #737373;
+}
+
 .todo-list {
     .li {
+        position: relative;
+
+        border-bottom: 1px solid #ededed;
+
         font-size: 48rpx;
 
-        label {
-            padding: 30rpx 30rpx 30rpx 120rpx;
+        &:last-child {
+            border-bottom: none;
         }
 
-        &.editing .edit {
-            width: calc(100% - 43px);
+        &.editing {
+            padding: 0;
+
+            border-bottom: none;
+
+            .edit {
+                display: block;
+
+                width: calc(100% - 43px);
+                margin: 0 0 0 43px;
+                padding: 12px 16px;
+            }
+
+            .view {
+                display: none;
+            }
+        }
+
+        .toggle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+
+            width: 40px;
+            /* auto, since non-WebKit browsers doesn't support input styling */
+            height: auto;
+            margin: auto 0;
+
+            text-align: center;
+
+            opacity: 0;
+            border: none; /* Mobile Safari */
+
+            -webkit-appearance: none;
+            appearance: none;
+
+            & + label {
+                /*
+                    Firefox requires `#` to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433
+                    IE and Edge requires *everything* to be escaped to render, so we do that instead of just the `#` - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/
+                */
+                background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
+                background-repeat: no-repeat;
+                background-position: center left;
+            }
+
+            &.checked + label {
+                background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E');
+            }
+        }
+
+        label {
+            display: block;
+
+            padding: 30rpx 30rpx 30rpx 120rpx;
+
+            transition: color 0.4s;
+            word-break: break-all;
+
+            line-height: 1.2;
+        }
+
+        &.completed label {
+            text-decoration: line-through;
+
+            color: #d9d9d9;
+        }
+
+        .destroy {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            bottom: 0;
+
+            width: 40px;
+            height: 40px;
+            margin: auto 0;
+            margin-bottom: 11px;
+
+            transition: color 0.2s ease-out;
+
+            color: #af5b5e;
+
+            font-size: 30px;
+
+            &:after {
+                content: '×';
+            }
+        }
+
+        &:hover .destroy {
+            display: block;
+        }
+
+        & .edit {
+            display: none;
+        }
+
+        &.editing:last-child {
+            margin-bottom: -1px;
         }
     }
 }
@@ -79,7 +185,22 @@ input {
             .a {
                 display: inline;
 
+                margin: 3px;
                 padding: 6rpx 10rpx;
+
+                text-decoration: none;
+
+                color: inherit;
+                border: 1px solid transparent;
+                border-radius: 3px;
+
+                &:hover {
+                    border-color: rgba(175, 47, 47, 0.1);
+                }
+
+                &.selected {
+                    border-color: rgba(175, 47, 47, 0.2);
+                }
             }
         }
     }
@@ -92,4 +213,12 @@ input {
 
 .info {
     font-size: 40rpx;
+
+    .a {
+        text-decoration: underline;
+
+        color: inherit;
+
+        font-weight: 400;
+    }
 }
