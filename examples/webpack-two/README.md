@@ -12,6 +12,10 @@
 * scss/sass: 需要在 js 中引入，生成对应的 wxss
 * stylus: 需要在 js 中引入，生成对应的 wxss
 
+其中 `/pages/todos/todos` 页面实现了 todos 应用。
+
+<image src="../../doc/imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
 * 发布时运行 `npm run build`，`webpack` 会先删除 `dist/` 然后将源码压缩生成到其中

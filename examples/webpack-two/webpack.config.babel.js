@@ -13,6 +13,7 @@ const getCopyCfg = (base, ext) => ({
     from: `${base}/**/*${ext}`,
     to: `[path]/[name]${ext}`,
 })
+const PROJECT_CFG = 'project.config.json'
 const copyCfgArr = [
     // 图片
     { from: 'assets/', to: 'assets/' },
@@ -20,6 +21,8 @@ const copyCfgArr = [
     { from: 'templates/', to: 'templates/' },
     // 配置
     { from: 'app/app.json', to: 'app.json' },
+    // 开发者工具配置
+    { from: `../${PROJECT_CFG}`, to: PROJECT_CFG },
     // pages
     getCopyCfg('pages', '.wxml'),
     getCopyCfg('pages', '.json'),

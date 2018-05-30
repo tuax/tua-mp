@@ -1,139 +1,62 @@
 import { TuaPage } from '@/../../../src/'
 
-import '@/styles/todomvc-common-base.css'
-import '@/styles/todomvc-app-css.css'
 import './index.less'
 
-let uid = 0
-
-const filters = {
-    all: todos => todos,
-    active: todos => todos.filter(todo => !todo.completed),
-    completed: todos => todos.filter(todo => todo.completed),
-}
+// 获取应用实例
+const app = getApp()
 
 TuaPage({
     data () {
         return {
-            todos: [
-                { id: uid++, title: 'a', completed: true },
-                { id: uid++, title: 'b', completed: false },
-            ],
-            newTodo: '',
-            editedTodo: '',
-            visibility: 'all',
+            motto: 'Hello World',
+            userInfo: {},
+            hasUserInfo: false,
+            canIUse: wx.canIUse('button.open-type.getUserInfo'),
         }
     },
-    computed: {
-        filteredTodos () {
-            return filters[this.visibility](this.todos)
-        },
-        remaining () {
-            return filters.active(this.todos).length
-        },
-        remainingStr () {
-            return this.pluralize('item', this.remaining)
-        },
-        allDone () {
-            return this.remaining === 0
-        },
-    },
-    watch: {
-    },
     onLoad () {
-        console.log(this)
-        console.log(this.todos)
+        this.gotoTodos()
+
+        if (app.globalData.userInfo) {
+            this.userInfo = app.globalData.userInfo
+            this.hasUserInfo = true
+        } else if (this.canIUse) {
+            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+            // 所以此处加入 callback 以防止这种情况
+            app.userInfoReadyCallback = ({ userInfo }) => {
+                this.userInfo = userInfo
+                this.hasUserInfo = true
+            }
+        } else {
+            // 在没有 open-type=getUserInfo 版本的兼容处理
+            wx.getUserInfo({
+                success: ({ userInfo }) => {
+                    app.globalData.userInfo = userInfo
+
+                    this.userInfo = userInfo
+                    this.hasUserInfo = true
+                },
+            })
+        }
     },
     methods: {
-        // 小程序新增
-        toggleAll ({ detail: { value } }) {
-            if (value[0] === 'false') {
-                this.todos.forEach((todo) => {
-                    todo.completed = true
-                })
-            } else {
-                this.todos.forEach((todo) => {
-                    todo.completed = false
-                })
-            }
-        },
-        toggleTodo ({ target: { dataset: { idx } } }) {
-            this.todos[idx].completed = !this.todos[idx].completed
-        },
-        inputTodo ({ detail: { value } }) {
-            this.newTodo = value
-        },
-        filteredTodosClass (todo) {
-            return [
-                todo.completed ? 'completed' : '',
-                todo === this.editedTodo ? 'editing' : '',
-            ].join(' ')
-        },
-        onPressTodo ({ target: { dataset: { idx } } }) {
-            this.editTodo(this.todos[idx])
-        },
-        onBlurTodo ({
-            detail: { value },
-            target: { dataset: { idx } },
-        }) {
-            if (!this.editedTodo) return
-
-            this.editedTodo = null
-            this.todos[idx].title = value.trim()
-
-            if (!this.todos[idx].title) {
-                this.removeTodo(this.todos[idx])
-            }
-        },
-        onTapRemove ({ target: { dataset: { idx } } }) {
-            this.removeTodo(this.todos[idx])
-        },
-        changeFilter ({ currentTarget: { dataset: { filter } } }) {
-            this.visibility = filter
-        },
-
-        // 原始函数
-        pluralize (word, count) {
-            return word + (count === 1 ? '' : 's')
-        },
-        addTodo () {
-            const value = this.newTodo && this.newTodo.trim()
-            if (!value) return
-
-            this.todos.push({
-                id: uid++,
-                title: value,
-                completed: false,
+        // 事件处理函数
+        bindViewTap () {
+            wx.navigateTo({
+                url: '../logs/logs',
             })
-            this.newTodo = ''
+        },
+        gotoTodos () {
+            wx.navigateTo({
+                url: '/pages/todos/todos',
+            })
+        },
+        getUserInfo (e) {
+            console.log(e)
+            app.globalData.userInfo = e.detail.userInfo
 
-            console.log('this.todos.__dep__', this.todos.__dep__)
-        },
-        removeTodo (todo) {
-            const index = this.todos.indexOf(todo)
-            this.todos.splice(index, 1)
-            console.log('this.todos.__dep__', this.todos.__dep__)
-        },
-        editTodo (todo) {
-            this.beforeEditCache = todo.title
-            this.editedTodo = todo
-        },
-        doneEdit (todo) {
-            if (!this.editedTodo) return
-
-            this.editedTodo = null
-            todo.title = todo.title.trim()
-
-            if (!todo.title) {
-                this.removeTodo(todo)
-            }
-        },
-        cancelEdit (todo) {
-            this.editedTodo = null
-            todo.title = this.beforeEditCache
-        },
-        removeCompleted () {
-            this.todos = filters.active(this.todos)
+            this.userInfo = e.detail.userInfo
+            this.hasUserInfo = true
         },
     },
 })
