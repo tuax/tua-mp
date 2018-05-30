@@ -4,11 +4,19 @@ import {
 } from './index'
 
 // 全局变量，缓存下一个状态的数据
-let newState = null
+let newStateByVM = {}
 
 // 全局变量，缓存传给 asyncSetData 的 oldVal 值
 // 以便在触发 watch 时获取
-let oldState = null
+let oldStateByVM = {}
+
+// 全局变量，缓存 vm
+const VM_MAP = {}
+
+const getKeyFromVM = ({
+    __wxWebviewId__: wId,
+    __wxExparserNodeId__: nId = 'wxExparserNodeId',
+}) => `${wId}_${nId}`
 
 /**
  * 异步 setData 提高性能
@@ -25,8 +33,21 @@ export const getAsyncSetData = (vm, watch) => ({
     oldVal,
     isArrDirty = false,
 }) => {
-    newState = { ...newState, [path]: newVal }
-    oldState = { [path]: oldVal, ...oldState }
+    const key = getKeyFromVM(vm)
+
+    newStateByVM = {
+        ...newStateByVM,
+        [key]: { ...newStateByVM[key], [path]: newVal },
+    }
+    oldStateByVM = {
+        ...oldStateByVM,
+        [key]: { [path]: oldVal, ...oldStateByVM[key] },
+    }
+
+    // 缓存 vm 和 watch
+    if (!VM_MAP[key]) {
+        VM_MAP[key] = { vm, watch }
+    }
 
     // 数组下标发生变化，同步修改数组
     if (isArrDirty) {
@@ -35,22 +56,41 @@ export const getAsyncSetData = (vm, watch) => ({
 
     // TODO: Promise -> MutationObserve -> setTimeout
     Promise.resolve().then(() => {
-        if (!newState) return
+        const vmKeys = Object.keys(newStateByVM)
 
-        vm.setData(newState)
+        if (!vmKeys.length) return
 
-        // 触发 watch
-        Object.keys(newState)
-            .filter(key => isFn(watch[key]))
-            .forEach((key) => {
-                const watchFn = watch[key]
-                const newVal = newState[key]
-                const oldVal = oldState[key]
+        vmKeys.forEach((vmKey) => {
+            const { vm, watch } = VM_MAP[vmKey]
+            const newState = newStateByVM[vmKey]
+            const oldState = oldStateByVM[vmKey]
 
-                watchFn.call(vm, newVal, oldVal)
-            })
+            // 更新数据
+            vm.setData(newState)
 
-        newState = null
-        oldState = null
+            // 触发 watch
+            Object.keys(newState)
+                .filter(key => isFn(watch[key]))
+                .forEach((key) => {
+                    const watchFn = watch[key]
+                    const newVal = newState[key]
+                    const oldVal = oldState[key]
+
+                    watchFn.call(vm, newVal, oldVal)
+                })
+        })
+
+        newStateByVM = {}
+        oldStateByVM = {}
     })
+}
+
+/**
+ * 在页面 onUnload 或组件 detached 后，
+ * 将 vm 从 VM_MAP 中删除
+ */
+export const deleteVm = (vm) => {
+    const key = getKeyFromVM(vm)
+
+    delete VM_MAP[key]
 }

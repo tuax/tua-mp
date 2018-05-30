@@ -1,6 +1,7 @@
 import { version } from '../package.json'
 import {
     isFn,
+    deleteVm,
     getAsyncSetData,
     getPropertiesFromProps,
 } from './utils/index'
@@ -51,6 +52,11 @@ export const TuaComp = (args) => {
 
             rest.attached && rest.attached.apply(this, options)
         },
+        detached (...options) {
+            deleteVm(this)
+
+            rest.detached && rest.detached.apply(this, options)
+        },
     })
 }
 
@@ -84,6 +90,11 @@ export const TuaPage = (args) => {
             bindComputed(this, computed, asyncSetData)
 
             rest.onLoad && rest.onLoad.apply(this, options)
+        },
+        onUnload (...options) {
+            deleteVm(this)
+
+            rest.onUnload && rest.onUnload.apply(this, options)
         },
     })
 }

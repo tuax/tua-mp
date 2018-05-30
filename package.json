@@ -7,9 +7,9 @@
         "examples/basic/utils/tua-mp.js"
     ],
     "scripts": {
+        "cov": "open coverage/lcov-report/index.html",
         "tdd": "NODE_ENV=test jest --watch",
         "test": "NODE_ENV=test jest --no-cache && codecov",
-        "cover": "open coverage/lcov-report/index.html",
         "prebuild": "npm run test",
         "build": "NODE_ENV=prod rollup -c",
         "watch": "NODE_ENV=prod rollup -c -w",
