@@ -100,15 +100,19 @@
 └── yarn.lock
 ```
 
-* src/: 源码
-* src/app: 应用入口
-* src/scripts: 公用代码
-* src/scripts/const: 常量（已配置别名 @const）
-* src/scripts/utils: 常量（已配置别名 @utils）
-* src/styles: 公用样式
-* dist/: 打包后代码
-* dist/chunks/: 公共依赖
+### `src/` 源码
+* app/: 应用入口
+* assets/: 资源文件，比如图片
+* comps/: 组件
+* pages/: 页面
+* scripts: 公用代码
+* scripts/const: 常量（已配置别名 @const）
+* scripts/utils: 辅助函数（已配置别名 @utils）
+* styles/: 公用样式
+* templates/: 模板
+
+### `dist/` 打包后代码
+* chunks/: 公共依赖
     * runtime: [是 webapck 在运行时连接各个模块的代码](https://doc.webpack-china.org/concepts/manifest/#runtime)
     * vendors: 是提取的 `node_modules` 下的依赖
     * scripts: 是提取的 `src/scripts/` 下的依赖
-* assets/: 资源文件，比如图片

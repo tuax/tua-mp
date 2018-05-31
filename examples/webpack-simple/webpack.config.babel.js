@@ -133,9 +133,6 @@ export default ({ isDev }) => ({
             '@utils': resolve('src/scripts/utils'),
         },
     },
-    watchOptions: {
-        aggregateTimeout: 300,
-    },
     // 提取公共依赖
     optimization: {
         runtimeChunk: {
