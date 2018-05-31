@@ -107,7 +107,7 @@ export default ({ isDev }) => ({
                         // mock vue-template-compiler
                         compile: () => ({
                             staticRenderFns: [],
-                        })
+                        }),
                     },
                 },
             },
