@@ -2,7 +2,7 @@ import { TuaComp, TuaPage } from '../src'
 import { afterSetData } from './utils'
 
 describe('TuaComp', () => {
-    test('use it just like MINA', () => {
+    test('use it just like MINA', (done) => {
         const vm = TuaComp({
             properties: {
                 propA: String,
@@ -14,11 +14,24 @@ describe('TuaComp', () => {
                     value: 'steve',
                 },
             },
+            data: {
+                compData: 'compData',
+            },
+            detached () {},
         })
+
+        vm.compData = 'steve'
 
         expect(vm.propA).toBe('')
         expect(vm.propB).toBe(0)
         expect(vm.propC).toBe('steve')
+        expect(vm.compData).toBe('steve')
+
+        afterSetData(() => {
+            vm.detached()
+            expect(vm.data.compData).toBe('steve')
+            done()
+        })
     })
 
     test('use it just like Vue', () => {
@@ -91,13 +104,13 @@ describe('TuaPage', () => {
                     },
                 ],
             },
+            onUnload () {},
         })
-
         vm.nestedArrayData[0].young.young = 'hey man'
 
         afterSetData(() => {
+            vm.onUnload()
             expect(vm.nestedArrayData[0].young.young).toBe('hey man')
-
             done()
         })
     })

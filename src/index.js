@@ -1,10 +1,9 @@
 import { version } from '../package.json'
 import {
     isFn,
-    deleteVm,
-    getAsyncSetData,
     getPropertiesFromProps,
 } from './utils/index'
+import { deleteVm, getAsyncSetData } from './asyncSetData'
 import {
     getObserveDeep,
 } from './observer/index'
@@ -17,19 +16,22 @@ console.log(`[TUA-MP]: Version ${version}`)
 
 /**
  * 适配 Vue 风格代码，生成小程序原生组件
- * @param {Object} args Component 参数
+ * @param {Object|Function} data 组件的内部数据
+ * @param {Object|Function|Null} props 组件的对外属性
+ * @param {Object} watch 侦听器对象
+ * @param {Object} methods 组件的方法，包括事件响应函数和任意的自定义方法
+ * @param {Object} computed 计算属性
+ * @param {Object|Function|Null} properties 小程序原生的组件的对外属性
  */
-export const TuaComp = (args) => {
-    const {
-        data: rawData = {},
-        props = {},
-        watch = {},
-        methods = {},
-        computed = {},
-        properties = {},
-        ...rest
-    } = args
-
+export const TuaComp = ({
+    data: rawData = {},
+    props = {},
+    watch = {},
+    methods = {},
+    computed = {},
+    properties = {},
+    ...rest
+}) => {
     const data = isFn(rawData) ? rawData() : rawData
 
     return Component({
@@ -53,6 +55,7 @@ export const TuaComp = (args) => {
             rest.attached && rest.attached.apply(this, options)
         },
         detached (...options) {
+            // 从 VM_MAP 中删除自己
             deleteVm(this)
 
             rest.detached && rest.detached.apply(this, options)
@@ -62,17 +65,18 @@ export const TuaComp = (args) => {
 
 /**
  * 适配 Vue 风格代码，生成小程序页面
- * @param {Object} args Page 参数
+ * @param {Object|Function} data 页面组件的内部数据
+ * @param {Object} watch 侦听器对象
+ * @param {Object} methods 页面组件的方法，包括事件响应函数和任意的自定义方法
+ * @param {Object} computed 计算属性
  */
-export const TuaPage = (args) => {
-    const {
-        data: rawData = {},
-        watch = {},
-        methods = {},
-        computed = {},
-        ...rest
-    } = args
-
+export const TuaPage = ({
+    data: rawData = {},
+    watch = {},
+    methods = {},
+    computed = {},
+    ...rest
+}) => {
     const data = isFn(rawData) ? rawData() : rawData
 
     return Page({
@@ -92,6 +96,7 @@ export const TuaPage = (args) => {
             rest.onLoad && rest.onLoad.apply(this, options)
         },
         onUnload (...options) {
+            // 从 VM_MAP 中删除自己
             deleteVm(this)
 
             rest.onUnload && rest.onUnload.apply(this, options)

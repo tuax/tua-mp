@@ -4,7 +4,7 @@ import {
 } from '../../src/observer/'
 import {
     getAsyncSetData,
-} from '../../src/utils/'
+} from '../../src/asyncSetData'
 import { afterSetData } from '../utils'
 
 const watch = {

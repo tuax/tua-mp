@@ -1,7 +1,8 @@
 import { noop } from './utils'
 import { isFn } from '../src/utils'
 
-let uid = 0
+let wId = 0
+let nId = 0
 
 /**
  * 对于小程序中 Page 的简单 Mock
@@ -16,8 +17,9 @@ global.Page = ({ data, ...rest }) => {
             }
         }),
         onLoad: noop,
+        onUnLoad: noop,
+        __wxWebviewId__: wId++,
         ...rest,
-        __wxWebviewId__: uid++,
     }
 
     page.onLoad()
@@ -45,10 +47,7 @@ global.Component = ({ data, properties, ...rest }) => {
         .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 
     const Component = {
-        data: {
-            ...data,
-            ...props,
-        },
+        data: { ...data, ...props },
         properties,
         setData: jest.fn(function (newData) {
             this.data = {
@@ -57,9 +56,10 @@ global.Component = ({ data, properties, ...rest }) => {
             }
         }),
         attached: noop,
+        detached: noop,
+        __wxWebviewId__: wId++,
+        __wxExparserNodeId__: nId++,
         ...rest,
-        __wxWebviewId__: uid++,
-        __wxExparserNodeId__: uid++,
     }
 
     Component.attached()

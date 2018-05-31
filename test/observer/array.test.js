@@ -3,7 +3,7 @@ import {
 } from '../../src/observer/'
 import {
     getAsyncSetData,
-} from '../../src/utils/'
+} from '../../src/asyncSetData'
 import { __TUA_PATH__ } from '../../src/constants'
 import {
     getArrayMethods,
