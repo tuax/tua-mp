@@ -7,10 +7,9 @@
         "minified": true,
         "newFeature": true
     },
-    "miniprogramRoot": "./dist/",
     "compileType": "miniprogram",
     "appid": "touristappid",
-    "projectname": "github-tua-mp-webpack-three",
+    "projectname": "github-tua-mp-webpack-simple",
     "condition": {
         "search": {
             "current": -1,

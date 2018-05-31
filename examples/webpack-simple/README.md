@@ -1,23 +1,20 @@
-# [tua-mp-example-webpack-three](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-three)
+# [tua-mp-example-webpack-simple](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-simple)
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
-![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
 
-在这个例子中我们添加了 `vue-loader`，让我们能够使用文件扩展名为 `.vue` 的 `single-file components`(单文件组件) 。
+在这个例子中我们将源码放在了 `src/` 下，利用 `webpack` 将其打包生成到 `dist/` 目录下。
 
-[单文件组件就是将模板（template）、脚本（script）、样式（style）写在一个文件中。](https://cn.vuejs.org/v2/guide/single-file-components.html)
+此外还对于样式的编写加入了预处理器的功能
 
-在这个例子中的单文件组件和一般 web 端的单文件组件有所不同：
+* wxss: 会被拷贝到 dist/ 下的对应路径
+* css: 需要在 js 中引入，生成对应的 wxss
+* less: 需要在 js 中引入，生成对应的 wxss
+* scss/sass: 需要在 js 中引入，生成对应的 wxss
+* stylus: 需要在 js 中引入，生成对应的 wxss
 
-1.页面的模板我们使用的是 `<template lang="wxml">...</template>`
+其中 `/pages/todos/todos` 页面实现了 todos 应用。
 
-2.添加了一个 `<config>` 的自定义块，用于填写**页面**的配置（即原来的 `.json`）
-
-3.由于 webpack 或其他地方需要读取 `app.json` 中的某些字段，所以在不编写 loader 的情况下只好维持原状，不将其放到 `app.vue` 中的 `<config>` 中。
-
-> [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
-
-<image src="../../doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
+<image src="../../doc/imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
 
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
@@ -25,7 +22,7 @@
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
 
-`dist/` 目录的代码片段地址为：**wechatide://minicode/LtqLzymd6lZc**
+`dist/` 目录代码片段地址为：**wechatide://minicode/aBYKvtmM6EZJ**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
@@ -36,9 +33,6 @@
 <image src="../../doc/imgs/minicode.png" width="400" alt="minicode" />
 
 ## 文件结构
-
-* index.wxml/index.less/index.json -> Index.vue
-* logs.wxml/logs.scss/logs.json -> Logs.vue
 
 ```
 .
@@ -57,34 +51,35 @@
 │   │   ├── scripts.js.map
 │   │   ├── vendors.js
 │   │   └── vendors.js.map
-│   └── pages
-│       ├── index
-│       │   ├── index.js
-│       │   ├── index.js.map
-│       │   ├── index.json
-│       │   ├── index.wxml
-│       │   └── index.wxss
-│       └── logs
-│           ├── logs.js
-│           ├── logs.js.map
-│           ├── logs.json
-│           ├── logs.wxml
-│           └── logs.wxss
+│   ├── pages
+│   │   ...
+│   └── project.config.json
 ├── package.json
+├── project.config.json
 ├── src
 │   ├── app
-│   │   ├── App.vue
 │   │   ├── app.js
-│   │   └── app.json
+│   │   ├── app.json
+│   │   └── app.scss
 │   ├── assets
 │   │   └── vue-logo.png
+│   ├── comps
 │   ├── pages
 │   │   ├── index
-│   │   │   ├── Index.vue
-│   │   │   └── index.js
-│   │   └── logs
-│   │       ├── Logs.vue
-│   │       └── logs.js
+│   │   │   ├── index.js
+│   │   │   ├── index.json
+│   │   │   ├── index.less
+│   │   │   └── index.wxml
+│   │   ├── logs
+│   │   │   ├── logs.js
+│   │   │   ├── logs.json
+│   │   │   ├── logs.scss
+│   │   │   └── logs.wxml
+│   │   └── todos
+│   │       ├── todos.js
+│   │       ├── todos.json
+│   │       ├── todos.less
+│   │       └── todos.wxml
 │   ├── scripts
 │   │   ├── const
 │   │   │   └── README.md
@@ -93,9 +88,11 @@
 │   │       ├── format.js
 │   │       ├── index.js
 │   │       └── log.js
-│   └── styles
-│       └── global.styl
-├── vue-loader.conf.js
+│   ├── styles
+│   │   ├── global.styl
+│   │   ├── todomvc-app-css.css
+│   │   └── todomvc-common-base.css
+│   └── templates
 ├── webpack.config.babel.js
 └── yarn.lock
 ```

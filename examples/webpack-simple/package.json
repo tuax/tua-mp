@@ -1,11 +1,10 @@
 {
-    "name": "tua-mp-example-webpack-three",
+    "name": "tua-mp-example-webpack-simple",
     "version": "0.1.0",
     "description": "An example of using tua-mp with webpack",
     "scripts": {
         "start": "webpack -w --env.isDev",
         "build": "npm run clean && webpack --env",
-        "publish": "npm run clean && webpack --env.isDev",
         "clean": "rimraf dist/*"
     },
     "keywords": [
@@ -30,13 +29,11 @@
         "eslint-config-standard": "^11.0.0",
         "eslint-friendly-formatter": "^4.0.1",
         "eslint-loader": "^2.0.0",
-        "eslint-plugin-html": "^4.0.3",
         "eslint-plugin-import": "^2.11.0",
         "eslint-plugin-node": "^6.0.1",
         "eslint-plugin-promise": "^3.7.0",
         "eslint-plugin-standard": "^3.1.0",
         "extract-text-webpack-plugin": "^4.0.0-beta.0",
-        "file-loader": "^1.1.11",
         "friendly-errors-webpack-plugin": "^1.7.0",
         "less": "^3.0.4",
         "less-loader": "^4.1.0",
@@ -46,8 +43,6 @@
         "style-loader": "^0.21.0",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
-        "vue-loader": "^15.0.12",
-        "vue-template-compiler": "^2.5.16",
         "webpack": "^4.8.1",
         "webpack-cli": "^2.1.3"
     }

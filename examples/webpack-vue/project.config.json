@@ -7,9 +7,10 @@
         "minified": true,
         "newFeature": true
     },
+    "miniprogramRoot": "./dist/",
     "compileType": "miniprogram",
     "appid": "touristappid",
-    "projectname": "github-tua-mp-webpack-two",
+    "projectname": "github-tua-mp-webpack-vue",
     "condition": {
         "search": {
             "current": -1,
