@@ -65,6 +65,8 @@ export default ({ isDev }) => ({
         app: './src/app/app',
         // pages 页面入口
         ...getEntryByDirPath('pages'),
+        // comps 页面入口
+        ...getEntryByDirPath('comps'),
     },
     output: {
         filename: `[name].js`,

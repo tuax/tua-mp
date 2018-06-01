@@ -1,0 +1,92 @@
+<view class="todoapp">
+    <view class="header">
+        <view class="h1">todos</view>
+        <input
+            focus
+            value="{{ newTodo }}"
+            class="new-todo"
+            bindinput="inputTodo"
+            bindconfirm="addTodo"
+            placeholder="What needs to be done?"
+        />
+    </view>
+
+    <view class="main" hidden="{{ !todos.length }}">
+        <checkbox-group bindchange="toggleAll">
+            <checkbox
+                id="toggle-all"
+                class="toggle-all {{ allDone ? 'checked' : '' }}"
+                value="{{ allDone }}"
+                checked="{{ allDone }}"
+            />
+            <label for="toggle-all">Mark all as complete</label>
+        </checkbox-group>
+
+        <view class="todo-list">
+            <todo
+                wx:for="{{ filteredTodos }}"
+                wx:key="id"
+                wx:for-item="todo"
+                wx:for-index="index"
+                todo="{{ todo }}"
+                index="{{ index }}"
+                editedTodo="{{ editedTodo }}"
+                bind:onBlurTodo="onBlurTodo"
+                bind:onPressTodo="onPressTodo"
+                bind:onTapRemove="onTapRemove"
+                bind:onToggleTodo="onToggleTodo"
+            />
+        </view>
+    </view>
+
+    <view class="footer" hidden="{{ !todos.length }}">
+        <view class="todo-count">
+            {{ remaining }} {{ remainingStr }} left
+        </view>
+
+        <view class="filters">
+            <view class="li">
+                <view
+                    class="a {{ visibility == 'all' ? 'selected' : '' }}"
+                    data-filter="all"
+                    bindtap="changeFilter"
+                >
+                    All
+                </view>
+            </view>
+            <view class="li">
+                <view
+                    class="a {{ visibility == 'active' ? 'selected' : '' }}"
+                    data-filter="active"
+                    bindtap="changeFilter"
+                >
+                    Active
+                </view>
+            </view>
+            <view class="li">
+                <view
+                    class="a {{ visibility == 'completed' ? 'selected' : '' }}"
+                    data-filter="completed"
+                    bindtap="changeFilter"
+                >
+                    Completed
+                </view>
+            </view>
+        </view>
+
+        <view
+            class="clear-completed"
+            bindtap="removeCompleted"
+            style="{{ clearCompletedStyleStr }}"
+        >
+            Clear completed
+        </view>
+    </view>
+</view>
+
+<view class="info">
+    <view>Long-press to edit a todo</view>
+    <view><text style="font-weight: bold;">长按</text>编辑一个 todo</view>
+    <view class="a">Written by StEve Young</view>
+    <view class="a">Powered By tua-mp @github/@npm</view>
+</view>
