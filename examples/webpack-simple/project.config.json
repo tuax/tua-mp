@@ -32,8 +32,8 @@
 			"list": [
 				{
 					"id": -1,
-					"name": "newTodo",
-					"pathName": "pages/newTodos/newTodos"
+					"name": "todos",
+					"pathName": "pages/todos/todos"
 				}
 			]
 		}

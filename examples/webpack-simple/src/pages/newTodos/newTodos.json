@@ -1,7 +1,0 @@
-{
-    "navigationBarTitleText": "tua-mp todos",
-    "usingComponents": {
-        "todo": "/comps/todo/todo",
-        "filter": "/comps/filter/filter"
-    }
-}

@@ -1,24 +1,22 @@
 import { TuaComp } from '@/../../../src/'
-import { getValFromEvent } from '@utils'
 
 import './todo.less'
+
+const defaultFn = () => ({
+    id: 0,
+    completed: false,
+})
 
 TuaComp({
     props: {
         todo: {
             type: Object,
-            default: () => ({
-                id: 0,
-                completed: false,
-            }),
+            default: defaultFn,
         },
         index: Number,
         editedTodo: {
             type: Object,
-            default: () => ({
-                id: 0,
-                completed: false,
-            }),
+            default: defaultFn,
         },
     },
     // TODO
@@ -37,9 +35,6 @@ TuaComp({
     //     },
     // },
     methods: {
-        $emit (eventName, event) {
-            this.triggerEvent(eventName, getValFromEvent(event))
-        },
         onToggleTodo (e) {
             this.$emit('onToggleTodo', e)
         },

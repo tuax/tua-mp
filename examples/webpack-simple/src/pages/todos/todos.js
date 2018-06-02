@@ -1,19 +1,13 @@
 import { TuaPage } from '@/../../../src/'
 
+import { VALID_FILTERS } from '@const'
+import { filterFns, getValFromEvent } from '@utils'
+
 import '@/styles/todomvc-common-base.css'
 import '@/styles/todomvc-app-css.css'
 import './todos.less'
 
 let uid = 0
-
-const filters = {
-    all: todos => todos,
-    active: todos => todos.filter(todo => !todo.completed),
-    completed: todos => todos.filter(todo => todo.completed),
-}
-
-const getValFromEvent = ({ detail, currentTarget }) =>
-    ({ ...detail, ...currentTarget.dataset })
 
 TuaPage({
     data () {
@@ -23,16 +17,17 @@ TuaPage({
                 { id: uid++, title: 'b', completed: false },
             ],
             newTodo: '',
-            editedTodo: '',
+            editedTodo: null,
             visibility: 'all',
+            VALID_FILTERS,
         }
     },
     computed: {
         filteredTodos () {
-            return filters[this.visibility](this.todos)
+            return filterFns[this.visibility](this.todos)
         },
         remaining () {
-            return filters.active(this.todos).length
+            return filterFns.active(this.todos).length
         },
         remainingStr () {
             return this.pluralize('item', this.remaining)
@@ -54,9 +49,9 @@ TuaPage({
     },
     methods: {
         toggleAll (e) {
-            const { value } = getValFromEvent(e)
+            const { value: [ allDone ] } = getValFromEvent(e)
 
-            if (value[0] === 'false') {
+            if (allDone === 'false') {
                 this.todos.forEach((todo) => {
                     todo.completed = true
                 })
@@ -66,7 +61,7 @@ TuaPage({
                 })
             }
         },
-        toggleTodo (e) {
+        onToggleTodo (e) {
             const { index } = getValFromEvent(e)
             const todo = this.todos[index]
 
@@ -106,13 +101,11 @@ TuaPage({
 
             this.removeTodo(this.todos[index])
         },
-        changeFilter (e) {
+        onChangeFilter (e) {
             const { filter } = getValFromEvent(e)
 
             this.visibility = filter
         },
-
-        // 原始函数
         pluralize (word, count) {
             return word + (count === 1 ? '' : 's')
         },
@@ -150,7 +143,7 @@ TuaPage({
             todo.title = this.beforeEditCache
         },
         removeCompleted () {
-            this.todos = filters.active(this.todos)
+            this.todos = filterFns.active(this.todos)
         },
     },
 })

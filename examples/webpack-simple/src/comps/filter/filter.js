@@ -1,6 +1,5 @@
 import { TuaComp } from '@/../../../src/'
-import { VALID_FILTER } from '@const'
-import { getValFromEvent } from '@utils'
+import { VALID_FILTERS } from '@const'
 
 import './filter.less'
 
@@ -8,11 +7,11 @@ TuaComp({
     props: {
         visibility: {
             type: String,
-            validator: val => VALID_FILTER.includes(val),
+            validator: val => VALID_FILTERS.includes(val),
         },
         filterType: {
             type: String,
-            validator: val => VALID_FILTER.includes(val),
+            validator: val => VALID_FILTERS.includes(val),
         },
     },
     // TODO
@@ -20,9 +19,7 @@ TuaComp({
     },
     methods: {
         onChangeFilter (e) {
-            const { filter } = getValFromEvent(e)
-
-            this.triggerEvent('onChangeFilter', { filter })
+            this.$emit('onChangeFilter', e)
         },
     },
 })

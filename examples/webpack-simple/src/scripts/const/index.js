@@ -1,2 +1,2 @@
 
-export const VALID_FILTER = ['all', 'active', 'completed']
+export const VALID_FILTERS = ['all', 'active', 'completed']

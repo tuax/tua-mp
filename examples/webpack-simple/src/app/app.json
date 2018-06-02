@@ -2,7 +2,6 @@
     "pages":[
         "pages/index/index",
         "pages/todos/todos",
-        "pages/newTodos/newTodos",
         "pages/logs/logs"
     ],
     "window":{
