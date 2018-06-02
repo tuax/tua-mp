@@ -105,7 +105,7 @@ TuaPage({
 
             this.removeTodo(this.todos[index])
         },
-        changeFilter (e) {
+        onChangeFilter (e) {
             const { filter } = getValFromEvent(e)
 
             this.visibility = filter

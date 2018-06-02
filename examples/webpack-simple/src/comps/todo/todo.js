@@ -21,41 +21,36 @@ TuaComp({
             }),
         },
     },
-    computed: {
-        // TODO
-        todoClassStr () {
-            const completedStr = this.todo.completed ? 'completed' : ''
+    // TODO
+    // computed: {
+    //     todoClassStr () {
+    //         const completedStr = this.todo.completed ? 'completed' : ''
 
-            console.log('completedStr', completedStr)
+    //         console.log('completedStr', completedStr)
 
-            // editedTodo 可能为 null
-            if (!this.editedTodo) return completedStr
+    //         // editedTodo 可能为 null
+    //         if (!this.editedTodo) return completedStr
 
-            const editingStr = this.todo.id === this.editedTodo.id ? 'editing' : ''
+    //         const editingStr = this.todo.id === this.editedTodo.id ? 'editing' : ''
 
-            return [ editingStr, completedStr ].join(' ')
-        },
-    },
+    //         return [ editingStr, completedStr ].join(' ')
+    //     },
+    // },
     methods: {
+        $emit (eventName, event) {
+            this.triggerEvent(eventName, getValFromEvent(event))
+        },
         onToggleTodo (e) {
-            const { index } = getValFromEvent(e)
-
-            this.triggerEvent('onToggleTodo', { index })
+            this.$emit('onToggleTodo', e)
         },
         onPressTodo (e) {
-            const { todo } = getValFromEvent(e)
-
-            this.triggerEvent('onPressTodo', { todo })
+            this.$emit('onPressTodo', e)
         },
         onTapRemove (e) {
-            const { index } = getValFromEvent(e)
-
-            this.triggerEvent('onTapRemove', { index })
+            this.$emit('onTapRemove', e)
         },
         onBlurTodo (e) {
-            const { index, value } = getValFromEvent(e)
-
-            this.triggerEvent('onBlurTodo', { index, value })
+            this.$emit('onBlurTodo', e)
         },
     },
 })

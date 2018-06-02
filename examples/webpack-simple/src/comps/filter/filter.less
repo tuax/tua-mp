@@ -1,0 +1,24 @@
+.li {
+    display: inline-block;
+
+    .a {
+        display: inline;
+
+        margin: 3px;
+        padding: 6rpx 10rpx;
+
+        text-decoration: none;
+
+        color: inherit;
+        border: 1px solid transparent;
+        border-radius: 3px;
+
+        &:hover {
+            border-color: rgba(175, 47, 47, 0.1);
+        }
+
+        &.selected {
+            border-color: rgba(175, 47, 47, 0.2);
+        }
+    }
+}

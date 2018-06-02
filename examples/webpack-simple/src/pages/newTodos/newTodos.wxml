@@ -1,3 +1,5 @@
+<import src="/templates/info.wxml" />
+
 <view class="todoapp">
     <view class="header">
         <view class="h1">todos</view>
@@ -45,33 +47,21 @@
         </view>
 
         <view class="filters">
-            <view class="li">
-                <view
-                    class="a {{ visibility == 'all' ? 'selected' : '' }}"
-                    data-filter="all"
-                    bindtap="changeFilter"
-                >
-                    All
-                </view>
-            </view>
-            <view class="li">
-                <view
-                    class="a {{ visibility == 'active' ? 'selected' : '' }}"
-                    data-filter="active"
-                    bindtap="changeFilter"
-                >
-                    Active
-                </view>
-            </view>
-            <view class="li">
-                <view
-                    class="a {{ visibility == 'completed' ? 'selected' : '' }}"
-                    data-filter="completed"
-                    bindtap="changeFilter"
-                >
-                    Completed
-                </view>
-            </view>
+            <filter
+                visibility="{{ visibility }}"
+                filterType="all"
+                bind:onChangeFilter="onChangeFilter"
+            />
+            <filter
+                visibility="{{ visibility }}"
+                filterType="active"
+                bind:onChangeFilter="onChangeFilter"
+            />
+            <filter
+                visibility="{{ visibility }}"
+                filterType="completed"
+                bind:onChangeFilter="onChangeFilter"
+            />
         </view>
 
         <view
@@ -84,9 +74,4 @@
     </view>
 </view>
 
-<view class="info">
-    <view>Long-press to edit a todo</view>
-    <view><text style="font-weight: bold;">长按</text>编辑一个 todo</view>
-    <view class="a">Written by StEve Young</view>
-    <view class="a">Powered By tua-mp @github/@npm</view>
-</view>
+<template is="info" />
