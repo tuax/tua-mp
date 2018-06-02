@@ -30,7 +30,7 @@ global.Page = ({ data, ...rest }) => {
 /**
  * 对于小程序中 Component 的简单 Mock
  */
-global.Component = ({ data, properties, ...rest }) => {
+global.Component = ({ data, properties, methods, ...rest }) => {
     const props = Object.keys(properties)
         .map((key) => {
             const prop = properties[key]
@@ -59,6 +59,7 @@ global.Component = ({ data, properties, ...rest }) => {
         detached: noop,
         __wxWebviewId__: wId++,
         __wxExparserNodeId__: nId++,
+        ...methods,
         ...rest,
     }
 

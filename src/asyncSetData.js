@@ -25,7 +25,6 @@ export const getAsyncSetData = (vm, watch) => ({
         setObjByPath({ obj: vm, val: newVal, path })
     }
 
-    // TODO: Promise -> MutationObserve -> setTimeout
     Promise.resolve()
         .then(vmStatus.flushState.bind(vmStatus))
 }

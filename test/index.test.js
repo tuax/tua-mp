@@ -1,6 +1,21 @@
 import { TuaComp, TuaPage } from '../src'
 import { afterSetData } from './utils'
 
+const event = {
+    "currentTarget": {
+        "id": "",
+        "offsetLeft": 0,
+        "offsetTop": 0,
+        "dataset": { "index": 0 }
+    },
+    "detail": { "value": [] }
+}
+
+const eventVal = {
+    "value": [],
+    "index": 0
+}
+
 describe('TuaComp', () => {
     test('use it just like MINA', (done) => {
         const vm = TuaComp({
@@ -18,14 +33,22 @@ describe('TuaComp', () => {
                 compData: 'compData',
             },
             detached () {},
+            methods: {
+                onChangeVal (e) {
+                    this.$emit('onChangeVal', e)
+                },
+                triggerEvent: jest.fn(),
+            },
         })
 
         vm.compData = 'steve'
-
         expect(vm.propA).toBe('')
         expect(vm.propB).toBe(0)
         expect(vm.propC).toBe('steve')
         expect(vm.compData).toBe('steve')
+
+        vm.onChangeVal(event)
+        expect(vm.triggerEvent).toBeCalledWith('onChangeVal', eventVal, undefined)
 
         afterSetData(() => {
             vm.detached()
