@@ -1,6 +1,7 @@
 import { version } from '../package.json'
 import {
     isFn,
+    $emit,
     getPropertiesFromProps,
 } from './utils/index'
 import { deleteVm, getAsyncSetData } from './asyncSetData'
@@ -37,7 +38,7 @@ export const TuaComp = ({
     return Component({
         ...rest,
         data,
-        methods,
+        methods: { ...methods, $emit },
         properties: {
             ...properties,
             ...getPropertiesFromProps(props),
