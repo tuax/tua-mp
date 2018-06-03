@@ -6,6 +6,10 @@
 
 <template lang="wxml">
     <view class="container" catchtap="gotoLogs">
+        <button type="primary" catchtap="gotoTodos">
+            点我去 todos 页面
+        </button>
+
         <view class="box">msg: {{ msg }}</view>
         <button type="primary" size="mini" catchtap="tapMsg">
             this.msg += n++
@@ -171,26 +175,15 @@ export default {
         gotoLogs () {
             wx.navigateTo({ url: '/pages/logs/logs' })
         },
+        gotoTodos () {
+            wx.navigateTo({
+                url: '/pages/todos/todos',
+            })
+        },
     },
 }
 </script>
 
 <style lang="less">
-@base: #f938ab;
-
-.box-shadow(@style, @c) when (iscolor(@c)) {
-    -webkit-box-shadow: @style @c;
-    box-shadow:         @style @c;
-}
-
-.box-shadow(@style, @alpha: 50%) when (isnumber(@alpha)) {
-    .box-shadow(@style, rgba(0, 0, 0, @alpha));
-}
-
-.box {
-    color: saturate(@base, 5%);
-    border-color: lighten(@base, 30%);
-    .box-item { .box-shadow(0 0 5px, 30%) }
-}
 
 </style>

@@ -13,3 +13,9 @@ const formatNumber = n => {
     n = n.toString()
     return n[1] ? n : '0' + n
 }
+
+export const filterFns = {
+    all: todos => todos,
+    active: todos => todos.filter(todo => !todo.completed),
+    completed: todos => todos.filter(todo => todo.completed),
+}
