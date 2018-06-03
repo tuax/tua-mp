@@ -59,21 +59,18 @@ export default {
             default: defaultFn,
         },
     },
-    // TODO
-    // computed: {
-    //     todoClassStr () {
-    //         const completedStr = this.todo.completed ? 'completed' : ''
+    computed: {
+        todoClassStr () {
+            const completedStr = this.todo.completed ? 'completed' : ''
 
-    //         console.log('completedStr', completedStr)
+            // editedTodo 可能为 null
+            if (!this.editedTodo) return completedStr
 
-    //         // editedTodo 可能为 null
-    //         if (!this.editedTodo) return completedStr
+            const editingStr = this.todo.id === this.editedTodo.id ? 'editing' : ''
 
-    //         const editingStr = this.todo.id === this.editedTodo.id ? 'editing' : ''
-
-    //         return [ editingStr, completedStr ].join(' ')
-    //     },
-    // },
+            return [ editingStr, completedStr ].join(' ')
+        },
+    },
     methods: {
         onToggleTodo (e) {
             this.$emit('onToggleTodo', e)

@@ -30,13 +30,25 @@ export default {
             validator: val => VALID_FILTERS.includes(val),
         },
     },
-    // TODO
+    data () {
+        return {
+            visibility: 'test',
+            v: 'test',
+        }
+    },
     computed: {
+        computedVal () {
+            return this.visibility + this.filterType
+        },
     },
     methods: {
         onChangeFilter (e) {
             this.$emit('onChangeFilter', e)
         },
+    },
+    attached () {
+        console.log('this', this)
+        console.log('this.data', this.data)
     },
 }
 </script>

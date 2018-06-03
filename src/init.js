@@ -54,12 +54,9 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                 // 开始依赖收集
                 Dep.targetCb = () => {
-                    asyncSetData({
-                        path: key,
-                        newVal: getVal(),
-                        oldVal,
-                    })
+                    const newVal = getVal()
 
+                    asyncSetData({ path: key, newVal, oldVal })
                     dep.notify()
                 }
                 Dep.targetCb.key = key

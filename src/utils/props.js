@@ -75,11 +75,15 @@ export const getPropertiesFromProps = (props) => {
             }
 
             const getObserverByProp = (prop) => {
-                return function (value) {
+                return function observer (value) {
                     const valid = assertProp({ prop, name, value })
 
-                    const { validator } = prop
+                    // 触发 setter
+                    Promise.resolve().then(() => {
+                        this[name] = value
+                    })
 
+                    const { validator } = prop
                     if (validator && !validator(value)) {
                         warn(`Invalid prop: custom validator check failed for prop "${name}".`)
                         return false

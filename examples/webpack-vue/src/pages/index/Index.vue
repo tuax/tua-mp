@@ -1,6 +1,9 @@
 <config>
 {
-  "navigationBarTitleText": "点击空白处跳转"
+    "navigationBarTitleText": "点击空白处跳转",
+    "usingComponents": {
+        "testComp": "/comps/testComp/testComp"
+    }
 }
 </config>
 
@@ -9,6 +12,11 @@
         <button type="primary" catchtap="gotoTodos">
             点我去 todos 页面
         </button>
+
+        <testComp
+            propA="{{ msg }}"
+            propB="{{ a.b }}"
+        />
 
         <view class="box">msg: {{ msg }}</view>
         <button type="primary" size="mini" catchtap="tapMsg">
