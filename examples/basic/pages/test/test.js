@@ -42,12 +42,6 @@ TuaPage({
                     {
                         name: 'jame',
                     },
-                    {
-                        name: 'james',
-                    },
-                    {
-                        name: 'jameeeee',
-                    },
                 ],
                 insertNestedArr: [],
             },

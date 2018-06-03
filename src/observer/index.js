@@ -70,7 +70,8 @@ export const defineReactive = ({
                 val &&
                 oldVal &&
                 !val[__dep__] &&
-                oldVal[__dep__]
+                oldVal[__dep__] &&
+                typeof val === 'object'
 
             // 继承依赖
             if (isNeedInheritDep) {
