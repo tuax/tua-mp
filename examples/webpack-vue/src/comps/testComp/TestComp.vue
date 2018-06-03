@@ -22,19 +22,15 @@
 </template>
 
 <script>
-import { VALID_FILTERS } from '@const'
-
 let n = 0
 
 export default {
     props: {
         propA: {
             type: String,
-            validator: val => VALID_FILTERS.includes(val),
         },
         propB: {
             type: String,
-            validator: val => VALID_FILTERS.includes(val),
         },
     },
     data () {

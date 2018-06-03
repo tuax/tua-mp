@@ -1,5 +1,5 @@
 <view
-    class="li todo {{ todo.completed ? 'completed' : '' }} {{ todo.id === editedTodo.id ? 'editing' : '' }}"
+    class="li todo {{ todoClassStr }}"
 >
     <view class="view">
         <checkbox-group

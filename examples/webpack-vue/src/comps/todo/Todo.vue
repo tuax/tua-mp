@@ -5,9 +5,7 @@
 </config>
 
 <template lang="wxml">
-    <view
-        class="li todo {{ todo.completed ? 'completed' : '' }} {{ todo.id === editedTodo.id ? 'editing' : '' }}"
-    >
+    <view class="li todo {{ todoClassStr }}">
         <view class="view">
             <checkbox-group
                 data-index="{{ index }}"
