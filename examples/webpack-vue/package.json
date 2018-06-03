@@ -1,6 +1,6 @@
 {
     "name": "tua-mp-example-webpack-vue",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "An example of using tua-mp with webpack",
     "scripts": {
         "start": "webpack -w --env.isDev",
@@ -15,7 +15,7 @@
     "author": "StEve Young",
     "license": "MIT",
     "dependencies": {
-        "tua-mp": "^0.6.0"
+        "tua-mp": "^0.6.1"
     },
     "devDependencies": {
         "babel-core": "^6.26.3",

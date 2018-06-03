@@ -69,7 +69,7 @@ $ yarn add tua-mp
 * scss/sass: 需要在 js 中引入，生成对应的 wxss
 * stylus: 需要在 js 中引入，生成对应的 wxss
 
-代码片段地址为：**[wechatide://minicode/mjw6STmy6mZv](wechatide://minicode/mjw6STmy6mZv)**
+代码片段地址为：**[wechatide://minicode/kwBhRTm26YZL](wechatide://minicode/kwBhRTm26YZL)**
 
 ### 2.利用 vue-loader 支持单文件组件 -- [examples/webpack-vue/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-vue)
 
@@ -92,7 +92,7 @@ $ yarn add tua-mp
 
 <image src="./doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
 
-代码片段地址为：**[wechatide://minicode/pvwXFTmI6QZ7](wechatide://minicode/pvwXFTmI6QZ7)**
+代码片段地址为：**[wechatide://minicode/kGBfYTmQ6OZa](wechatide://minicode/kGBfYTmQ6OZa)**
 
 **以上两个例子中的 `/pages/todos/todos` 页面都实现了 todos 应用。**
 
