@@ -22,7 +22,7 @@
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
 
-`dist/` 目录代码片段地址为：**wechatide://minicode/aBYKvtmM6EZJ**
+`dist/` 目录代码片段地址为：**wechatide://minicode/mjw6STmy6mZv**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
@@ -39,21 +39,44 @@
 ├── README.md
 ├── dist
 │   ├── app.js
-│   ├── app.js.map
 │   ├── app.json
 │   ├── app.wxss
 │   ├── assets
 │   │   └── vue-logo.png
 │   ├── chunks
 │   │   ├── runtime.js
-│   │   ├── runtime.js.map
 │   │   ├── scripts.js
-│   │   ├── scripts.js.map
-│   │   ├── vendors.js
-│   │   └── vendors.js.map
+│   │   └── vendors.js
+│   ├── comps
+│   │   ├── filter
+│   │   │   ├── filter.js
+│   │   │   ├── filter.json
+│   │   │   ├── filter.wxml
+│   │   │   └── filter.wxss
+│   │   └── todo
+│   │       ├── todo.js
+│   │       ├── todo.json
+│   │       ├── todo.wxml
+│   │       └── todo.wxss
 │   ├── pages
-│   │   ...
-│   └── project.config.json
+│   │   ├── index
+│   │   │   ├── index.js
+│   │   │   ├── index.json
+│   │   │   ├── index.wxml
+│   │   │   └── index.wxss
+│   │   ├── logs
+│   │   │   ├── logs.js
+│   │   │   ├── logs.json
+│   │   │   ├── logs.wxml
+│   │   │   └── logs.wxss
+│   │   └── todos
+│   │       ├── todos.js
+│   │       ├── todos.json
+│   │       ├── todos.wxml
+│   │       └── todos.wxss
+│   ├── project.config.json
+│   └── templates
+│       └── info.wxml
 ├── package.json
 ├── project.config.json
 ├── src
@@ -64,6 +87,16 @@
 │   ├── assets
 │   │   └── vue-logo.png
 │   ├── comps
+│   │   ├── filter
+│   │   │   ├── filter.js
+│   │   │   ├── filter.json
+│   │   │   ├── filter.less
+│   │   │   └── filter.wxml
+│   │   └── todo
+│   │       ├── todo.js
+│   │       ├── todo.json
+│   │       ├── todo.less
+│   │       └── todo.wxml
 │   ├── pages
 │   │   ├── index
 │   │   │   ├── index.js
@@ -82,9 +115,11 @@
 │   │       └── todos.wxml
 │   ├── scripts
 │   │   ├── const
-│   │   │   └── README.md
+│   │   │   ├── README.md
+│   │   │   └── index.js
 │   │   └── utils
 │   │       ├── README.md
+│   │       ├── event.js
 │   │       ├── format.js
 │   │       ├── index.js
 │   │       └── log.js
@@ -93,6 +128,7 @@
 │   │   ├── todomvc-app-css.css
 │   │   └── todomvc-common-base.css
 │   └── templates
+│       └── info.wxml
 ├── webpack.config.babel.js
 └── yarn.lock
 ```

@@ -46,10 +46,6 @@ export default {
             this.$emit('onChangeFilter', e)
         },
     },
-    attached () {
-        console.log('this', this)
-        console.log('this.data', this.data)
-    },
 }
 </script>
 

@@ -19,13 +19,17 @@
 
 <image src="../../doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
 
+其中 `/pages/todos/todos` 页面实现了 todos 应用。
+
+<image src="../../doc/imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
 * 发布时运行 `npm run build`，`webpack` 会先删除 `dist/` 然后将源码压缩生成到其中
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
 
-`dist/` 目录的代码片段地址为：**wechatide://minicode/LtqLzymd6lZc**
+`dist/` 目录的代码片段地址为：**wechatide://minicode/pvwXFTmI6QZ7**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
@@ -57,20 +61,49 @@
 │   │   ├── scripts.js.map
 │   │   ├── vendors.js
 │   │   └── vendors.js.map
-│   └── pages
-│       ├── index
-│       │   ├── index.js
-│       │   ├── index.js.map
-│       │   ├── index.json
-│       │   ├── index.wxml
-│       │   └── index.wxss
-│       └── logs
-│           ├── logs.js
-│           ├── logs.js.map
-│           ├── logs.json
-│           ├── logs.wxml
-│           └── logs.wxss
+│   ├── comps
+│   │   ├── filter
+│   │   │   ├── filter.js
+│   │   │   ├── filter.js.map
+│   │   │   ├── filter.json
+│   │   │   ├── filter.wxml
+│   │   │   └── filter.wxss
+│   │   ├── testComp
+│   │   │   ├── testComp.js
+│   │   │   ├── testComp.js.map
+│   │   │   ├── testComp.json
+│   │   │   ├── testComp.wxml
+│   │   │   └── testComp.wxss
+│   │   └── todo
+│   │       ├── todo.js
+│   │       ├── todo.js.map
+│   │       ├── todo.json
+│   │       ├── todo.wxml
+│   │       └── todo.wxss
+│   ├── pages
+│   │   ├── index
+│   │   │   ├── index.js
+│   │   │   ├── index.js.map
+│   │   │   ├── index.json
+│   │   │   ├── index.wxml
+│   │   │   └── index.wxss
+│   │   ├── logs
+│   │   │   ├── logs.js
+│   │   │   ├── logs.js.map
+│   │   │   ├── logs.json
+│   │   │   ├── logs.wxml
+│   │   │   └── logs.wxss
+│   │   └── todos
+│   │       ├── todos.js
+│   │       ├── todos.js.map
+│   │       ├── todos.json
+│   │       ├── todos.wxml
+│   │       └── todos.wxss
+│   ├── project.config.json
+│   └── templates
+│       └── info.wxml
 ├── package.json
+├── project.config.json
 ├── src
 │   ├── app
 │   │   ├── App.vue
@@ -78,24 +111,42 @@
 │   │   └── app.json
 │   ├── assets
 │   │   └── vue-logo.png
+│   ├── comps
+│   │   ├── filter
+│   │   │   ├── Filter.vue
+│   │   │   └── index.js
+│   │   ├── testComp
+│   │   │   ├── TestComp.vue
+│   │   │   └── index.js
+│   │   └── todo
+│   │       ├── Todo.vue
+│   │       └── index.js
 │   ├── pages
 │   │   ├── index
 │   │   │   ├── Index.vue
 │   │   │   └── index.js
-│   │   └── logs
-│   │       ├── Logs.vue
-│   │       └── logs.js
+│   │   ├── logs
+│   │   │   ├── Logs.vue
+│   │   │   └── index.js
+│   │   └── todos
+│   │       ├── Todos.vue
+│   │       └── index.js
 │   ├── scripts
 │   │   ├── const
-│   │   │   └── README.md
+│   │   │   ├── README.md
+│   │   │   └── index.js
 │   │   └── utils
 │   │       ├── README.md
+│   │       ├── event.js
 │   │       ├── format.js
 │   │       ├── index.js
 │   │       └── log.js
-│   └── styles
-│       └── global.styl
-├── vue-loader.conf.js
+│   ├── styles
+│   │   ├── global.styl
+│   │   ├── todomvc-app-css.css
+│   │   └── todomvc-common-base.css
+│   └── templates
+│       └── info.wxml
 ├── webpack.config.babel.js
 └── yarn.lock
 ```
