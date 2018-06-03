@@ -1,4 +1,4 @@
-import { TuaPage } from '@/../../../src/'
+import { TuaPage } from 'tua-mp'
 
 import './index.less'
 

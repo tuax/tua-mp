@@ -1,4 +1,4 @@
-import { TuaComp } from '@/../../../src/'
+import { TuaComp } from 'tua-mp'
 import { VALID_FILTERS } from '@const'
 
 import './filter.less'
