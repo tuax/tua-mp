@@ -30,11 +30,6 @@
 		"miniprogram": {
 			"current": 0,
 			"list": [
-				{
-					"id": -1,
-					"name": "todos",
-					"pathName": "pages/todos/todos"
-				}
 			]
 		}
 	}
