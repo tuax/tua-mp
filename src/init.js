@@ -1,7 +1,10 @@
 import {
+    warn,
     proxyData,
+} from './utils/index'
+import {
     COMMON_PROP,
-} from './utils'
+} from './constants'
 import Dep from './observer/dep'
 
 /**
@@ -29,6 +32,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
     Object.keys(computed).forEach((key) => {
         const dep = new Dep()
         const getVal = computed[key].bind(vm)
+
         let oldVal = getVal()
         let isInit = true
 
@@ -50,14 +54,12 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                 // 开始依赖收集
                 Dep.targetCb = () => {
-                    asyncSetData({
-                        path: key,
-                        newVal: getVal(),
-                        oldVal,
-                    })
+                    const newVal = getVal()
 
+                    asyncSetData({ path: key, newVal, oldVal })
                     dep.notify()
                 }
+                Dep.targetCb.key = key
 
                 // 重置 oldVal
                 oldVal = getVal()
@@ -69,7 +71,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                 return oldVal
             },
             set () {
-                console.warn(`[TUA-MP]: 请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
+                warn(`请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
             },
         })
     })

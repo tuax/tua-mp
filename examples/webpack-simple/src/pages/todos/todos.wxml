@@ -1,0 +1,70 @@
+<import src="/templates/info.wxml" />
+
+<view class="todoapp">
+    <view class="header">
+        <view class="h1">todos</view>
+        <input
+            focus
+            value="{{ newTodo }}"
+            class="new-todo"
+            bindinput="inputTodo"
+            bindconfirm="addTodo"
+            placeholder="What needs to be done?"
+        />
+    </view>
+
+    <view class="main" hidden="{{ !todos.length }}">
+        <checkbox-group bindchange="toggleAll">
+            <checkbox
+                id="toggle-all"
+                class="toggle-all {{ allDone ? 'checked' : '' }}"
+                value="{{ allDone }}"
+                checked="{{ allDone }}"
+            />
+            <label for="toggle-all">Mark all as complete</label>
+        </checkbox-group>
+
+        <view class="todo-list">
+            <todo
+                wx:for="{{ filteredTodos }}"
+                wx:key="id"
+                wx:for-item="todo"
+                wx:for-index="index"
+                todo="{{ todo }}"
+                index="{{ index }}"
+                editedTodo="{{ editedTodo }}"
+                bind:onBlurTodo="onBlurTodo"
+                bind:onPressTodo="onPressTodo"
+                bind:onTapRemove="onTapRemove"
+                bind:onToggleTodo="onToggleTodo"
+            />
+        </view>
+    </view>
+
+    <view class="footer" hidden="{{ !todos.length }}">
+        <view class="todo-count">
+            {{ remaining }} {{ remainingStr }} left
+        </view>
+
+        <view class="filters">
+            <filter
+                wx:for="{{ VALID_FILTERS }}"
+                wx:key="*this"
+                wx:for-item="filterType"
+                visibility="{{ visibility }}"
+                filterType="{{ filterType }}"
+                bind:onChangeFilter="onChangeFilter"
+            />
+        </view>
+
+        <view
+            class="clear-completed"
+            bindtap="removeCompleted"
+            style="{{ clearCompletedStyleStr }}"
+        >
+            Clear completed
+        </view>
+    </view>
+</view>
+
+<template is="info" />

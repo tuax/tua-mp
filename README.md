@@ -1,7 +1,7 @@
 <h1 align="center">tua-mp</h1>
 
 <h5 align="center">
-  让我们一步步地陷入用 Vue 写小程序的深渊...
+    让我们一步步地陷入用 Vue 写小程序的深渊...
 </h5>
 
 <p align="center">
@@ -56,34 +56,22 @@ $ tnpm i -S @tencent/tua-mp
 $ yarn add tua-mp
 ```
 
-### 1.只打包处理 js -- [examples/webpack-one/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-one)
-
-![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
-
-由于小程序原生不支持 npm，所以项目结构主要分为 `src/` 和 `dist/`，源码放在 `src/`，利用 `webpack` 打包后的代码生成在 `dist/`。
-
-但 webpack 仅仅对于 js 进行打包，**对于 `wxml/wxss/json` 文件不进行处理，只是简单拷贝**
-
-代码片段地址为：**[wechatide://minicode/riXectmM6TZj](wechatide://minicode/riXectmM6TZj)**
-
-> 注意：打开的是`dist/` 目录
-> 并且为了分享 `minicode`（不超过 100k） 使用 `npm run build` 进行了压缩，在开发过程中运行 `npm start` 不会压缩代码
-
-### 2.支持预处理器 -- [examples/webpack-two/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-two)
+### 1.支持预处理器 -- [examples/webpack-simple/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-simple)
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
 
+* js: 经过 babel 编译成 ES5
 * wxss: 会被拷贝到 dist/ 下的对应路径
 * css: 需要在 js 中引入，生成对应的 wxss
 * less: 需要在 js 中引入，生成对应的 wxss
 * scss/sass: 需要在 js 中引入，生成对应的 wxss
 * stylus: 需要在 js 中引入，生成对应的 wxss
 
-代码片段地址为：**[wechatide://minicode/aBYKvtmM6EZJ](wechatide://minicode/aBYKvtmM6EZJ)**
+代码片段地址为：**[wechatide://minicode/mjw6STmy6mZv](wechatide://minicode/mjw6STmy6mZv)**
 
-### 3.利用 vue-loader 支持单文件组件 -- [examples/webpack-three/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-three)
+### 2.利用 vue-loader 支持单文件组件 -- [examples/webpack-vue/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-vue)
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 ![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
@@ -104,6 +92,12 @@ $ yarn add tua-mp
 
 <image src="./doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
 
+代码片段地址为：**[wechatide://minicode/pvwXFTmI6QZ7](wechatide://minicode/pvwXFTmI6QZ7)**
+
+**以上两个例子中的 `/pages/todos/todos` 页面都实现了 todos 应用。**
+
+<image src="./doc/imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
 
@@ -112,6 +106,10 @@ $ yarn add tua-mp
 * 实现 `computed` 功能
 * 实现 `watch` 功能
 * 实现异步 `setData` 功能，即假如在一个事件循环周期内多次对于同一个属性赋值，只会触发一次小程序原生的 `setData` 函数以及相关的 `watch` 函数（详见下面例子中的 `onLoad` 函数）
+* 实现小程序原生组件的适配
+  * 可以传递 Vue 风格的 props
+  * 可以使用 computed、watch
+  * 并使用 $emit 封装了原生的 triggerEvent 方法
 
 ```js
 import { TuaPage } from 'tua-mp'
@@ -212,7 +210,10 @@ TuaPage({
 ```
 
 ## 3.文档
+框架开发过程中的坑和心得记录：
+
 * [1.小程序之告别 setData](https://github.com/tuateam/tua-mp/blob/master/doc/1.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%20setData.md)
+* [2.小程序之告别“刀耕火种”](https://github.com/tuateam/tua-mp/blob/master/doc/2.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%E5%88%80%E8%80%95%E7%81%AB%E7%A7%8D.md)
 
 ## TODO
 详见 [issues](https://github.com/tuateam/tua-mp/issues)

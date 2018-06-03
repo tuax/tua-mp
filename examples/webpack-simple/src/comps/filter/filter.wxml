@@ -1,0 +1,9 @@
+<view class="li">
+    <view
+        class="a {{ visibility === filterType ? 'selected' : '' }}"
+        data-filter="{{ filterType }}"
+        bindtap="onChangeFilter"
+    >
+        {{ filterType }}
+    </view>
+</view>

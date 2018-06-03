@@ -1,0 +1,34 @@
+<view
+    class="li todo {{ todoClassStr }}"
+>
+    <view class="view">
+        <checkbox-group
+            data-index="{{ index }}"
+            bindchange="onToggleTodo"
+        >
+            <checkbox
+                class="toggle {{ todo.completed ? 'checked' : '' }}"
+                checked="{{ todo.completed }}"
+            />
+            <label
+                data-todo="{{ todo }}"
+                bindlongpress="onPressTodo"
+            >
+                {{ todo.title }}
+            </label>
+        </checkbox-group>
+
+        <view
+            class="destroy"
+            data-index="{{ index }}"
+            bindtap="onTapRemove"
+        />
+    </view>
+
+    <input
+        class="edit"
+        value="{{ todo.title }}"
+        data-index="{{ index }}"
+        bindblur="onBlurTodo"
+    />
+</view>

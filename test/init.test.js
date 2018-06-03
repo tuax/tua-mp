@@ -2,10 +2,8 @@ import {
     bindData,
     bindComputed,
 } from '../src/init'
-import {
-    getObserveDeep,
-    getAsyncSetData,
-} from '../src/observer'
+import { getObserveDeep } from '../src/observer/'
+import { getAsyncSetData } from '../src/asyncSetData'
 import { afterSetData } from './utils'
 
 const watch = {
@@ -85,8 +83,7 @@ describe('observe functions', () => {
 
                 expect(vm.sAndsyPlusHey).toBe('y' + plusHey(newVal2))
                 expect(watch.sAndsyPlusHey).toBeCalledWith('y' + plusHey(newVal2), 'y' + plusHey(newVal1))
-                expect(watch.nestedArrLen).toHaveBeenCalledTimes(0)
-
+                expect(watch.nestedArrLen).toHaveBeenCalledTimes(2)
                 done()
             })
         })

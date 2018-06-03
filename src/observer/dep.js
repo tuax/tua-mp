@@ -10,9 +10,7 @@ export default class Dep {
     }
 
     notify () {
-        this.subs
-            .slice()
-            .forEach(sub => sub())
+        this.subs.forEach(sub => sub())
     }
 }
 

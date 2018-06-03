@@ -1,0 +1,105 @@
+page {
+    margin: 0 auto;
+
+    color: #4d4d4d;
+    background: #f5f5f5;
+
+    font: 28rpx 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.todoapp .h1 {
+    position: absolute;
+    top: -260rpx;
+
+    width: 100%;
+
+    text-align: center;
+
+    color: rgba(175, 47, 47, 0.15);
+
+    font-size: 200rpx;
+    font-weight: 100;
+
+    -webkit-text-rendering: optimizeLegibility;
+    -moz-text-rendering: optimizeLegibility;
+    text-rendering: optimizeLegibility;
+}
+
+input {
+    height: 140rpx;
+
+    font-size: 40rpx;
+    line-height: 140rpx;
+}
+
+.new-todo {
+    padding: 32rpx 32rpx 32rpx 100rpx;
+}
+
+.toggle-all + label {
+    top: -110rpx;
+    left: -20rpx;
+
+    width: 120rpx;
+    height: 68rpx;
+}
+
+.toggle-all + label:before {
+    padding: 20rpx 54rpx 20rpx 54rpx;
+
+    content: '❯';
+
+    color: #e6e6e6;
+
+    font-size: 22px;
+}
+
+.toggle-all.checked + label:before {
+    color: #737373;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+
+    height: 40rpx;
+    padding: 20rpx 30rpx;
+
+    .todo-count {
+        float: none;
+        flex: 0 0 auto;
+    }
+
+    .filters {
+        position: static;
+        z-index: 1;
+
+        display: inline-block;
+        flex: 0 0 auto;
+    }
+
+    .clear-completed {
+        float: none;
+        flex: 0 0 auto;
+
+        text-decoration: underline;
+
+        line-height: 1;
+    }
+}
+
+.info {
+    font-size: 40rpx;
+
+    .a {
+        text-decoration: underline;
+
+        color: inherit;
+
+        font-weight: 400;
+    }
+}

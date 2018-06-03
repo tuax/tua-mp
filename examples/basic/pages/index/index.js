@@ -1,130 +1,53 @@
-// index.js
-import { TuaPage } from '../../utils/tua-mp'
-import {
-    testArrayData,
-    testSimpleData,
-    testNestedData,
-    testNestedArrayData,
-    testInsertNestedArrayData,
-} from '../../test/data'
+// 获取应用实例
+const app = getApp()
 
-let n = 0
-
-TuaPage({
-    data () {
-        return {
-            msg: 'msg',
-            a: {
-                b: 'a.b',
-            },
-            arr: [
-                { c: { d: 'd0' } },
-                { c: { d: 'd1' } },
-                1, 2, 3,
-            ],
-            g: 'hello world',
-
-            // 测试所需数据
-            testData: {
-                nested: {
-                    steve: 'steve',
-                    young: {
-                        young: 'young',
-                    },
-                },
-                arr: [],
-                nestedArr: [
-                    {
-                        name: 'steve',
-                        nick: {
-                            young: 'young',
-                        },
-                    },
-                    {
-                        name: 'jame',
-                    },
-                ],
-                insertNestedArr: [],
-            },
+Page({
+    data: {
+        motto: 'Hello World',
+        userInfo: {},
+        hasUserInfo: false,
+        canIUse: wx.canIUse('button.open-type.getUserInfo')
+    },
+    // 事件处理函数
+    bindViewTap: function () {
+        wx.navigateTo({
+            url: '../logs/logs'
+        })
+    },
+    onLoad: function () {
+        if (app.globalData.userInfo) {
+            this.setData({
+                userInfo: app.globalData.userInfo,
+                hasUserInfo: true
+            })
+        } else if (this.data.canIUse) {
+            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+            // 所以此处加入 callback 以防止这种情况
+            app.userInfoReadyCallback = res => {
+                this.setData({
+                    userInfo: res.userInfo,
+                    hasUserInfo: true
+                })
+            }
+        } else {
+            // 在没有 open-type=getUserInfo 版本的兼容处理
+            wx.getUserInfo({
+                success: res => {
+                    app.globalData.userInfo = res.userInfo
+                    this.setData({
+                        userInfo: res.userInfo,
+                        hasUserInfo: true
+                    })
+                }
+            })
         }
     },
-    onLoad () {
-        console.log(this)
-        global = this
-
-        for (let i = 100; i > 90; i--) {
-            this.g = i
-            this['g'] = i + 1
-        }
-
-        // feature test
-        testArrayData(this)
-        testSimpleData(this)
-        testNestedData(this)
-        testNestedArrayData(this)
-        testInsertNestedArrayData(this)
-    },
-    computed: {
-        reversedG () {
-            return this.reverseStr(this.g)
-        },
-        gAndAB () {
-            return this.g + ' + ' + this.a.b
-        },
-        dataAndComputed () {
-            return this.g + ' + ' + this.reversedG
-        },
-    },
-    watch: {
-        msg (newVal, oldVal) {
-            console.log(`msg: ${oldVal} -> ${newVal}`)
-        },
-        'a.b' (newVal, oldVal) {
-            console.log(`a.b: ${oldVal} -> ${newVal}`)
-            setTimeout(() => {
-                this.msg = this.reverseStr(this.msg)
-            }, 1000)
-        },
-        'g' (newVal, oldVal) {
-            console.log(`g: ${oldVal} -> ${newVal}`)
-        },
-        'reversedG' (newVal, oldVal) {
-            console.log(`reversedG: ${oldVal} -> ${newVal}`)
-        },
-        'gAndAB' (newVal, oldVal) {
-            console.log(`gAndAB: ${oldVal} -> ${newVal}`)
-        },
-    },
-    methods: {
-        tapMsg () {
-            this.msg += n++
-        },
-        tapAB () {
-            this.a.b += n++
-        },
-        tapArr () {
-            this.arr.push(n++)
-        },
-        tapArrNest0 () {
-            this.arr[0].c.d = n++
-        },
-        tapArrNest1 () {
-            this.arr[1].c.d = n++
-        },
-        tapArrSp () {
-            this.arr.splice(2, 2, n++)
-        },
-        tapReverseG () {
-            this.g = this.reversedG
-        },
-        reverseStr (str) {
-            return String(str).split('').reverse().join('')
-        },
-        unshiftNested () {
-            this.arr.unshift({ c: { d: 'hey' } })
-        },
-        gotoLogs () {
-            wx.navigateTo({ url: '/pages/logs/logs' })
-        },
-    },
+    getUserInfo: function (e) {
+        console.log(e)
+        app.globalData.userInfo = e.detail.userInfo
+        this.setData({
+            userInfo: e.detail.userInfo,
+            hasUserInfo: true
+        })
+    }
 })

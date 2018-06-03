@@ -1,0 +1,12 @@
+/**app.scss**/
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-sizing: border-box;
+    height: 100%;
+
+    font-size: 14px;
+}

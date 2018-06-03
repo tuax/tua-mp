@@ -1,8 +1,10 @@
 import {
     getObserveDeep,
+} from '../../src/observer/'
+import {
     getAsyncSetData,
-} from '../../src/observer'
-import { __TUA_PATH } from '../../src/utils'
+} from '../../src/asyncSetData'
+import { __TUA_PATH__ } from '../../src/constants'
 import {
     getArrayMethods,
     patchMethods2Array,
@@ -48,7 +50,7 @@ describe('patch methods to array', () => {
     test('no __proto__', (done) => {
         const arr = []
         const path = 'arr'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
         Object.setPrototypeOf = null
         arr.__proto__ = null
         arr.map = [].map
@@ -68,7 +70,7 @@ describe('patch methods to array', () => {
             expect(arr[0][0].arrObj).toBe('b')
             expect(arr[1].a).toBe('a')
             expect([].hasOwnProperty.call(arr, 'push')).toBe(true)
-            expect(asyncSetData).toHaveBeenCalledTimes(2)
+            expect(asyncSetData).toHaveBeenCalledTimes(4)
             expect(observeDeep).toBeCalledWith(arr, path)
             done()
         })
@@ -77,7 +79,7 @@ describe('patch methods to array', () => {
     test('no Object.setPrototypeOf', (done) => {
         const arr = []
         const path = 'arr'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
         Object.setPrototypeOf = null
 
         patchMethods2Array({ arr, arrayMethods })
@@ -95,7 +97,7 @@ describe('patch methods to array', () => {
             expect(arr[0][0].arrObj).toBe('b')
             expect(arr[1].a).toBe('a')
             expect(arr.hasOwnProperty('push')).toBe(false)
-            expect(asyncSetData).toHaveBeenCalledTimes(2)
+            expect(asyncSetData).toHaveBeenCalledTimes(4)
             expect(observeDeep).toBeCalledWith(arr, path)
             done()
         })
@@ -104,7 +106,7 @@ describe('patch methods to array', () => {
     test('observe new value inserted into array', (done) => {
         const arr = []
         const path = 'arr'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
 
         patchMethods2Array({ arr, arrayMethods })
 
@@ -120,7 +122,7 @@ describe('patch methods to array', () => {
         afterSetData(() => {
             expect(arr[0][0].arrObj).toBe('b')
             expect(arr[1].a).toBe('a')
-            expect(asyncSetData).toHaveBeenCalledTimes(2)
+            expect(asyncSetData).toHaveBeenCalledTimes(4)
             expect(observeDeep).toBeCalledWith(arr, path)
             done()
         })
@@ -130,7 +132,7 @@ describe('patch methods to array', () => {
         const arr = []
         const path = 'arr'
         const newVal = 'this is new a'
-        arr[__TUA_PATH] = path
+        arr[__TUA_PATH__] = path
 
         patchMethods2Array({ arr, arrayMethods })
 
