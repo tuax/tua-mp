@@ -1,6 +1,6 @@
 {
     "name": "tua-mp-example-webpack-simple",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "An example of using tua-mp with webpack",
     "scripts": {
         "start": "webpack -w --env.isDev",
@@ -14,14 +14,14 @@
     "author": "StEve Young",
     "license": "MIT",
     "dependencies": {
-        "tua-mp": "^0.6.0"
+        "tua-mp": "^0.6.1"
     },
     "devDependencies": {
         "babel-core": "^6.26.3",
         "babel-eslint": "^8.2.3",
         "babel-loader": "^7.1.4",
         "babel-plugin-transform-runtime": "^6.23.0",
-        "babel-preset-env": "^1.6.1",
+        "babel-preset-env": "^1.7.0",
         "babel-preset-stage-0": "^6.24.1",
         "copy-webpack-plugin": "^4.5.1",
         "css-loader": "^0.28.11",
@@ -29,9 +29,9 @@
         "eslint-config-standard": "^11.0.0",
         "eslint-friendly-formatter": "^4.0.1",
         "eslint-loader": "^2.0.0",
-        "eslint-plugin-import": "^2.11.0",
+        "eslint-plugin-import": "^2.12.0",
         "eslint-plugin-node": "^6.0.1",
-        "eslint-plugin-promise": "^3.7.0",
+        "eslint-plugin-promise": "^3.8.0",
         "eslint-plugin-standard": "^3.1.0",
         "extract-text-webpack-plugin": "^4.0.0-beta.0",
         "friendly-errors-webpack-plugin": "^1.7.0",
@@ -39,11 +39,11 @@
         "less-loader": "^4.1.0",
         "node-sass": "^4.9.0",
         "rimraf": "^2.6.2",
-        "sass-loader": "^7.0.1",
+        "sass-loader": "^7.0.2",
         "style-loader": "^0.21.0",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
-        "webpack": "^4.8.1",
+        "webpack": "^4.10.2",
         "webpack-cli": "^3.0.1"
     }
 }

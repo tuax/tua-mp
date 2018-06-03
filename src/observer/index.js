@@ -13,9 +13,6 @@ import {
 } from './array'
 import Dep from './dep'
 
-// 缓存数组可变方法
-let arrayMethods = null
-
 /**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
  * @param {Object} obj 被观察对象
@@ -114,12 +111,11 @@ export const getObserveDeep = (asyncSetData) => {
             // 每个数组挂载自己的路径
             arr[__TUA_PATH__] = prefix
 
-            // 缓存数组可变方法，不用每次重复求值
-            arrayMethods = arrayMethods ||
-                getArrayMethods({
-                    observeDeep,
-                    asyncSetData,
-                })
+            // 不缓存数组可变方法，因为 vm 可能不同
+            const arrayMethods = getArrayMethods({
+                observeDeep,
+                asyncSetData,
+            })
 
             return patchMethods2Array({ arr, arrayMethods })
         }

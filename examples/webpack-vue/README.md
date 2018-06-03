@@ -29,7 +29,7 @@
 
 此外还配置了 `babel` 和 `eslint`，使用时可以根据喜好自行更改配置。
 
-`dist/` 目录的代码片段地址为：**wechatide://minicode/pvwXFTmI6QZ7**
+`dist/` 目录的代码片段地址为：**wechatide://minicode/kGBfYTmQ6OZa**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
