@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import WebpackBar from 'webpackbar'
 import { BannerPlugin } from 'webpack'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
@@ -160,6 +161,10 @@ export default ({ isDev }) => ({
         },
     },
     plugins: [
+        new WebpackBar({
+            profile: !isDev,
+            compiledIn: false,
+        }),
         new CopyWebpackPlugin(copyCfgArr, {
             context: resolve('src'),
         }),
