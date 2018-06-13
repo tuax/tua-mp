@@ -53,7 +53,10 @@ test('getPropertiesFromProps', () => {
     })
 
     const expectedProperties = {
-        propA: Number,
+        propA: {
+            type: Number,
+            observer () {},
+        },
         propB: {
             type: null,
             observer () {},
@@ -83,8 +86,14 @@ test('getPropertiesFromProps', () => {
 
     const arrayProperties = getPropertiesFromProps(['steve', 'young'])
     const arrayExpectedProperties = {
-        steve: null,
-        young: null,
+        steve: {
+            type: null,
+            observer () {},
+        },
+        young: {
+            type: null,
+            observer () {},
+        },
     }
     expect(stringify(arrayProperties)).toBe(stringify(arrayExpectedProperties))
 
