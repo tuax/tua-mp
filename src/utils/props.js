@@ -15,11 +15,7 @@ import { TYPES } from '../constants'
  * @param {any} value 实际值
  * @return {Boolean} 是否有效
  */
-export const assertProp = ({
-    prop,
-    name,
-    value,
-}) => {
+export const assertProp = ({ prop, name, value }) => {
     if (value == null) return true
 
     const expectedTypes = []
@@ -28,7 +24,7 @@ export const assertProp = ({
 
     if (type) {
         const typeList = !Array.isArray(type)
-            ? [type]
+            ? [ type ]
             : type
 
         typeList.forEach((type) => {
@@ -54,6 +50,47 @@ export const assertProp = ({
 }
 
 /**
+ * 生成组件的 observer 函数
+ * @param {String} name 名称
+ * @param {Object} prop 类型定义对象（透传给 assertProp）
+ * @param {Array|Function|null} prop.type 定义类型
+ */
+export const getObserver = (name) => (prop) => {
+    return function observer (value) {
+        // 触发 setter
+        Promise.resolve().then(() => {
+            this[name] = value
+        })
+
+        const valid = assertProp({ prop, name, value })
+        const { validator } = prop
+
+        if (validator && !validator(value)) {
+            warn(`Invalid prop: custom validator check failed for prop "${name}".`)
+            return false
+        }
+
+        return valid
+    }
+}
+
+/**
+ * 生成完整单个 prop 对象
+ * @param {String} name 名称
+ * @param {String|Number|Boolean|Object|Array|null} type 类型
+ * @param {any} value 值
+ * @param {Object} propObj 类型定义对象（透传给 assertProp）
+ * @param {Array|Function|null} propObj.type 定义类型
+ */
+export const getPropObj = ({ name, type, value, propObj }) => ({
+    [name]: {
+        type,
+        value,
+        observer: getObserver(name)(propObj),
+    },
+})
+
+/**
  * 将 Vue 风格的 props 改写成小程序原生的 properties
  * @param {Array|Object} props
  */
@@ -61,7 +98,11 @@ export const getPropertiesFromProps = (props) => {
     // 输入数组则转译成接受任意数据类型的 null
     if (Array.isArray(props)) {
         return props
-            .map(prop => ({ [prop]: null }))
+            .map((name) => getPropObj({
+                name,
+                type: null,
+                propObj: { type: null },
+            }))
             .reduce((acc, cur) => ({ ...acc, ...cur }), {})
     }
 
@@ -71,48 +112,32 @@ export const getPropertiesFromProps = (props) => {
 
             // 基本类型的直接返回
             if (TYPES.indexOf(prop) !== -1) {
-                return { [name]: prop }
+                return getPropObj({
+                    name,
+                    type: prop,
+                    propObj: { type: prop },
+                })
             }
 
-            const getObserverByProp = (prop) => {
-                return function observer (value) {
-                    const valid = assertProp({ prop, name, value })
-
-                    // 触发 setter
-                    Promise.resolve().then(() => {
-                        this[name] = value
-                    })
-
-                    const { validator } = prop
-                    if (validator && !validator(value)) {
-                        warn(`Invalid prop: custom validator check failed for prop "${name}".`)
-                        return false
-                    }
-
-                    return valid
-                }
-            }
-
+            // 数组形式的 prop
             // 测试了下不支持直接简写或 type 是数组，只能手动检查了
             if (Array.isArray(prop)) {
-                const property = {
+                return getPropObj({
+                    name,
                     type: null,
-                    observer: getObserverByProp({ type: prop }),
-                }
-
-                return { [name]: property }
+                    propObj: { type: prop },
+                })
             }
 
             // 对象形式的 prop
-            const property = {
+            return getPropObj({
+                name,
                 type: prop.type || null,
                 value: isFn(prop.default)
                     ? prop.default()
                     : prop.default,
-                observer: getObserverByProp(prop),
-            }
-
-            return { [name]: property }
+                propObj: prop,
+            })
         })
         .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 }
