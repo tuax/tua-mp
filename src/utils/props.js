@@ -50,39 +50,51 @@ export const assertProp = ({ prop, name, value }) => {
 }
 
 /**
+ * 生成组件的 observer 函数
+ * @param {String} name 名称
+ * @param {Object} prop 类型定义对象（透传给 assertProp）
+ * @param {Array|Function|null} prop.type 定义类型
+ */
+export const getObserver = (name) => (prop) => {
+    return function observer (value) {
+        // 触发 setter
+        Promise.resolve().then(() => {
+            this[name] = value
+        })
+
+        const valid = assertProp({ prop, name, value })
+        const { validator } = prop
+
+        if (validator && !validator(value)) {
+            warn(`Invalid prop: custom validator check failed for prop "${name}".`)
+            return false
+        }
+
+        return valid
+    }
+}
+
+/**
+ * 生成完整单个 prop 对象
+ * @param {String} name 名称
+ * @param {String|Number|Boolean|Object|Array|null} type 类型
+ * @param {any} value 值
+ * @param {Object} propObj 类型定义对象（透传给 assertProp）
+ * @param {Array|Function|null} propObj.type 定义类型
+ */
+export const getPropObj = ({ name, type, value, propObj }) => ({
+    [name]: {
+        type,
+        value,
+        observer: getObserver(name)(propObj),
+    },
+})
+
+/**
  * 将 Vue 风格的 props 改写成小程序原生的 properties
  * @param {Array|Object} props
  */
 export const getPropertiesFromProps = (props) => {
-    // 根据 name 和 prop 生成 observer
-    const getObserver = (name) => (prop) => {
-        return function observer (value) {
-            // 触发 setter
-            Promise.resolve().then(() => {
-                this[name] = value
-            })
-
-            const valid = assertProp({ prop, name, value })
-            const { validator } = prop
-
-            if (validator && !validator(value)) {
-                warn(`Invalid prop: custom validator check failed for prop "${name}".`)
-                return false
-            }
-
-            return valid
-        }
-    }
-
-    // 根据 name、type、value 和 propObj 生成完整 prop 对象
-    const getPropObj = ({ name, type, value, propObj }) => ({
-        [name]: {
-            type,
-            value,
-            observer: getObserver(name)(propObj),
-        },
-    })
-
     // 输入数组则转译成接受任意数据类型的 null
     if (Array.isArray(props)) {
         return props
