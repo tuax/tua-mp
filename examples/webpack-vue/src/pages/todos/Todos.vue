@@ -2,8 +2,8 @@
 {
     "navigationBarTitleText": "tua-mp todos",
     "usingComponents": {
-        "todo": "/comps/todo/todo",
-        "filter": "/comps/filter/filter"
+        "Todo": "./comps/Todo/Todo",
+        "Filter": "/comps/Filter/Filter"
     }
 }
 </config>
@@ -36,7 +36,7 @@
             </checkbox-group>
 
             <view class="todo-list">
-                <todo
+                <Todo
                     wx:for="{{ filteredTodos }}"
                     wx:key="id"
                     wx:for-item="todo"
@@ -58,7 +58,7 @@
             </view>
 
             <view class="filters">
-                <filter
+                <Filter
                     wx:for="{{ VALID_FILTERS }}"
                     wx:key="*this"
                     wx:for-item="filterType"

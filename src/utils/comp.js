@@ -4,7 +4,7 @@
  * @param {Object} detail 自定义事件所携带的数据
  * @param {Object} currentTarget 当前组件的一些属性值集合
  */
-export const getValFromEvent = ({ detail, currentTarget }) =>
+export const getValFromEvent = ({ detail, currentTarget = {} }) =>
     ({ ...detail, ...currentTarget.dataset })
 
 /**
@@ -13,7 +13,7 @@ export const getValFromEvent = ({ detail, currentTarget }) =>
  * @param {Event} event 小程序原生事件
  * @param {Object} options 小程序原生触发事件的选项
  */
-export const $emit = function (eventName, event, options) {
+export const $emit = function (eventName, event = {}, options) {
     this.triggerEvent(
         eventName,
         getValFromEvent(event),

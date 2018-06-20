@@ -27,11 +27,11 @@
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
-<image src="./doc/imgs/open-by-tab.png" width="400" alt="open-by-tab" />
+<image src="./imgs/open-by-tab.png" width="400" alt="open-by-tab" />
 
 [如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 
-<image src="./doc/imgs/minicode.png" width="400" alt="minicode" />
+<image src="./imgs/minicode.png" width="400" alt="minicode" />
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
 
@@ -90,13 +90,13 @@ $ yarn add tua-mp
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="./doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
+<image src="./imgs/logs.vue.png" width="400" alt="logs.vue" />
 
 代码片段地址为：**[wechatide://minicode/kGBfYTmQ6OZa](wechatide://minicode/kGBfYTmQ6OZa)**
 
 **以上两个例子中的 `/pages/todos/todos` 页面都实现了 todos 应用。**
 
-<image src="./doc/imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+<image src="./imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
@@ -212,8 +212,9 @@ TuaPage({
 ## 3.文档
 框架开发过程中的坑和心得记录：
 
-* [1.小程序之告别 setData](https://github.com/tuateam/tua-mp/blob/master/doc/1.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%20setData.md)
-* [2.小程序之告别“刀耕火种”](https://github.com/tuateam/tua-mp/blob/master/doc/2.%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%91%8A%E5%88%AB%E5%88%80%E8%80%95%E7%81%AB%E7%A7%8D.md)
+* [1.终极蛇皮上帝视角之微信小程序之告别 setData](https://github.com/BuptStEve/blog/issues/12)
+* [2.终极蛇皮上帝视角之微信小程序之告别“刀耕火种”](https://github.com/BuptStEve/blog/issues/13)
+* [3.微信小程序之如何使用自定义组件封装原生 image 组件](https://github.com/BuptStEve/blog/issues/14)
 
 ## TODO
 详见 [issues](https://github.com/tuateam/tua-mp/issues)
