@@ -2,7 +2,7 @@
 {
     "navigationBarTitleText": "点击空白处跳转",
     "usingComponents": {
-        "testComp": "/comps/testComp/testComp"
+        "TestComp": "./comps/TestComp/TestComp"
     }
 }
 </config>
@@ -13,7 +13,7 @@
             点我去 todos 页面
         </button>
 
-        <testComp
+        <TestComp
             propA="{{ msg }}"
             propB="{{ a.b }}"
         />
