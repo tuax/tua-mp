@@ -49,53 +49,45 @@
 ├── README.md
 ├── dist
 │   ├── app.js
-│   ├── app.js.map
 │   ├── app.json
 │   ├── app.wxss
 │   ├── assets
 │   │   └── vue-logo.png
 │   ├── chunks
 │   │   ├── runtime.js
-│   │   ├── runtime.js.map
 │   │   ├── scripts.js
-│   │   ├── scripts.js.map
-│   │   ├── vendors.js
-│   │   └── vendors.js.map
+│   │   └── vendors.js
 │   ├── comps
-│   │   ├── filter
-│   │   │   ├── filter.js
-│   │   │   ├── filter.js.map
-│   │   │   ├── filter.json
-│   │   │   ├── filter.wxml
-│   │   │   └── filter.wxss
-│   │   ├── testComp
-│   │   │   ├── testComp.js
-│   │   │   ├── testComp.js.map
-│   │   │   ├── testComp.json
-│   │   │   ├── testComp.wxml
-│   │   │   └── testComp.wxss
-│   │   └── todo
-│   │       ├── todo.js
-│   │       ├── todo.js.map
-│   │       ├── todo.json
-│   │       ├── todo.wxml
-│   │       └── todo.wxss
+│   │   └── Filter
+│   │       ├── Filter.js
+│   │       ├── Filter.json
+│   │       ├── Filter.wxml
+│   │       └── Filter.wxss
 │   ├── pages
 │   │   ├── index
+│   │   │   ├── comps
+│   │   │   │   └── TestComp
+│   │   │   │       ├── TestComp.js
+│   │   │   │       ├── TestComp.json
+│   │   │   │       ├── TestComp.wxml
+│   │   │   │       └── TestComp.wxss
 │   │   │   ├── index.js
-│   │   │   ├── index.js.map
 │   │   │   ├── index.json
 │   │   │   ├── index.wxml
 │   │   │   └── index.wxss
 │   │   ├── logs
 │   │   │   ├── logs.js
-│   │   │   ├── logs.js.map
 │   │   │   ├── logs.json
 │   │   │   ├── logs.wxml
 │   │   │   └── logs.wxss
 │   │   └── todos
+│   │       ├── comps
+│   │       │   └── Todo
+│   │       │       ├── Todo.js
+│   │       │       ├── Todo.json
+│   │       │       ├── Todo.wxml
+│   │       │       └── Todo.wxss
 │   │       ├── todos.js
-│   │       ├── todos.js.map
 │   │       ├── todos.json
 │   │       ├── todos.wxml
 │   │       └── todos.wxss
@@ -107,29 +99,31 @@
 ├── src
 │   ├── app
 │   │   ├── App.vue
-│   │   ├── app.js
-│   │   └── app.json
+│   │   ├── app.json
+│   │   └── index.js
 │   ├── assets
 │   │   └── vue-logo.png
 │   ├── comps
-│   │   ├── filter
-│   │   │   ├── Filter.vue
-│   │   │   └── index.js
-│   │   ├── testComp
-│   │   │   ├── TestComp.vue
-│   │   │   └── index.js
-│   │   └── todo
-│   │       ├── Todo.vue
+│   │   └── Filter
+│   │       ├── Filter.vue
 │   │       └── index.js
 │   ├── pages
 │   │   ├── index
 │   │   │   ├── Index.vue
+│   │   │   ├── comps
+│   │   │   │   └── TestComp
+│   │   │   │       ├── TestComp.vue
+│   │   │   │       └── index.js
 │   │   │   └── index.js
 │   │   ├── logs
 │   │   │   ├── Logs.vue
 │   │   │   └── index.js
 │   │   └── todos
 │   │       ├── Todos.vue
+│   │       ├── comps
+│   │       │   └── Todo
+│   │       │       ├── Todo.vue
+│   │       │       └── index.js
 │   │       └── index.js
 │   ├── scripts
 │   │   ├── const
@@ -148,6 +142,7 @@
 │   └── templates
 │       └── info.wxml
 ├── webpack.config.babel.js
+├── webpackUtils.js
 └── yarn.lock
 ```
 
@@ -156,6 +151,8 @@
 * assets/: 资源文件，比如图片
 * comps/: 组件
 * pages/: 页面
+    * pages/index/comps/: 属于 index 的页面级组件
+    * pages/todos/comps/: 属于 todos 的页面级组件
 * scripts: 公用代码
 * scripts/const: 常量（已配置别名 @const）
 * scripts/utils: 辅助函数（已配置别名 @utils）
@@ -167,3 +164,7 @@
     * runtime: [是 webapck 在运行时连接各个模块的代码](https://doc.webpack-china.org/concepts/manifest/#runtime)
     * vendors: 是提取的 `node_modules` 下的依赖
     * scripts: 是提取的 `src/scripts/` 下的依赖
+* comps/: 组件
+* pages/: 页面
+    * pages/index/comps/: 属于 index 的页面级组件
+    * pages/todos/comps/: 属于 todos 的页面级组件

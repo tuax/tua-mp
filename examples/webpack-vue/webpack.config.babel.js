@@ -1,69 +1,16 @@
-import fs from 'fs'
-import path from 'path'
 import WebpackBar from 'webpackbar'
 import { BannerPlugin } from 'webpack'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { VueLoaderPlugin } from 'vue-loader'
 import EslintFriendlyFormatter from 'eslint-friendly-formatter'
-import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin'
-
-const resolve = (...dir) => path.resolve(__dirname, ...dir)
-
-// 从 src/ 直接拷贝到 dist/
-const getCopyCfg = (base, ext) => ({
-    from: `${base}/**/*${ext}`,
-    to: `[path]/[name]${ext}`,
-})
-const PROJECT_CFG = 'project.config.json'
-const copyCfgArr = [
-    // 图片
-    { from: 'assets/', to: 'assets/' },
-    // 模板
-    { from: 'templates/', to: 'templates/' },
-    // 配置
-    { from: 'app/app.json', to: 'app.json' },
-    // 开发者工具配置
-    { from: `../${PROJECT_CFG}`, to: PROJECT_CFG },
-    // pages
-    getCopyCfg('pages', '.wxml'),
-    getCopyCfg('pages', '.json'),
-    // comps
-    getCopyCfg('comps', '.wxml'),
-    getCopyCfg('comps', '.json'),
-]
-
-/**
- * 通过 base 下的中间路径，生成类似
- * pages/index/index
- * comps/tua-image/tua-image
- * 这样的路径作为 name，以便后续生成对应路径上的 js 和 wxss
- * @param {String} base 基础路径 pages|comps
- * @return {Object} 对象形式的 entry
- */
-const getEntryByDirPath = (base) => fs.readdirSync(resolve('src', base))
-    .map((dirPath) => ({
-        dirPath,
-        url: resolve('src', base, dirPath),
-    }))
-    .filter(({ url }) => fs.statSync(url).isDirectory())
-    .reduce((acc, { dirPath, url }) => ({
-        ...acc,
-        [`${base}/${dirPath}/${dirPath}`]: url,
-    }), {})
-
-/**
- * 由后缀和完整文件路径，得到对应输出路径
- * 用于 file-loader 输出文件
- * @param {String} ext .wxml | .json
- */
-const getNameByFilePathAndExt = (ext) => (filePath) => {
-    const [ dir, name ] = filePath
-        .split(path.sep)
-        .slice(-3, -1)
-
-    return [dir, name, name].join(path.sep) + ext
-}
+import FriendlyErrorsPlugin from 'friendly-errors-webpack-plugin'
+import {
+    resolve,
+    getEntryByDir,
+    getNameByFilePath,
+    getPagesCompsEntry,
+} from './webpackUtils'
 
 export default ({ isDev }) => ({
     mode: isDev ? 'development' : 'production',
@@ -79,9 +26,11 @@ export default ({ isDev }) => ({
         // app 应用入口
         app: './src/app/app',
         // pages 页面入口
-        ...getEntryByDirPath('pages'),
+        ...getEntryByDir('pages'),
         // comps 组件入口
-        ...getEntryByDirPath('comps'),
+        ...getEntryByDir('comps'),
+        // 页面级 comps 组件入口
+        ...getPagesCompsEntry('pages'),
     },
     output: {
         filename: `[name].js`,
@@ -119,7 +68,7 @@ export default ({ isDev }) => ({
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: getNameByFilePathAndExt('.json'),
+                        name: file => getNameByFilePath(file) + '.json',
                     },
                 },
             },
@@ -130,7 +79,7 @@ export default ({ isDev }) => ({
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: getNameByFilePathAndExt('.wxml'),
+                        name: file => getNameByFilePath(file) + '.wxml',
                     },
                 },
             },
@@ -216,17 +165,44 @@ export default ({ isDev }) => ({
             compiledIn: false,
         }),
         new VueLoaderPlugin(),
-        new CopyWebpackPlugin(copyCfgArr, {
+        new CopyWebpackPlugin(getCopyCfgArr(), {
             context: resolve('src'),
         }),
         new ExtractTextPlugin('[name].wxss'),
-        new FriendlyErrorsWebpackPlugin(),
+        new FriendlyErrorsPlugin(),
         new BannerPlugin({
             raw: true,
             // 因为无法通过 html 的 script 标签插入
             // 所以只好在入口文件 app.js 前插入公共依赖
-            banner: `require('./chunks/runtime');require('./chunks/vendors');require('./chunks/scripts');`,
+            banner: `require('./chunks/runtime');` +
+                `require('./chunks/vendors');` +
+                `require('./chunks/scripts');`,
             include: 'app.js',
         })
     ],
 })
+
+const getCopyCfg = (base, ext) => ({
+    from: `${base}/**/*${ext}`,
+    to: `[path]/[name]${ext}`,
+})
+const PROJECT_CFG = 'project.config.json'
+// 需要从 src 拷到 dist 的文件
+const getCopyCfgArr = () => [
+    // 图片
+    { from: 'assets/', to: 'assets/' },
+    // 模板
+    { from: 'templates/', to: 'templates/' },
+    // 配置
+    { from: 'app/app.json', to: 'app.json' },
+    // 开发者工具配置
+    { from: `../${PROJECT_CFG}`, to: PROJECT_CFG },
+    // pages
+    getCopyCfg('pages', '.wxml'),
+    getCopyCfg('pages', '.json'),
+    // comps
+    getCopyCfg('comps', '.wxml'),
+    getCopyCfg('comps', '.json'),
+    // widget
+    getCopyCfg('searchWidget', '.js'),
+]

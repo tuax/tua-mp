@@ -48,16 +48,11 @@
 │   │   ├── scripts.js
 │   │   └── vendors.js
 │   ├── comps
-│   │   ├── filter
-│   │   │   ├── filter.js
-│   │   │   ├── filter.json
-│   │   │   ├── filter.wxml
-│   │   │   └── filter.wxss
-│   │   └── todo
-│   │       ├── todo.js
-│   │       ├── todo.json
-│   │       ├── todo.wxml
-│   │       └── todo.wxss
+│   │   └── filter
+│   │       ├── filter.js
+│   │       ├── filter.json
+│   │       ├── filter.wxml
+│   │       └── filter.wxss
 │   ├── pages
 │   │   ├── index
 │   │   │   ├── index.js
@@ -70,6 +65,12 @@
 │   │   │   ├── logs.wxml
 │   │   │   └── logs.wxss
 │   │   └── todos
+│   │       ├── comps
+│   │       │   └── todo
+│   │       │       ├── todo.js
+│   │       │       ├── todo.json
+│   │       │       ├── todo.wxml
+│   │       │       └── todo.wxss
 │   │       ├── todos.js
 │   │       ├── todos.json
 │   │       ├── todos.wxml
@@ -87,16 +88,11 @@
 │   ├── assets
 │   │   └── vue-logo.png
 │   ├── comps
-│   │   ├── filter
-│   │   │   ├── filter.js
-│   │   │   ├── filter.json
-│   │   │   ├── filter.less
-│   │   │   └── filter.wxml
-│   │   └── todo
-│   │       ├── todo.js
-│   │       ├── todo.json
-│   │       ├── todo.less
-│   │       └── todo.wxml
+│   │   └── filter
+│   │       ├── filter.js
+│   │       ├── filter.json
+│   │       ├── filter.less
+│   │       └── filter.wxml
 │   ├── pages
 │   │   ├── index
 │   │   │   ├── index.js
@@ -109,6 +105,12 @@
 │   │   │   ├── logs.scss
 │   │   │   └── logs.wxml
 │   │   └── todos
+│   │       ├── comps
+│   │       │   └── todo
+│   │       │       ├── todo.js
+│   │       │       ├── todo.json
+│   │       │       ├── todo.less
+│   │       │       └── todo.wxml
 │   │       ├── todos.js
 │   │       ├── todos.json
 │   │       ├── todos.less
@@ -130,6 +132,7 @@
 │   └── templates
 │       └── info.wxml
 ├── webpack.config.babel.js
+├── webpackUtils.js
 └── yarn.lock
 ```
 
@@ -138,6 +141,7 @@
 * assets/: 资源文件，比如图片
 * comps/: 组件
 * pages/: 页面
+    * pages/todos/comps/: 属于 todos 的页面级组件
 * scripts: 公用代码
 * scripts/const: 常量（已配置别名 @const）
 * scripts/utils: 辅助函数（已配置别名 @utils）
@@ -149,3 +153,6 @@
     * runtime: [是 webapck 在运行时连接各个模块的代码](https://doc.webpack-china.org/concepts/manifest/#runtime)
     * vendors: 是提取的 `node_modules` 下的依赖
     * scripts: 是提取的 `src/scripts/` 下的依赖
+* comps/: 组件
+* pages/: 页面
+    * pages/todos/comps/: 属于 todos 的页面级组件
