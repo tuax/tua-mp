@@ -174,9 +174,11 @@ export default ({ isDev }) => ({
             raw: true,
             // 因为无法通过 html 的 script 标签插入
             // 所以只好在入口文件 app.js 前插入公共依赖
-            banner: `require('./chunks/runtime');` +
+            banner: `try {` +
+                `require('./chunks/runtime');` +
                 `require('./chunks/vendors');` +
-                `require('./chunks/scripts');`,
+                `require('./chunks/scripts');` +
+            `} catch (e) {}`,
             include: 'app.js',
         })
     ],
