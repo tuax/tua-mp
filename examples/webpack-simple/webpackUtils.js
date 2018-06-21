@@ -43,10 +43,10 @@ const getRelativePath = (url) => [
 
 // 由 url 获取最终的 entry 对象
 const getNameUrlObj = (url) => ({
-    [getRelativePath(url)]: resolve(
+    [getRelativePath(url)]: [resolve(
         url,
         url.split(path.sep).pop()
-    )
+    )]
 })
 
 /**

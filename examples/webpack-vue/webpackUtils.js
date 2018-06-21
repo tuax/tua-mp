@@ -40,7 +40,7 @@ const getRelativePath = (url) => [
 ].join(path.sep)
 
 // 由 url 获取最终的 entry 对象
-const getNameUrlObj = url => ({ [getRelativePath(url)]: url })
+const getNameUrlObj = url => ({ [getRelativePath(url)]: [url] })
 
 /**
  * 过滤出 base 下的文件夹的名称 dir 和绝对路径 url
