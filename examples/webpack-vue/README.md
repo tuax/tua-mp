@@ -17,11 +17,11 @@
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="../../doc/imgs/logs.vue.png" width="400" alt="logs.vue" />
+<image src="../../imgs/logs.vue.png" width="400" alt="logs.vue" />
 
 其中 `/pages/todos/todos` 页面实现了 todos 应用。
 
-<image src="../../doc/imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+<image src="../../imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
 
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
@@ -33,11 +33,11 @@
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
-<image src="../../doc/imgs/open-by-tab.png" width="400" alt="open-by-tab" />
+<image src="../../imgs/open-by-tab.png" width="400" alt="open-by-tab" />
 
 [如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 
-<image src="../../doc/imgs/minicode.png" width="400" alt="minicode" />
+<image src="../../imgs/minicode.png" width="400" alt="minicode" />
 
 ## 文件结构
 
