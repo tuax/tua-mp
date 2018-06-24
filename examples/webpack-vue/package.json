@@ -17,6 +17,7 @@
         "tua-mp": "^0.6.2"
     },
     "devDependencies": {
+        "@tua-mp/service": "^0.1.0",
         "babel-core": "^6.26.3",
         "babel-eslint": "^8.2.3",
         "babel-loader": "^7.1.4",
@@ -40,9 +41,6 @@
         "rimraf": "^2.6.2",
         "sass-loader": "^7.0.3",
         "stylus": "^0.54.5",
-        "stylus-loader": "^3.0.2",
-        "vue-loader": "^15.2.4",
-        "vue-template-compiler": "^2.5.16",
-        "webpack": "^4.12.1"
+        "stylus-loader": "^3.0.2"
     }
 }
