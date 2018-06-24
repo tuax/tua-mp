@@ -14,10 +14,10 @@
     "author": "StEve Young",
     "license": "MIT",
     "dependencies": {
-        "tua-mp": "^0.6.2"
+        "tua-mp": "^0.6.3"
     },
     "devDependencies": {
-        "@tua-mp/service": "^0.1.0",
+        "@tua-mp/service": "^0.1.1",
         "babel-core": "^6.26.3",
         "babel-eslint": "^8.2.3",
         "babel-loader": "^7.1.4",
