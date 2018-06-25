@@ -1,6 +1,6 @@
 {
     "name": "tua-mp",
-    "version": "0.6.3",
+    "version": "0.6.4",
     "description": "A helper for coding miniprogram like Vue",
     "main": "examples/basic/utils/tua-mp.js",
     "files": [
@@ -8,11 +8,11 @@
     ],
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "tdd": "NODE_ENV=test jest --watch",
-        "test": "NODE_ENV=test jest --no-cache && codecov",
+        "tdd": "cross-env NODE_ENV=test jest --watch",
+        "test": "cross-env NODE_ENV=test jest --no-cache && codecov",
         "prebuild": "npm run test",
-        "build": "NODE_ENV=prod rollup -c",
-        "watch": "NODE_ENV=prod rollup -c -w",
+        "build": "cross-env NODE_ENV=prod rollup -c",
+        "watch": "cross-env NODE_ENV=prod rollup -c -w",
         "start": "npm run watch",
         "pub": "npm run build && npm publish"
     },
@@ -25,7 +25,9 @@
         "transform": {
             "^.+\\.js$": "babel-jest"
         },
-        "testPathIgnorePatterns": ["/examples/"],
+        "testPathIgnorePatterns": [
+            "/examples/"
+        ],
         "collectCoverage": true,
         "coveragePathIgnorePatterns": [
             "test/utils.js",
@@ -64,6 +66,7 @@
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "babel-preset-env": "^1.7.0",
         "codecov": "^3.0.2",
+        "cross-env": "^5.2.0",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-plugin-import": "^2.12.0",
@@ -75,6 +78,6 @@
         "rollup-plugin-babel": "^3.0.4",
         "rollup-plugin-eslint": "^4.0.0",
         "rollup-plugin-json": "^3.0.0",
-        "rollup-plugin-uglify": "^4.0.0"
+        "rollup-plugin-replace": "^2.0.0"
     }
 }

@@ -101,7 +101,9 @@ describe('observe functions', () => {
             newVal,
             oldVal: val,
         })
-        expect(asyncSetData).toHaveBeenCalledTimes(1)
+        // fix #35
+        // 允许重复设置相同的值，因为可能就是有数据不一致的情况
+        expect(asyncSetData).toHaveBeenCalledTimes(2)
     })
 
     test('setData should only be called once', (done) => {

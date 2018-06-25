@@ -89,6 +89,9 @@ export default class VmStatus {
     deleteVm (vm) {
         const key = getKeyFromVM(vm)
 
-        delete this.VM_MAP[key]
+        // 异步删除，不然可能造成 flushState 时没有该对象
+        Promise.resolve().then(() => {
+            delete this.VM_MAP[key]
+        })
     }
 }

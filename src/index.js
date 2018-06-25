@@ -1,5 +1,6 @@
 import { version } from '../package.json'
 import {
+    log,
     isFn,
     $emit,
     getPropertiesFromProps,
@@ -13,7 +14,7 @@ import {
     bindComputed,
 } from './init'
 
-console.log(`[TUA-MP]: Version ${version}`)
+log(`Version ${version}`)
 
 /**
  * 适配 Vue 风格代码，生成小程序原生组件

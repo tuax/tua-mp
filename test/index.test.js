@@ -37,6 +37,9 @@ describe('TuaComp', () => {
                 onChangeVal (e) {
                     this.$emit('onChangeVal', e)
                 },
+                onEmitVal () {
+                    this.$emit('onEmitVal')
+                },
                 triggerEvent: jest.fn(),
             },
         })
@@ -49,6 +52,9 @@ describe('TuaComp', () => {
 
         vm.onChangeVal(event)
         expect(vm.triggerEvent).toBeCalledWith('onChangeVal', eventVal, undefined)
+
+        vm.onEmitVal()
+        expect(vm.triggerEvent).toBeCalledWith('onEmitVal', {}, undefined)
 
         afterSetData(() => {
             vm.detached()

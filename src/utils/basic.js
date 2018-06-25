@@ -3,8 +3,6 @@ import {
     innerAttrRe,
 } from '../constants'
 
-export const warn = msg => console.warn(`[TUA-MP warn]: ${msg}`)
-
 export const isFn = fn => typeof fn === 'function'
 
 export const hasProtoInObj = obj => '__proto__' in obj
@@ -109,3 +107,20 @@ export const assertType = (value, type) => {
 
     return { valid, expectedType }
 }
+
+/**
+ * 统一的日志输出函数，在测试环境时不输出
+ * @param {String} type 输出类型 log|warn|error
+ * @param {any} out 输出的内容
+ */
+const logByType = (type) => (out) => {
+    /* istanbul ignore else */
+    if (process.env.NODE_ENV === 'test') return
+
+    /* istanbul ignore next */
+    console[type](`[TUA-MP]:`, out)
+}
+
+export const log = logByType('log')
+export const warn = logByType('warn')
+export const error = logByType('error')
