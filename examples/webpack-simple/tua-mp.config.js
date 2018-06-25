@@ -1,4 +1,5 @@
 module.exports = {
+    enableEslint: true,
     chainWebpack: (config) => {
         // app 应用入口
         config.entry('app')
