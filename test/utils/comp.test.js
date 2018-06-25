@@ -17,6 +17,10 @@ const eventVal = {
     "index": 0
 }
 
-test('getValFromEvent', () => {
+test('getValFromEvent from event', () => {
     expect(getValFromEvent(event)).toEqual(eventVal)
+})
+
+test('getValFromEvent from empty object', () => {
+    expect(getValFromEvent({})).toEqual({})
 })

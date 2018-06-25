@@ -57,8 +57,6 @@ export const defineReactive = ({
             return val
         },
         set (newVal) {
-            if (newVal === val) return
-
             const oldVal = val
             const prefix = obj[__TUA_PATH__] || ''
             const path = getPathByPrefix(prefix, key)
