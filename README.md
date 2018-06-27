@@ -31,7 +31,7 @@
 
 [如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 
-<image src="./imgs/minicode.png" width="400" alt="minicode" />
+<image src="./imgs/minicode.png" width="300" alt="minicode" />
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
 
@@ -48,7 +48,7 @@ TuaPage({ ... })
 ## 1.2.利用 webpack 打包源码
 使用 `npm` 下载 `tua-mp`，然后直接 `import`。
 
-```
+```bash
 $ npm i -S tua-mp
 
 $ tnpm i -S @tencent/tua-mp
@@ -59,6 +59,12 @@ $ yarn add tua-mp
 ### 1.支持预处理器 -- [examples/webpack-simple/](https://github.com/tuateam/tua-mp/tree/master/examples/webpack-simple)
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
+
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+
+```bash
+$ vue init tua-mp-templates/simple my-project
+```
 
 添加相关 `loader` 处理后，通过 `extract-text-webpack-plugin` 生成 `.wxss` 文件。
 
@@ -75,6 +81,12 @@ $ yarn add tua-mp
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 ![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
+
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+
+```bash
+$ vue init tua-mp-templates/vue my-project
+```
 
 在这个例子中我们添加了 `vue-loader`，让我们能够使用文件扩展名为 `.vue` 的 `single-file components`(单文件组件) 。
 
