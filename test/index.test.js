@@ -112,9 +112,47 @@ describe('TuaComp', () => {
         expect(data).toBeCalled()
         expect(attached).toBeCalled()
     })
+
+    // close #37
+    test('not plain object data', () => {
+        const now = new Date()
+        const hour = now.getHours()
+
+        const vm = TuaComp({
+            data () {
+                return { now }
+            },
+            computed: {
+                hour () {
+                    return this.now.getHours()
+                },
+            },
+        })
+
+        expect(hour).toBe(vm.hour)
+    })
 })
 
 describe('TuaPage', () => {
+    // close #37
+    test('custom object data', () => {
+        const customObj = { fn: x => x * 2 }
+        const value = customObj.fn(1217)
+
+        const vm = TuaPage({
+            data () {
+                return { customObj }
+            },
+            computed: {
+                value () {
+                    return this.customObj.fn(1217)
+                },
+            },
+        })
+
+        expect(value).toBe(vm.value)
+    })
+
     test('use it just like MINA', (done) => {
         const vm = TuaPage({
             data: {

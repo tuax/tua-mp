@@ -1,976 +1,965 @@
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (factory((global.TuaMp = {})));
-}(this, (function (exports) { 'use strict';
+var version = "0.6.5";
 
-    var version = "0.6.4";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
 
-    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
 
-    var classCallCheck = function (instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+};
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
       }
-    };
+    }
+  }
 
-    var createClass = function () {
-      function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-          var descriptor = props[i];
-          descriptor.enumerable = descriptor.enumerable || false;
-          descriptor.configurable = true;
-          if ("value" in descriptor) descriptor.writable = true;
-          Object.defineProperty(target, descriptor.key, descriptor);
-        }
-      }
+  return target;
+};
 
-      return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-      };
-    }();
+var objectWithoutProperties = function (obj, keys) {
+  var target = {};
 
-    var defineProperty = function (obj, key, value) {
-      if (key in obj) {
-        Object.defineProperty(obj, key, {
-          value: value,
-          enumerable: true,
-          configurable: true,
-          writable: true
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
+};
+
+/**
+ * 取出并合并常用的 detail 和 dataset 上的值
+ * 方便业务代码获取需要的数据
+ * @param {Object} detail 自定义事件所携带的数据
+ * @param {Object} currentTarget 当前组件的一些属性值集合
+ */
+var getValFromEvent = function getValFromEvent(_ref) {
+    var detail = _ref.detail,
+        _ref$currentTarget = _ref.currentTarget,
+        currentTarget = _ref$currentTarget === undefined ? {} : _ref$currentTarget;
+    return _extends({}, detail, currentTarget.dataset);
+};
+
+/**
+ * 封装小程序原生的 triggerEvent 方法，
+ * @param {String} eventName 自定义事件名称
+ * @param {Event} event 小程序原生事件
+ * @param {Object} options 小程序原生触发事件的选项
+ */
+var $emit = function $emit(eventName) {
+    var event = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments[2];
+
+    this.triggerEvent(eventName, getValFromEvent(event), options);
+};
+
+// 小程序内部属性的判断正则
+var innerAttrRe = /^__.*__$/;
+
+// Vue 还多支持了 Function 和 Symbol 类型
+var TYPES = [String, Number, Boolean, Object, Array, null];
+
+var COMMON_PROP = {
+    enumerable: true,
+    configurable: true
+};
+
+var _toString = Object.prototype.toString;
+
+// 每个对象上挂载自己路径前缀的 key
+var __TUA_PATH__ = '__TUA_PATH__';
+
+// 每个对象上挂载自己的依赖对象
+var __dep__ = '__dep__';
+
+var isFn = function isFn(fn) {
+    return typeof fn === 'function';
+};
+
+var hasProtoInObj = function hasProtoInObj(obj) {
+    return '__proto__' in obj;
+};
+
+var isNotInnerAttr = function isNotInnerAttr(key) {
+    return !innerAttrRe.test(key);
+};
+
+var toRawType = function toRawType(value) {
+    return _toString.call(value).slice(8, -1);
+};
+
+var isPlainObject = function isPlainObject(value) {
+    return _toString.call(value) === '[object Object]';
+};
+
+// 根据路径前缀和 key 得到当前路径
+var getPathByPrefix = function getPathByPrefix(prefix, key) {
+    return prefix === '' ? key : prefix + '.' + key;
+};
+
+/**
+ * 将 source 上的属性代理到 target 上
+ * @param {Object} source 被代理对象
+ * @param {Object} target 被代理目标
+ */
+var proxyData = function proxyData(source, target) {
+    Object.keys(source).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+    });
+};
+
+/**
+ * 将对象属性路径字符串转换成路径数组
+ * @param {String} str
+ * @returns {Array}
+ */
+var pathStr2Arr = function pathStr2Arr(str) {
+    return str.split('.').map(function (x) {
+        return x.split(/\[(.*?)\]/).filter(function (x) {
+            return x;
         });
-      } else {
-        obj[key] = value;
-      }
+    }).reduce(function (acc, cur) {
+        return acc.concat(cur);
+    }, []);
+};
 
-      return obj;
-    };
+/**
+ * 根据 path 将目标值 val 设置到目标对象 obj 上
+ * @param {Object} obj 目标对象
+ * @param {String} path 路径字符串
+ * @param {any} val 目标值
+ * @returns {Object} obj
+ */
+var setObjByPath = function setObjByPath(_ref) {
+    var obj = _ref.obj,
+        path = _ref.path,
+        val = _ref.val;
+    return pathStr2Arr(path).reduce(function (acc, cur, idx, _ref2) {
+        var length = _ref2.length;
 
-    var _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
+        if (idx === length - 1) {
+            acc[cur] = val;
+            return;
         }
-      }
 
-      return target;
-    };
+        // 当前属性在目标对象上并不存在
+        if (!acc[cur]) {
+            acc[cur] = /\d/.test(cur) ? [] : {};
+        }
 
-    var objectWithoutProperties = function (obj, keys) {
-      var target = {};
+        return acc[cur];
+    }, obj);
+};
 
-      for (var i in obj) {
-        if (keys.indexOf(i) >= 0) continue;
-        if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-        target[i] = obj[i];
-      }
+/**
+ * 使用函数的名称字符串来检查内置的类型
+ * 因为简单的相等检查，在不同的 vms 或 iframes 中运行时会判断错误
+ */
+var getType = function getType(fn) {
+    var match = fn && fn.toString().match(/^\s*function (\w+)/);
 
-      return target;
-    };
+    return match ? match[1] : '';
+};
 
-    /**
-     * 取出并合并常用的 detail 和 dataset 上的值
-     * 方便业务代码获取需要的数据
-     * @param {Object} detail 自定义事件所携带的数据
-     * @param {Object} currentTarget 当前组件的一些属性值集合
-     */
-    var getValFromEvent = function getValFromEvent(_ref) {
-        var detail = _ref.detail,
-            _ref$currentTarget = _ref.currentTarget,
-            currentTarget = _ref$currentTarget === undefined ? {} : _ref$currentTarget;
-        return _extends({}, detail, currentTarget.dataset);
-    };
+/**
+ * 断言值的类型是否匹配
+ * @param {any} value 值
+ * @param {Function} type 类型函数
+ */
+var assertType = function assertType(value, type) {
+    var valid = void 0;
+    var expectedType = getType(type);
 
-    /**
-     * 封装小程序原生的 triggerEvent 方法，
-     * @param {String} eventName 自定义事件名称
-     * @param {Event} event 小程序原生事件
-     * @param {Object} options 小程序原生触发事件的选项
-     */
-    var $emit = function $emit(eventName) {
-        var event = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var options = arguments[2];
+    if (/(String|Number|Boolean)/.test(expectedType)) {
+        var t = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+        valid = t === expectedType.toLowerCase();
 
-        this.triggerEvent(eventName, getValFromEvent(event), options);
-    };
-
-    // 小程序内部属性的判断正则
-    var innerAttrRe = /^__.*__$/;
-
-    // Vue 还多支持了 Function 和 Symbol 类型
-    var TYPES = [String, Number, Boolean, Object, Array, null];
-
-    var COMMON_PROP = {
-        enumerable: true,
-        configurable: true
-    };
-
-    var _toString = Object.prototype.toString;
-
-    // 每个对象上挂载自己路径前缀的 key
-    var __TUA_PATH__ = '__TUA_PATH__';
-
-    // 每个对象上挂载自己的依赖对象
-    var __dep__ = '__dep__';
-
-    var isFn = function isFn(fn) {
-        return typeof fn === 'function';
-    };
-
-    var hasProtoInObj = function hasProtoInObj(obj) {
-        return '__proto__' in obj;
-    };
-
-    var isNotInnerAttr = function isNotInnerAttr(key) {
-        return !innerAttrRe.test(key);
-    };
-
-    var toRawType = function toRawType(value) {
-        return _toString.call(value).slice(8, -1);
-    };
-
-    var isPlainObject = function isPlainObject(value) {
-        return _toString.call(value) === '[object Object]';
-    };
-
-    // 根据路径前缀和 key 得到当前路径
-    var getPathByPrefix = function getPathByPrefix(prefix, key) {
-        return prefix === '' ? key : prefix + '.' + key;
-    };
-
-    /**
-     * 将 source 上的属性代理到 target 上
-     * @param {Object} source 被代理对象
-     * @param {Object} target 被代理目标
-     */
-    var proxyData = function proxyData(source, target) {
-        Object.keys(source).forEach(function (key) {
-            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-    };
-
-    /**
-     * 将对象属性路径字符串转换成路径数组
-     * @param {String} str
-     * @returns {Array}
-     */
-    var pathStr2Arr = function pathStr2Arr(str) {
-        return str.split('.').map(function (x) {
-            return x.split(/\[(.*?)\]/).filter(function (x) {
-                return x;
-            });
-        }).reduce(function (acc, cur) {
-            return acc.concat(cur);
-        }, []);
-    };
-
-    /**
-     * 根据 path 将目标值 val 设置到目标对象 obj 上
-     * @param {Object} obj 目标对象
-     * @param {String} path 路径字符串
-     * @param {any} val 目标值
-     * @returns {Object} obj
-     */
-    var setObjByPath = function setObjByPath(_ref) {
-        var obj = _ref.obj,
-            path = _ref.path,
-            val = _ref.val;
-        return pathStr2Arr(path).reduce(function (acc, cur, idx, _ref2) {
-            var length = _ref2.length;
-
-            if (idx === length - 1) {
-                acc[cur] = val;
-                return;
-            }
-
-            // 当前属性在目标对象上并不存在
-            if (!acc[cur]) {
-                acc[cur] = /\d/.test(cur) ? [] : {};
-            }
-
-            return acc[cur];
-        }, obj);
-    };
-
-    /**
-     * 使用函数的名称字符串来检查内置的类型
-     * 因为简单的相等检查，在不同的 vms 或 iframes 中运行时会判断错误
-     */
-    var getType = function getType(fn) {
-        var match = fn && fn.toString().match(/^\s*function (\w+)/);
-
-        return match ? match[1] : '';
-    };
-
-    /**
-     * 断言值的类型是否匹配
-     * @param {any} value 值
-     * @param {Function} type 类型函数
-     */
-    var assertType = function assertType(value, type) {
-        var valid = void 0;
-        var expectedType = getType(type);
-
-        if (/(String|Number|Boolean)/.test(expectedType)) {
-            var t = typeof value === 'undefined' ? 'undefined' : _typeof(value);
-            valid = t === expectedType.toLowerCase();
-
-            // 例如 new Number(1)
-            if (!valid && t === 'object') {
-                valid = value instanceof type;
-            }
-        } else if (expectedType === 'Object') {
-            valid = isPlainObject(value);
-        } else if (expectedType === 'Array') {
-            valid = Array.isArray(value);
-        } else {
+        // 例如 new Number(1)
+        if (!valid && t === 'object') {
             valid = value instanceof type;
         }
+    } else if (expectedType === 'Object') {
+        valid = isPlainObject(value);
+    } else if (expectedType === 'Array') {
+        valid = Array.isArray(value);
+    } else {
+        valid = value instanceof type;
+    }
 
-        return { valid: valid, expectedType: expectedType };
+    return { valid: valid, expectedType: expectedType };
+};
+
+/**
+ * 统一的日志输出函数，在测试环境时不输出
+ * @param {String} type 输出类型 log|warn|error
+ * @param {any} out 输出的内容
+ */
+var logByType = function logByType(type) {
+    return function (out) {
+
+        /* istanbul ignore next */
+        console[type]('[TUA-MP]:', out);
     };
+};
 
-    /**
-     * 统一的日志输出函数，在测试环境时不输出
-     * @param {String} type 输出类型 log|warn|error
-     * @param {any} out 输出的内容
-     */
-    var logByType = function logByType(type) {
-        return function (out) {
+var log = logByType('log');
+var warn = logByType('warn');
 
-            /* istanbul ignore next */
-            console[type]('[TUA-MP]:', out);
-        };
-    };
+/**
+ * 断言 prop 的值是否有效
+ * ps 小程序就没有 required 的概念
+ * @param {Object} prop 定义
+ * @param {Array|Function|null} prop.type 定义类型
+ * @param {String} name 属性名称
+ * @param {any} value 实际值
+ * @return {Boolean} 是否有效
+ */
+var assertProp = function assertProp(_ref) {
+    var prop = _ref.prop,
+        name = _ref.name,
+        value = _ref.value;
 
-    var log = logByType('log');
-    var warn = logByType('warn');
+    if (value == null) return true;
 
-    /**
-     * 断言 prop 的值是否有效
-     * ps 小程序就没有 required 的概念
-     * @param {Object} prop 定义
-     * @param {Array|Function|null} prop.type 定义类型
-     * @param {String} name 属性名称
-     * @param {any} value 实际值
-     * @return {Boolean} 是否有效
-     */
-    var assertProp = function assertProp(_ref) {
-        var prop = _ref.prop,
-            name = _ref.name,
-            value = _ref.value;
+    var expectedTypes = [];
+    var type = prop.type;
 
-        if (value == null) return true;
+    var valid = !type;
 
-        var expectedTypes = [];
-        var type = prop.type;
+    if (type) {
+        var typeList = !Array.isArray(type) ? [type] : type;
 
-        var valid = !type;
+        typeList.forEach(function (type) {
+            var _assertType = assertType(value, type),
+                newValid = _assertType.valid,
+                expectedType = _assertType.expectedType;
 
-        if (type) {
-            var typeList = !Array.isArray(type) ? [type] : type;
-
-            typeList.forEach(function (type) {
-                var _assertType = assertType(value, type),
-                    newValid = _assertType.valid,
-                    expectedType = _assertType.expectedType;
-
-                expectedTypes.push(expectedType);
-                valid = newValid;
-            });
-        }
-
-        if (!valid) {
-            warn('Invalid prop: type check failed for prop "' + name + '".' + (' Expected ' + expectedTypes.join(', ')) + (', got ' + toRawType(value) + '.'));
-        }
-
-        return valid;
-    };
-
-    /**
-     * 生成组件的 observer 函数
-     * @param {String} name 名称
-     * @param {Object} prop 类型定义对象（透传给 assertProp）
-     * @param {Array|Function|null} prop.type 定义类型
-     */
-    var getObserver = function getObserver(name) {
-        return function (prop) {
-            return function observer(value) {
-                var _this = this;
-
-                // 触发 setter
-                Promise.resolve().then(function () {
-                    _this[name] = value;
-                });
-
-                var valid = assertProp({ prop: prop, name: name, value: value });
-                var validator = prop.validator;
-
-
-                if (validator && !validator(value)) {
-                    warn('Invalid prop: custom validator check failed for prop "' + name + '".');
-                    return false;
-                }
-
-                return valid;
-            };
-        };
-    };
-
-    /**
-     * 生成完整单个 prop 对象
-     * @param {String} name 名称
-     * @param {String|Number|Boolean|Object|Array|null} type 类型
-     * @param {any} value 值
-     * @param {Object} propObj 类型定义对象（透传给 assertProp）
-     * @param {Array|Function|null} propObj.type 定义类型
-     */
-    var getPropObj = function getPropObj(_ref2) {
-        var name = _ref2.name,
-            type = _ref2.type,
-            value = _ref2.value,
-            propObj = _ref2.propObj;
-        return defineProperty({}, name, {
-            type: type,
-            value: value,
-            observer: getObserver(name)(propObj)
+            expectedTypes.push(expectedType);
+            valid = newValid;
         });
+    }
+
+    if (!valid) {
+        warn('Invalid prop: type check failed for prop "' + name + '".' + (' Expected ' + expectedTypes.join(', ')) + (', got ' + toRawType(value) + '.'));
+    }
+
+    return valid;
+};
+
+/**
+ * 生成组件的 observer 函数
+ * @param {String} name 名称
+ * @param {Object} prop 类型定义对象（透传给 assertProp）
+ * @param {Array|Function|null} prop.type 定义类型
+ */
+var getObserver = function getObserver(name) {
+    return function (prop) {
+        return function observer(value) {
+            var _this = this;
+
+            // 触发 setter
+            Promise.resolve().then(function () {
+                _this[name] = value;
+            });
+
+            var valid = assertProp({ prop: prop, name: name, value: value });
+            var validator = prop.validator;
+
+
+            if (validator && !validator(value)) {
+                warn('Invalid prop: custom validator check failed for prop "' + name + '".');
+                return false;
+            }
+
+            return valid;
+        };
     };
+};
 
-    /**
-     * 将 Vue 风格的 props 改写成小程序原生的 properties
-     * @param {Array|Object} props
-     */
-    var getPropertiesFromProps = function getPropertiesFromProps(props) {
-        // 输入数组则转译成接受任意数据类型的 null
-        if (Array.isArray(props)) {
-            return props.map(function (name) {
-                return getPropObj({
-                    name: name,
-                    type: null,
-                    propObj: { type: null }
-                });
-            }).reduce(function (acc, cur) {
-                return _extends({}, acc, cur);
-            }, {});
-        }
+/**
+ * 生成完整单个 prop 对象
+ * @param {String} name 名称
+ * @param {String|Number|Boolean|Object|Array|null} type 类型
+ * @param {any} value 值
+ * @param {Object} propObj 类型定义对象（透传给 assertProp）
+ * @param {Array|Function|null} propObj.type 定义类型
+ */
+var getPropObj = function getPropObj(_ref2) {
+    var name = _ref2.name,
+        type = _ref2.type,
+        value = _ref2.value,
+        propObj = _ref2.propObj;
+    return defineProperty({}, name, {
+        type: type,
+        value: value,
+        observer: getObserver(name)(propObj)
+    });
+};
 
-        return Object.keys(props).map(function (name) {
-            var prop = props[name];
-
-            // 基本类型的直接返回
-            if (TYPES.indexOf(prop) !== -1) {
-                return getPropObj({
-                    name: name,
-                    type: prop,
-                    propObj: { type: prop }
-                });
-            }
-
-            // 数组形式的 prop
-            // 测试了下不支持直接简写或 type 是数组，只能手动检查了
-            if (Array.isArray(prop)) {
-                return getPropObj({
-                    name: name,
-                    type: null,
-                    propObj: { type: prop }
-                });
-            }
-
-            // 对象形式的 prop
+/**
+ * 将 Vue 风格的 props 改写成小程序原生的 properties
+ * @param {Array|Object} props
+ */
+var getPropertiesFromProps = function getPropertiesFromProps(props) {
+    // 输入数组则转译成接受任意数据类型的 null
+    if (Array.isArray(props)) {
+        return props.map(function (name) {
             return getPropObj({
                 name: name,
-                type: prop.type || null,
-                value: isFn(prop.default) ? prop.default() : prop.default,
-                propObj: prop
+                type: null,
+                propObj: { type: null }
             });
         }).reduce(function (acc, cur) {
             return _extends({}, acc, cur);
         }, {});
-    };
+    }
 
-    /**
-     * 根据 vm 生成 key
-     * @param {String} __wxWebviewId__ webview 的 id
-     * @param {String} __wxExparserNodeId__ 组件的 id
-     */
-    var getKeyFromVM = function getKeyFromVM(_ref) {
-        var wId = _ref.__wxWebviewId__,
-            _ref$__wxExparserNode = _ref.__wxExparserNodeId__,
-            nId = _ref$__wxExparserNode === undefined ? 'wxExparserNodeId' : _ref$__wxExparserNode;
-        return wId + '_' + nId;
-    };
+    return Object.keys(props).map(function (name) {
+        var prop = props[name];
 
-    /**
-     * 这个类负责管理 vm 的状态，在更新数据时保存状态，
-     * 然后异步地进行更新，并且触发相关 watch 函数
-     */
-
-    var VmStatus = function () {
-        function VmStatus() {
-            classCallCheck(this, VmStatus);
-
-            // 根据 key 保存 vm
-            this.VM_MAP = Object.create(null);
-
-            // 缓存各个 vm 下一个状态的数据
-            this.newStateByVM = Object.create(null);
-
-            // 缓存各个 vm 传给 asyncSetData 的 oldVal 值
-            // 以便在触发 watch 时获取
-            this.oldStateByVM = Object.create(null);
+        // 基本类型的直接返回
+        if (TYPES.indexOf(prop) !== -1) {
+            return getPropObj({
+                name: name,
+                type: prop,
+                propObj: { type: prop }
+            });
         }
 
-        /**
-         * 更新状态
-         * @param {Page|Component} vm Page 或 Component 实例
-         * @param {Object} watch 侦听器对象
-         * @param {String} path 属性的路径
-         * @param {any} newVal 新值
-         * @param {any} oldVal 旧值
-         */
+        // 数组形式的 prop
+        // 测试了下不支持直接简写或 type 是数组，只能手动检查了
+        if (Array.isArray(prop)) {
+            return getPropObj({
+                name: name,
+                type: null,
+                propObj: { type: prop }
+            });
+        }
 
+        // 对象形式的 prop
+        return getPropObj({
+            name: name,
+            type: prop.type || null,
+            value: isFn(prop.default) ? prop.default() : prop.default,
+            propObj: prop
+        });
+    }).reduce(function (acc, cur) {
+        return _extends({}, acc, cur);
+    }, {});
+};
 
-        createClass(VmStatus, [{
-            key: 'updateState',
-            value: function updateState(_ref2) {
-                var vm = _ref2.vm,
-                    watch = _ref2.watch,
-                    path = _ref2.path,
-                    newVal = _ref2.newVal,
-                    oldVal = _ref2.oldVal;
+/**
+ * 根据 vm 生成 key
+ * @param {String} __wxWebviewId__ webview 的 id
+ * @param {String} __wxExparserNodeId__ 组件的 id
+ */
+var getKeyFromVM = function getKeyFromVM(_ref) {
+    var wId = _ref.__wxWebviewId__,
+        _ref$__wxExparserNode = _ref.__wxExparserNodeId__,
+        nId = _ref$__wxExparserNode === undefined ? 'wxExparserNodeId' : _ref$__wxExparserNode;
+    return wId + '_' + nId;
+};
 
-                var key = getKeyFromVM(vm);
+/**
+ * 这个类负责管理 vm 的状态，在更新数据时保存状态，
+ * 然后异步地进行更新，并且触发相关 watch 函数
+ */
 
-                this.newStateByVM = _extends({}, this.newStateByVM, defineProperty({}, key, _extends({}, this.newStateByVM[key], defineProperty({}, path, newVal))));
-                this.oldStateByVM = _extends({}, this.oldStateByVM, defineProperty({}, key, _extends(defineProperty({}, path, oldVal), this.oldStateByVM[key])));
+var VmStatus = function () {
+    function VmStatus() {
+        classCallCheck(this, VmStatus);
 
-                // 缓存 vm 和 watch
-                if (!this.VM_MAP[key]) {
-                    this.VM_MAP[key] = { vm: vm, watch: watch };
-                }
-            }
+        // 根据 key 保存 vm
+        this.VM_MAP = Object.create(null);
 
-            /**
-             * 刷新状态，调用 vm.setData 向小程序提交数据
-             * 并触发相关 watch
-             */
+        // 缓存各个 vm 下一个状态的数据
+        this.newStateByVM = Object.create(null);
 
-        }, {
-            key: 'flushState',
-            value: function flushState() {
-                var _this = this;
-
-                var vmKeys = Object.keys(this.newStateByVM);
-
-                vmKeys.filter(function (vmKey) {
-                    return _this.VM_MAP[vmKey];
-                }).forEach(function (vmKey) {
-                    var _VM_MAP$vmKey = _this.VM_MAP[vmKey],
-                        vm = _VM_MAP$vmKey.vm,
-                        watch = _VM_MAP$vmKey.watch;
-
-                    var newState = _this.newStateByVM[vmKey];
-                    var oldState = _this.oldStateByVM[vmKey];
-
-                    // 更新数据
-                    vm.setData(newState);
-
-                    // 触发 watch
-                    Object.keys(newState).filter(function (key) {
-                        return isFn(watch[key]);
-                    }).forEach(function (key) {
-                        var watchFn = watch[key];
-                        var newVal = newState[key];
-                        var oldVal = oldState[key];
-
-                        watchFn.call(vm, newVal, oldVal);
-                    });
-                });
-
-                this.newStateByVM = Object.create(null);
-                this.oldStateByVM = Object.create(null);
-            }
-        }, {
-            key: 'deleteVm',
-            value: function deleteVm(vm) {
-                var _this2 = this;
-
-                var key = getKeyFromVM(vm);
-
-                // 异步删除，不然可能造成 flushState 时没有该对象
-                Promise.resolve().then(function () {
-                    delete _this2.VM_MAP[key];
-                });
-            }
-        }]);
-        return VmStatus;
-    }();
-
-    var vmStatus = new VmStatus();
+        // 缓存各个 vm 传给 asyncSetData 的 oldVal 值
+        // 以便在触发 watch 时获取
+        this.oldStateByVM = Object.create(null);
+    }
 
     /**
-     * 异步 setData 提高性能
+     * 更新状态
      * @param {Page|Component} vm Page 或 Component 实例
      * @param {Object} watch 侦听器对象
      * @param {String} path 属性的路径
      * @param {any} newVal 新值
      * @param {any} oldVal 旧值
-     * @param {Boolean} isArrDirty 数组下标发生变化
      */
-    var getAsyncSetData = function getAsyncSetData(vm, watch) {
-        return function (_ref) {
-            var path = _ref.path,
-                newVal = _ref.newVal,
-                oldVal = _ref.oldVal,
-                _ref$isArrDirty = _ref.isArrDirty,
-                isArrDirty = _ref$isArrDirty === undefined ? false : _ref$isArrDirty;
 
-            vmStatus.updateState({ vm: vm, watch: watch, path: path, newVal: newVal, oldVal: oldVal });
 
-            // 数组下标发生变化，同步修改数组
-            if (isArrDirty) {
-                setObjByPath({ obj: vm, val: newVal, path: path });
+    createClass(VmStatus, [{
+        key: 'updateState',
+        value: function updateState(_ref2) {
+            var vm = _ref2.vm,
+                watch = _ref2.watch,
+                path = _ref2.path,
+                newVal = _ref2.newVal,
+                oldVal = _ref2.oldVal;
+
+            var key = getKeyFromVM(vm);
+
+            this.newStateByVM = _extends({}, this.newStateByVM, defineProperty({}, key, _extends({}, this.newStateByVM[key], defineProperty({}, path, newVal))));
+            this.oldStateByVM = _extends({}, this.oldStateByVM, defineProperty({}, key, _extends(defineProperty({}, path, oldVal), this.oldStateByVM[key])));
+
+            // 缓存 vm 和 watch
+            if (!this.VM_MAP[key]) {
+                this.VM_MAP[key] = { vm: vm, watch: watch };
+            }
+        }
+
+        /**
+         * 刷新状态，调用 vm.setData 向小程序提交数据
+         * 并触发相关 watch
+         */
+
+    }, {
+        key: 'flushState',
+        value: function flushState() {
+            var _this = this;
+
+            var vmKeys = Object.keys(this.newStateByVM);
+
+            vmKeys.filter(function (vmKey) {
+                return _this.VM_MAP[vmKey];
+            }).forEach(function (vmKey) {
+                var _VM_MAP$vmKey = _this.VM_MAP[vmKey],
+                    vm = _VM_MAP$vmKey.vm,
+                    watch = _VM_MAP$vmKey.watch;
+
+                var newState = _this.newStateByVM[vmKey];
+                var oldState = _this.oldStateByVM[vmKey];
+
+                // 更新数据
+                vm.setData(newState);
+
+                // 触发 watch
+                Object.keys(newState).filter(function (key) {
+                    return isFn(watch[key]);
+                }).forEach(function (key) {
+                    var watchFn = watch[key];
+                    var newVal = newState[key];
+                    var oldVal = oldState[key];
+
+                    watchFn.call(vm, newVal, oldVal);
+                });
+            });
+
+            this.newStateByVM = Object.create(null);
+            this.oldStateByVM = Object.create(null);
+        }
+    }, {
+        key: 'deleteVm',
+        value: function deleteVm(vm) {
+            var _this2 = this;
+
+            var key = getKeyFromVM(vm);
+
+            // 异步删除，不然可能造成 flushState 时没有该对象
+            Promise.resolve().then(function () {
+                delete _this2.VM_MAP[key];
+            });
+        }
+    }]);
+    return VmStatus;
+}();
+
+var vmStatus = new VmStatus();
+
+/**
+ * 异步 setData 提高性能
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} watch 侦听器对象
+ * @param {String} path 属性的路径
+ * @param {any} newVal 新值
+ * @param {any} oldVal 旧值
+ * @param {Boolean} isArrDirty 数组下标发生变化
+ */
+var getAsyncSetData = function getAsyncSetData(vm, watch) {
+    return function (_ref) {
+        var path = _ref.path,
+            newVal = _ref.newVal,
+            oldVal = _ref.oldVal,
+            _ref$isArrDirty = _ref.isArrDirty,
+            isArrDirty = _ref$isArrDirty === undefined ? false : _ref$isArrDirty;
+
+        vmStatus.updateState({ vm: vm, watch: watch, path: path, newVal: newVal, oldVal: oldVal });
+
+        // 数组下标发生变化，同步修改数组
+        if (isArrDirty) {
+            setObjByPath({ obj: vm, val: newVal, path: path });
+        }
+
+        Promise.resolve().then(vmStatus.flushState.bind(vmStatus));
+    };
+};
+
+/**
+ * 在页面 onUnload 或组件 detached 后，
+ * 将 vm 从 VM_MAP 中删除
+ */
+var deleteVm = vmStatus.deleteVm.bind(vmStatus);
+
+var arrayProto = Array.prototype;
+var methodsToPatch = ['pop', 'push', 'sort', 'shift', 'splice', 'unshift', 'reverse'];
+
+/**
+ * 改写数组原始的可变方法
+ * @param {fucntion} observeDeep 递归观察函数
+ * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ */
+var getArrayMethods = function getArrayMethods(_ref) {
+    var observeDeep = _ref.observeDeep,
+        asyncSetData = _ref.asyncSetData;
+
+    var arrayMethods = Object.create(arrayProto);
+
+    methodsToPatch.forEach(function (method) {
+        var original = arrayProto[method];
+
+        arrayMethods[method] = function () {
+            var path = this[__TUA_PATH__];
+
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
             }
 
-            Promise.resolve().then(vmStatus.flushState.bind(vmStatus));
+            var result = original.apply(this, args);
+
+            if (method === 'pop') {
+                asyncSetData({ path: path, newVal: this });
+            } else {
+                var newVal = observeDeep(this, path);
+
+                Object.assign(this, newVal);
+                asyncSetData({ path: path, newVal: newVal, isArrDirty: true });
+            }
+
+            return result;
         };
-    };
+    });
 
-    /**
-     * 在页面 onUnload 或组件 detached 后，
-     * 将 vm 从 VM_MAP 中删除
-     */
-    var deleteVm = vmStatus.deleteVm.bind(vmStatus);
+    return arrayMethods;
+};
 
-    var arrayProto = Array.prototype;
-    var methodsToPatch = ['pop', 'push', 'sort', 'shift', 'splice', 'unshift', 'reverse'];
+/**
+ * 劫持数组的可变方法
+ * @param {Array} arr 原始数组
+ * @param {fucntion} arrayMethods 改写后的可变方法
+ * @return {Array} 被劫持方法后的数组
+ */
+var patchMethods2Array = function patchMethods2Array(_ref2) {
+    var arr = _ref2.arr,
+        arrayMethods = _ref2.arrayMethods;
 
-    /**
-     * 改写数组原始的可变方法
-     * @param {fucntion} observeDeep 递归观察函数
-     * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
-     */
-    var getArrayMethods = function getArrayMethods(_ref) {
-        var observeDeep = _ref.observeDeep,
-            asyncSetData = _ref.asyncSetData;
+    // 优先挂原型链上，否则劫持原方法
+    if (Object.setPrototypeOf) {
+        Object.setPrototypeOf(arr, arrayMethods);
+    } else if (hasProtoInObj(arr)) {
+        /* eslint-disable no-proto */
+        arr.__proto__ = arrayMethods;
+        /* eslint-enable no-proto */
+    } else {
+        proxyData(arrayMethods, arr);
+    }
 
-        var arrayMethods = Object.create(arrayProto);
+    return arr;
+};
 
-        methodsToPatch.forEach(function (method) {
-            var original = arrayProto[method];
+var Dep = function () {
+    function Dep() {
+        classCallCheck(this, Dep);
 
-            arrayMethods[method] = function () {
-                var path = this[__TUA_PATH__];
+        this.subs = [];
+    }
 
-                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                    args[_key] = arguments[_key];
-                }
+    createClass(Dep, [{
+        key: "addSub",
+        value: function addSub(sub) {
+            if (this.subs.indexOf(sub) > -1) return;
 
-                var result = original.apply(this, args);
-
-                if (method === 'pop') {
-                    asyncSetData({ path: path, newVal: this });
-                } else {
-                    var newVal = observeDeep(this, path);
-
-                    Object.assign(this, newVal);
-                    asyncSetData({ path: path, newVal: newVal, isArrDirty: true });
-                }
-
-                return result;
-            };
-        });
-
-        return arrayMethods;
-    };
-
-    /**
-     * 劫持数组的可变方法
-     * @param {Array} arr 原始数组
-     * @param {fucntion} arrayMethods 改写后的可变方法
-     * @return {Array} 被劫持方法后的数组
-     */
-    var patchMethods2Array = function patchMethods2Array(_ref2) {
-        var arr = _ref2.arr,
-            arrayMethods = _ref2.arrayMethods;
-
-        // 优先挂原型链上，否则劫持原方法
-        if (Object.setPrototypeOf) {
-            Object.setPrototypeOf(arr, arrayMethods);
-        } else if (hasProtoInObj(arr)) {
-            /* eslint-disable no-proto */
-            arr.__proto__ = arrayMethods;
-            /* eslint-enable no-proto */
-        } else {
-            proxyData(arrayMethods, arr);
+            this.subs.push(sub);
         }
-
-        return arr;
-    };
-
-    var Dep = function () {
-        function Dep() {
-            classCallCheck(this, Dep);
-
-            this.subs = [];
+    }, {
+        key: "notify",
+        value: function notify() {
+            this.subs.forEach(function (sub) {
+                return sub();
+            });
         }
+    }]);
+    return Dep;
+}();
 
-        createClass(Dep, [{
-            key: "addSub",
-            value: function addSub(sub) {
-                if (this.subs.indexOf(sub) > -1) return;
 
-                this.subs.push(sub);
+Dep.targetCb = null;
+
+/**
+ * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
+ * @param {Object} obj 被观察对象
+ * @param {String} key 被观察对象的属性
+ * @param {any} val 被观察对象的属性的值
+ * @param {function} observeDeep 递归观察函数
+ * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ */
+var defineReactive = function defineReactive(_ref) {
+    var obj = _ref.obj,
+        key = _ref.key,
+        val = _ref.val,
+        observeDeep = _ref.observeDeep,
+        asyncSetData = _ref.asyncSetData;
+
+    var dep = obj[__dep__] || new Dep();
+
+    Object.defineProperty(obj, __dep__, {
+        value: dep,
+        enumerable: false,
+        configurable: true
+    });
+
+    Object.defineProperty(obj, key, _extends({}, COMMON_PROP, {
+        get: function get$$1() {
+            // 正在依赖收集
+            if (Dep.targetCb) {
+                // 当前属性被依赖
+                dep.addSub(Dep.targetCb);
+
+                // 同时子属性也被依赖
+                if (Array.isArray(val)) {
+                    val.forEach(function (item) {
+                        item[__dep__] && item[__dep__].addSub(Dep.targetCb);
+                    });
+
+                    val[__dep__] = dep;
+                }
             }
-        }, {
-            key: "notify",
-            value: function notify() {
-                this.subs.forEach(function (sub) {
-                    return sub();
+
+            return val;
+        },
+        set: function set$$1(newVal) {
+            var oldVal = val;
+            var prefix = obj[__TUA_PATH__] || '';
+            var path = getPathByPrefix(prefix, key);
+
+            // 重新观察
+            val = observeDeep(newVal, path);
+
+            var isNeedInheritDep = val && oldVal && !val[__dep__] && oldVal[__dep__] && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object';
+
+            // 继承依赖
+            if (isNeedInheritDep) {
+                val[__dep__] = oldVal[__dep__];
+            }
+
+            asyncSetData({ path: path, newVal: newVal, oldVal: oldVal });
+
+            // 触发依赖回调
+            dep.notify();
+        }
+    }));
+};
+
+/**
+ * 得到递归观察对象
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @return {function} observeDeep 递归观察函数
+ */
+var getObserveDeep = function getObserveDeep(asyncSetData) {
+    /**
+     * 递归观察函数
+     * @param {Object} obj 待观察对象
+     * @param {String} prefix 路径前缀
+     * @return {Object} 被观察后的对象
+     */
+    return function observeDeep(obj) {
+        var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+        if (Array.isArray(obj)) {
+            var arr = obj.map(function (item, idx) {
+                // 继承依赖
+                if (!item[__dep__] && obj[__dep__]) {
+                    item[__dep__] = obj[__dep__];
+                }
+
+                return observeDeep(item, prefix + '[' + idx + ']');
+            });
+
+            // 每个数组挂载自己的路径
+            arr[__TUA_PATH__] = prefix;
+
+            // 不缓存数组可变方法，因为 vm 可能不同
+            var arrayMethods = getArrayMethods({
+                observeDeep: observeDeep,
+                asyncSetData: asyncSetData
+            });
+
+            return patchMethods2Array({ arr: arr, arrayMethods: arrayMethods });
+        }
+
+        if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
+            // 继承依赖
+            if (obj[__dep__]) {
+                Object.defineProperty(obj, __dep__, {
+                    value: obj[__dep__],
+                    enumerable: false,
+                    configurable: true
                 });
             }
-        }]);
-        return Dep;
-    }();
 
+            // 将路径前缀挂在父节点上
+            Object.defineProperty(obj, __TUA_PATH__, {
+                value: prefix,
+                enumerable: false,
+                configurable: true
+            });
 
-    Dep.targetCb = null;
+            Object.keys(obj)
+            // 过滤 __wxWebviewId__ 等内部属性
+            .filter(isNotInnerAttr).map(function (key) {
+                return {
+                    obj: obj,
+                    key: key,
+                    val: observeDeep(obj[key], getPathByPrefix(prefix, key)),
+                    observeDeep: observeDeep,
+                    asyncSetData: asyncSetData
+                };
+            }).forEach(defineReactive);
 
-    /**
-     * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
-     * @param {Object} obj 被观察对象
-     * @param {String} key 被观察对象的属性
-     * @param {any} val 被观察对象的属性的值
-     * @param {function} observeDeep 递归观察函数
-     * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
-     */
-    var defineReactive = function defineReactive(_ref) {
-        var obj = _ref.obj,
-            key = _ref.key,
-            val = _ref.val,
-            observeDeep = _ref.observeDeep,
-            asyncSetData = _ref.asyncSetData;
+            return obj;
+        }
 
-        var dep = obj[__dep__] || new Dep();
+        // 其他属性直接返回
+        return obj;
+    };
+};
 
-        Object.defineProperty(obj, __dep__, {
-            value: dep,
-            enumerable: false,
-            configurable: true
-        });
+/**
+ * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} data 传入的默认值对象
+ * @param {function} observeDeep 递归观察函数
+ */
+var bindData = function bindData(vm, data, observeDeep) {
+    var $data = observeDeep(data);
+    vm.$data = $data;
 
-        Object.defineProperty(obj, key, _extends({}, COMMON_PROP, {
+    // 代理 $data 到 vm 上
+    proxyData($data, vm);
+};
+
+/**
+ * 遍历观察 computed，绑定 watch 回调并将定义的新属性挂到 vm 上
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} computed 计算属性对象
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
+ */
+var bindComputed = function bindComputed(vm, computed, asyncSetData) {
+    var $computed = Object.create(null);
+
+    Object.keys(computed).forEach(function (key) {
+        var dep = new Dep();
+        var getVal = computed[key].bind(vm);
+
+        var oldVal = getVal();
+        var isInit = true;
+
+        Object.defineProperty($computed, key, _extends({}, COMMON_PROP, {
             get: function get$$1() {
                 // 正在依赖收集
                 if (Dep.targetCb) {
                     // 当前属性被依赖
                     dep.addSub(Dep.targetCb);
-
-                    // 同时子属性也被依赖
-                    if (Array.isArray(val)) {
-                        val.forEach(function (item) {
-                            item[__dep__] && item[__dep__].addSub(Dep.targetCb);
-                        });
-
-                        val[__dep__] = dep;
-                    }
                 }
 
-                return val;
-            },
-            set: function set$$1(newVal) {
-                var oldVal = val;
-                var prefix = obj[__TUA_PATH__] || '';
-                var path = getPathByPrefix(prefix, key);
-
-                // 重新观察
-                val = observeDeep(newVal, path);
-
-                var isNeedInheritDep = val && oldVal && !val[__dep__] && oldVal[__dep__] && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object';
-
-                // 继承依赖
-                if (isNeedInheritDep) {
-                    val[__dep__] = oldVal[__dep__];
-                }
-
-                asyncSetData({ path: path, newVal: newVal, oldVal: oldVal });
-
-                // 触发依赖回调
-                dep.notify();
-            }
-        }));
-    };
-
-    /**
-     * 得到递归观察对象
-     * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
-     * @return {function} observeDeep 递归观察函数
-     */
-    var getObserveDeep = function getObserveDeep(asyncSetData) {
-        /**
-         * 递归观察函数
-         * @param {Object} obj 待观察对象
-         * @param {String} prefix 路径前缀
-         * @return {Object} 被观察后的对象
-         */
-        return function observeDeep(obj) {
-            var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-
-            if (Array.isArray(obj)) {
-                var arr = obj.map(function (item, idx) {
-                    // 继承依赖
-                    if (!item[__dep__] && obj[__dep__]) {
-                        item[__dep__] = obj[__dep__];
-                    }
-
-                    return observeDeep(item, prefix + '[' + idx + ']');
-                });
-
-                // 每个数组挂载自己的路径
-                arr[__TUA_PATH__] = prefix;
-
-                // 不缓存数组可变方法，因为 vm 可能不同
-                var arrayMethods = getArrayMethods({
-                    observeDeep: observeDeep,
-                    asyncSetData: asyncSetData
-                });
-
-                return patchMethods2Array({ arr: arr, arrayMethods: arrayMethods });
-            }
-
-            if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
-                var observedObj = Object.create(null);
-
-                // 继承依赖
-                if (obj[__dep__]) {
-                    Object.defineProperty(observedObj, __dep__, {
-                        value: obj[__dep__],
-                        enumerable: false,
-                        configurable: true
-                    });
-                }
-
-                // 将路径前缀挂在父节点上
-                Object.defineProperty(observedObj, __TUA_PATH__, {
-                    enumerable: false,
-                    value: prefix
-                });
-
-                Object.keys(obj)
-                // 过滤 __wxWebviewId__ 等内部属性
-                .filter(isNotInnerAttr).map(function (key) {
-                    return {
-                        obj: observedObj,
-                        key: key,
-                        val: observeDeep(obj[key], getPathByPrefix(prefix, key)),
-                        observeDeep: observeDeep,
-                        asyncSetData: asyncSetData
-                    };
-                }).forEach(defineReactive);
-
-                return observedObj;
-            }
-
-            // 简单属性直接返回
-            return obj;
-        };
-    };
-
-    /**
-     * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
-     * @param {Page|Component} vm Page 或 Component 实例
-     * @param {function} observeDeep 递归观察函数
-     */
-    var bindData = function bindData(vm, observeDeep) {
-        var $data = observeDeep(vm.data);
-        vm.$data = $data;
-
-        // 代理 $data 到 vm 上
-        proxyData($data, vm);
-    };
-
-    /**
-     * 遍历观察 computed，绑定 watch 回调并将定义的新属性挂到 vm 上
-     * @param {Page|Component} vm Page 或 Component 实例
-     * @param {Object} computed 计算属性对象
-     * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
-     */
-    var bindComputed = function bindComputed(vm, computed, asyncSetData) {
-        var $computed = Object.create(null);
-
-        Object.keys(computed).forEach(function (key) {
-            var dep = new Dep();
-            var getVal = computed[key].bind(vm);
-
-            var oldVal = getVal();
-            var isInit = true;
-
-            Object.defineProperty($computed, key, _extends({}, COMMON_PROP, {
-                get: function get$$1() {
-                    // 正在依赖收集
-                    if (Dep.targetCb) {
-                        // 当前属性被依赖
-                        dep.addSub(Dep.targetCb);
-                    }
-
-                    if (!isInit) {
-                        // 重置 oldVal
-                        oldVal = getVal();
-
-                        return oldVal;
-                    }
-
-                    // 开始依赖收集
-                    Dep.targetCb = function () {
-                        var newVal = getVal();
-
-                        asyncSetData({ path: key, newVal: newVal, oldVal: oldVal });
-                        dep.notify();
-                    };
-                    Dep.targetCb.key = key;
-
+                if (!isInit) {
                     // 重置 oldVal
                     oldVal = getVal();
 
-                    // 依赖收集完毕
-                    Dep.targetCb = null;
-                    isInit = false;
-
                     return oldVal;
-                },
-                set: function set$$1() {
-                    warn('\u8BF7\u52FF\u5BF9 computed \u5C5E\u6027 ' + key + ' \u8D4B\u503C\uFF0C\u5B83\u5E94\u8BE5\u7531 data \u4E2D\u7684\u4F9D\u8D56\u81EA\u52A8\u8BA1\u7B97\u5F97\u5230\uFF01');
-                }
-            }));
-        });
-
-        // 挂在 vm 上，在 data 变化时重新 setData
-        vm.$computed = $computed;
-
-        // 代理 $computed 到 vm 上
-        proxyData($computed, vm);
-
-        // 初始化 computed 的数据
-        vm.setData($computed);
-    };
-
-    log('Version ' + version);
-
-    /**
-     * 适配 Vue 风格代码，生成小程序原生组件
-     * @param {Object|Function} data 组件的内部数据
-     * @param {Object|Function|Null} props 组件的对外属性
-     * @param {Object} watch 侦听器对象
-     * @param {Object} methods 组件的方法，包括事件响应函数和任意的自定义方法
-     * @param {Object} computed 计算属性
-     * @param {Object|Function|Null} properties 小程序原生的组件的对外属性
-     */
-    var TuaComp = function TuaComp(_ref) {
-        var _ref$data = _ref.data,
-            rawData = _ref$data === undefined ? {} : _ref$data,
-            _ref$props = _ref.props,
-            props = _ref$props === undefined ? {} : _ref$props,
-            _ref$watch = _ref.watch,
-            watch = _ref$watch === undefined ? {} : _ref$watch,
-            _ref$methods = _ref.methods,
-            methods = _ref$methods === undefined ? {} : _ref$methods,
-            _ref$computed = _ref.computed,
-            computed = _ref$computed === undefined ? {} : _ref$computed,
-            _ref$properties = _ref.properties,
-            properties = _ref$properties === undefined ? {} : _ref$properties,
-            rest = objectWithoutProperties(_ref, ['data', 'props', 'watch', 'methods', 'computed', 'properties']);
-
-        var data = isFn(rawData) ? rawData() : rawData;
-
-        return Component(_extends({}, rest, {
-            data: data,
-            methods: _extends({}, methods, { $emit: $emit }),
-            properties: _extends({}, properties, getPropertiesFromProps(props)),
-            attached: function attached() {
-                var asyncSetData = getAsyncSetData(this, watch);
-                var observeDeep = getObserveDeep(asyncSetData);
-
-                // 遍历递归观察 data
-                bindData(this, observeDeep);
-
-                // 遍历观察 computed
-                bindComputed(this, computed, asyncSetData);
-
-                for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
-                    options[_key] = arguments[_key];
                 }
 
-                rest.attached && rest.attached.apply(this, options);
+                // 开始依赖收集
+                Dep.targetCb = function () {
+                    var newVal = getVal();
+
+                    asyncSetData({ path: key, newVal: newVal, oldVal: oldVal });
+                    dep.notify();
+                };
+                Dep.targetCb.key = key;
+
+                // 重置 oldVal
+                oldVal = getVal();
+
+                // 依赖收集完毕
+                Dep.targetCb = null;
+                isInit = false;
+
+                return oldVal;
             },
-            detached: function detached() {
-                // 从 VM_MAP 中删除自己
-                deleteVm(this);
-
-                for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                    options[_key2] = arguments[_key2];
-                }
-
-                rest.detached && rest.detached.apply(this, options);
+            set: function set$$1() {
+                warn('\u8BF7\u52FF\u5BF9 computed \u5C5E\u6027 ' + key + ' \u8D4B\u503C\uFF0C\u5B83\u5E94\u8BE5\u7531 data \u4E2D\u7684\u4F9D\u8D56\u81EA\u52A8\u8BA1\u7B97\u5F97\u5230\uFF01');
             }
         }));
-    };
-    var TuaPage = function TuaPage(_ref2) {
-        var _ref2$data = _ref2.data,
-            rawData = _ref2$data === undefined ? {} : _ref2$data,
-            _ref2$watch = _ref2.watch,
-            watch = _ref2$watch === undefined ? {} : _ref2$watch,
-            _ref2$methods = _ref2.methods,
-            methods = _ref2$methods === undefined ? {} : _ref2$methods,
-            _ref2$computed = _ref2.computed,
-            computed = _ref2$computed === undefined ? {} : _ref2$computed,
-            rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
+    });
 
-        var data = isFn(rawData) ? rawData() : rawData;
+    // 挂在 vm 上，在 data 变化时重新 setData
+    vm.$computed = $computed;
 
-        return Page(_extends({}, rest, methods, {
-            data: data,
-            onLoad: function onLoad() {
-                var asyncSetData = getAsyncSetData(this, watch);
-                var observeDeep = getObserveDeep(asyncSetData);
+    // 代理 $computed 到 vm 上
+    proxyData($computed, vm);
 
-                // 遍历递归观察 data
-                bindData(this, observeDeep);
+    // 初始化 computed 的数据
+    vm.setData($computed);
+};
 
-                // 遍历观察 computed
-                bindComputed(this, computed, asyncSetData);
+log('Version ' + version);
 
-                for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                    options[_key3] = arguments[_key3];
-                }
+/**
+ * 适配 Vue 风格代码，生成小程序原生组件
+ * @param {Object|Function} data 组件的内部数据
+ * @param {Object|Function|Null} props 组件的对外属性
+ * @param {Object} watch 侦听器对象
+ * @param {Object} methods 组件的方法，包括事件响应函数和任意的自定义方法
+ * @param {Object} computed 计算属性
+ * @param {Object|Function|Null} properties 小程序原生的组件的对外属性
+ */
+var TuaComp = function TuaComp(_ref) {
+    var _ref$data = _ref.data,
+        rawData = _ref$data === undefined ? {} : _ref$data,
+        _ref$props = _ref.props,
+        props = _ref$props === undefined ? {} : _ref$props,
+        _ref$watch = _ref.watch,
+        watch = _ref$watch === undefined ? {} : _ref$watch,
+        _ref$methods = _ref.methods,
+        methods = _ref$methods === undefined ? {} : _ref$methods,
+        _ref$computed = _ref.computed,
+        computed = _ref$computed === undefined ? {} : _ref$computed,
+        _ref$properties = _ref.properties,
+        properties = _ref$properties === undefined ? {} : _ref$properties,
+        rest = objectWithoutProperties(_ref, ['data', 'props', 'watch', 'methods', 'computed', 'properties']);
 
-                rest.onLoad && rest.onLoad.apply(this, options);
-            },
-            onUnload: function onUnload() {
-                // 从 VM_MAP 中删除自己
-                deleteVm(this);
+    var data = isFn(rawData) ? rawData() : rawData;
 
-                for (var _len4 = arguments.length, options = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                    options[_key4] = arguments[_key4];
-                }
+    return Component(_extends({}, rest, {
+        data: data,
+        methods: _extends({}, methods, { $emit: $emit }),
+        properties: _extends({}, properties, getPropertiesFromProps(props)),
+        attached: function attached() {
+            var asyncSetData = getAsyncSetData(this, watch);
+            var observeDeep = getObserveDeep(asyncSetData);
 
-                rest.onUnload && rest.onUnload.apply(this, options);
+            // 遍历递归观察 data
+            bindData(this, _extends({}, this.data, data), observeDeep);
+
+            // 遍历观察 computed
+            bindComputed(this, computed, asyncSetData);
+
+            for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
+                options[_key] = arguments[_key];
             }
-        }));
-    };
 
-    exports.TuaComp = TuaComp;
-    exports.TuaPage = TuaPage;
+            rest.attached && rest.attached.apply(this, options);
+        },
+        detached: function detached() {
+            // 从 VM_MAP 中删除自己
+            deleteVm(this);
 
-    Object.defineProperty(exports, '__esModule', { value: true });
+            for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                options[_key2] = arguments[_key2];
+            }
 
-})));
+            rest.detached && rest.detached.apply(this, options);
+        }
+    }));
+};
+var TuaPage = function TuaPage(_ref2) {
+    var _ref2$data = _ref2.data,
+        rawData = _ref2$data === undefined ? {} : _ref2$data,
+        _ref2$watch = _ref2.watch,
+        watch = _ref2$watch === undefined ? {} : _ref2$watch,
+        _ref2$methods = _ref2.methods,
+        methods = _ref2$methods === undefined ? {} : _ref2$methods,
+        _ref2$computed = _ref2.computed,
+        computed = _ref2$computed === undefined ? {} : _ref2$computed,
+        rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
+
+    var data = isFn(rawData) ? rawData() : rawData;
+
+    return Page(_extends({}, rest, methods, {
+        data: data,
+        onLoad: function onLoad() {
+            var asyncSetData = getAsyncSetData(this, watch);
+            var observeDeep = getObserveDeep(asyncSetData);
+
+            // 遍历递归观察 data
+            bindData(this, data, observeDeep);
+
+            // 遍历观察 computed
+            bindComputed(this, computed, asyncSetData);
+
+            for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                options[_key3] = arguments[_key3];
+            }
+
+            rest.onLoad && rest.onLoad.apply(this, options);
+        },
+        onUnload: function onUnload() {
+            // 从 VM_MAP 中删除自己
+            deleteVm(this);
+
+            for (var _len4 = arguments.length, options = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                options[_key4] = arguments[_key4];
+            }
+
+            rest.onUnload && rest.onUnload.apply(this, options);
+        }
+    }));
+};
+
+export { TuaComp, TuaPage };

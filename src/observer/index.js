@@ -120,11 +120,9 @@ export const getObserveDeep = (asyncSetData) => {
         }
 
         if (obj !== null && typeof obj === 'object') {
-            const observedObj = Object.create(null)
-
             // 继承依赖
             if (obj[__dep__]) {
-                Object.defineProperty(observedObj, __dep__, {
+                Object.defineProperty(obj, __dep__, {
                     value: obj[__dep__],
                     enumerable: false,
                     configurable: true,
@@ -132,16 +130,17 @@ export const getObserveDeep = (asyncSetData) => {
             }
 
             // 将路径前缀挂在父节点上
-            Object.defineProperty(observedObj, __TUA_PATH__, {
-                enumerable: false,
+            Object.defineProperty(obj, __TUA_PATH__, {
                 value: prefix,
+                enumerable: false,
+                configurable: true,
             })
 
             Object.keys(obj)
                 // 过滤 __wxWebviewId__ 等内部属性
                 .filter(isNotInnerAttr)
                 .map((key) => ({
-                    obj: observedObj,
+                    obj,
                     key,
                     val: observeDeep(
                         obj[key],
@@ -152,10 +151,10 @@ export const getObserveDeep = (asyncSetData) => {
                 }))
                 .forEach(defineReactive)
 
-            return observedObj
+            return obj
         }
 
-        // 简单属性直接返回
+        // 其他属性直接返回
         return obj
     }
 }

@@ -10,10 +10,11 @@ import Dep from './observer/dep'
 /**
  * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
  * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} data 传入的默认值对象
  * @param {function} observeDeep 递归观察函数
  */
-export const bindData = (vm, observeDeep) => {
-    const $data = observeDeep(vm.data)
+export const bindData = (vm, data, observeDeep) => {
+    const $data = observeDeep(data)
     vm.$data = $data
 
     // 代理 $data 到 vm 上

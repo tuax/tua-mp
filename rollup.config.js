@@ -8,7 +8,7 @@ export default {
     output: {
         file: 'examples/basic/utils/tua-mp.js',
         name: 'TuaMp',
-        format: 'umd',
+        format: 'es',
         exports: 'named',
     },
     plugins: [

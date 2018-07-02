@@ -1,6 +1,6 @@
 {
     "name": "tua-mp",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "description": "A helper for coding miniprogram like Vue",
     "main": "examples/basic/utils/tua-mp.js",
     "files": [

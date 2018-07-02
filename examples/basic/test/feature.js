@@ -58,6 +58,19 @@ export const testNestedArrayData = (vm) => {
         asset(vm.data.testData.nestedArr[1].name.steve, --tmpVal, MSG)
 
         console.log(`✔️ ${MSG} success!`)
+
+        // 恢复原状
+        vm.testData.nestedArr = [
+            {
+                name: 'steve',
+                nick: {
+                    young: 'young',
+                },
+            },
+            {
+                name: 'jame',
+            },
+        ]
     })
 }
 
