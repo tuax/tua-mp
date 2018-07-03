@@ -1,4 +1,4 @@
-var version = "0.6.5";
+var version = "0.6.6";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -883,16 +883,16 @@ var TuaComp = function TuaComp(_ref) {
         _ref$properties = _ref.properties,
         properties = _ref$properties === undefined ? {} : _ref$properties,
         rest = objectWithoutProperties(_ref, ['data', 'props', 'watch', 'methods', 'computed', 'properties']);
-
-    var data = isFn(rawData) ? rawData() : rawData;
-
     return Component(_extends({}, rest, {
-        data: data,
         methods: _extends({}, methods, { $emit: $emit }),
         properties: _extends({}, properties, getPropertiesFromProps(props)),
         attached: function attached() {
+            var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
+
+            // 初始化数据
+            this.setData(data);
 
             // 遍历递归观察 data
             bindData(this, _extends({}, this.data, data), observeDeep);
@@ -928,14 +928,14 @@ var TuaPage = function TuaPage(_ref2) {
         _ref2$computed = _ref2.computed,
         computed = _ref2$computed === undefined ? {} : _ref2$computed,
         rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
-
-    var data = isFn(rawData) ? rawData() : rawData;
-
     return Page(_extends({}, rest, methods, {
-        data: data,
         onLoad: function onLoad() {
+            var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
+
+            // 初始化数据
+            this.setData(data);
 
             // 遍历递归观察 data
             bindData(this, data, observeDeep);
