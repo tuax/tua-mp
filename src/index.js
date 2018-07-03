@@ -33,37 +33,36 @@ export const TuaComp = ({
     computed = {},
     properties = {},
     ...rest
-}) => {
-    const data = isFn(rawData) ? rawData() : rawData
+}) => Component({
+    ...rest,
+    methods: { ...methods, $emit },
+    properties: {
+        ...properties,
+        ...getPropertiesFromProps(props),
+    },
+    attached (...options) {
+        const data = isFn(rawData) ? rawData() : rawData
+        const asyncSetData = getAsyncSetData(this, watch)
+        const observeDeep = getObserveDeep(asyncSetData)
 
-    return Component({
-        ...rest,
-        data,
-        methods: { ...methods, $emit },
-        properties: {
-            ...properties,
-            ...getPropertiesFromProps(props),
-        },
-        attached (...options) {
-            const asyncSetData = getAsyncSetData(this, watch)
-            const observeDeep = getObserveDeep(asyncSetData)
+        // 初始化数据
+        this.setData(data)
 
-            // 遍历递归观察 data
-            bindData(this, { ...this.data, ...data }, observeDeep)
+        // 遍历递归观察 data
+        bindData(this, { ...this.data, ...data }, observeDeep)
 
-            // 遍历观察 computed
-            bindComputed(this, computed, asyncSetData)
+        // 遍历观察 computed
+        bindComputed(this, computed, asyncSetData)
 
-            rest.attached && rest.attached.apply(this, options)
-        },
-        detached (...options) {
-            // 从 VM_MAP 中删除自己
-            deleteVm(this)
+        rest.attached && rest.attached.apply(this, options)
+    },
+    detached (...options) {
+        // 从 VM_MAP 中删除自己
+        deleteVm(this)
 
-            rest.detached && rest.detached.apply(this, options)
-        },
-    })
-}
+        rest.detached && rest.detached.apply(this, options)
+    },
+})
 
 /**
  * 适配 Vue 风格代码，生成小程序页面
@@ -78,30 +77,29 @@ export const TuaPage = ({
     methods = {},
     computed = {},
     ...rest
-}) => {
-    const data = isFn(rawData) ? rawData() : rawData
+}) => Page({
+    ...rest,
+    ...methods,
+    onLoad (...options) {
+        const data = isFn(rawData) ? rawData() : rawData
+        const asyncSetData = getAsyncSetData(this, watch)
+        const observeDeep = getObserveDeep(asyncSetData)
 
-    return Page({
-        ...rest,
-        ...methods,
-        data,
-        onLoad (...options) {
-            const asyncSetData = getAsyncSetData(this, watch)
-            const observeDeep = getObserveDeep(asyncSetData)
+        // 初始化数据
+        this.setData(data)
 
-            // 遍历递归观察 data
-            bindData(this, data, observeDeep)
+        // 遍历递归观察 data
+        bindData(this, data, observeDeep)
 
-            // 遍历观察 computed
-            bindComputed(this, computed, asyncSetData)
+        // 遍历观察 computed
+        bindComputed(this, computed, asyncSetData)
 
-            rest.onLoad && rest.onLoad.apply(this, options)
-        },
-        onUnload (...options) {
-            // 从 VM_MAP 中删除自己
-            deleteVm(this)
+        rest.onLoad && rest.onLoad.apply(this, options)
+    },
+    onUnload (...options) {
+        // 从 VM_MAP 中删除自己
+        deleteVm(this)
 
-            rest.onUnload && rest.onUnload.apply(this, options)
-        },
-    })
-}
+        rest.onUnload && rest.onUnload.apply(this, options)
+    },
+})
