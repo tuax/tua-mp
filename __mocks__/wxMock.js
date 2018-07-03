@@ -1,4 +1,4 @@
-import { noop } from './utils'
+import { noop } from '../__tests__/utils'
 import { isFn } from '../src/utils'
 
 let wId = 0
