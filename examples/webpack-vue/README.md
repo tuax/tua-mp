@@ -3,6 +3,12 @@
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 ![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
 
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+
+```bash
+$ vue init tua-mp-templates/vue my-project
+```
+
 在这个例子中我们添加了 `vue-loader`，让我们能够使用文件扩展名为 `.vue` 的 `single-file components`(单文件组件) 。
 
 [单文件组件就是将模板（template）、脚本（script）、样式（style）写在一个文件中。](https://cn.vuejs.org/v2/guide/single-file-components.html)

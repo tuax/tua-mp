@@ -41,8 +41,8 @@ describe('observe functions', () => {
             array: [1, 2, 3],
             nested: {
                 young: 'young',
-                __wxWebviewId__: 1,
             },
+            __wxWebviewId__: 1,
         }
         const newVal = 'StEve'
         const newNested = { young: 'yo' }
@@ -67,7 +67,7 @@ describe('observe functions', () => {
             oldVal: 'steve',
         })
         expect(asyncSetData).toBeCalledWith({
-            newVal: newNested,
+            newVal: { young: newVal },
             path: 'nested',
             oldVal: { young: 'young' },
         })

@@ -49,7 +49,7 @@ export const TuaComp = ({
             const observeDeep = getObserveDeep(asyncSetData)
 
             // 遍历递归观察 data
-            bindData(this, observeDeep)
+            bindData(this, { ...this.data, ...data }, observeDeep)
 
             // 遍历观察 computed
             bindComputed(this, computed, asyncSetData)
@@ -90,7 +90,7 @@ export const TuaPage = ({
             const observeDeep = getObserveDeep(asyncSetData)
 
             // 遍历递归观察 data
-            bindData(this, observeDeep)
+            bindData(this, data, observeDeep)
 
             // 遍历观察 computed
             bindComputed(this, computed, asyncSetData)

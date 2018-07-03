@@ -62,7 +62,7 @@ describe('observe functions', () => {
         const asyncSetData = jest.fn(getAsyncSetData(vm, watch))
         const observeDeep = getObserveDeep(asyncSetData)
 
-        bindData(vm, observeDeep)
+        bindData(vm, vm.data, observeDeep)
         bindComputed(vm, computed, asyncSetData)
 
         expect(vm.syPlusHey).toBe(plusHey(oldVal))
@@ -97,7 +97,7 @@ describe('observe functions', () => {
         }
         const observeDeep = getObserveDeep(asyncSetData)
 
-        bindData(vm, observeDeep)
+        bindData(vm, vm.data, observeDeep)
         bindComputed(vm, computed, asyncSetData)
 
         vm.sAndY = 'sth'
@@ -123,7 +123,7 @@ describe('observe functions', () => {
         const asyncSetData = jest.fn(getAsyncSetData(vm, watch))
         const observeDeep = getObserveDeep(asyncSetData)
 
-        bindData(vm, observeDeep)
+        bindData(vm, vm.data, observeDeep)
         bindComputed(vm, computed, asyncSetData)
 
         expect(vm.sAndY).toBe(vm.data.sAndY)
@@ -146,7 +146,7 @@ describe('observe functions', () => {
 
     test('bindData', () => {
         const observeDeep = getObserveDeep(asyncSetData)
-        bindData(vm, observeDeep)
+        bindData(vm, vm.data, observeDeep)
 
         expect(vm.steve).toBe(vm.data.steve)
         expect(vm.steve).toBe(vm.$data.steve)

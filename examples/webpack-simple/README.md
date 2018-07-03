@@ -2,6 +2,12 @@
 
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+
+```bash
+$ vue init tua-mp-templates/simple my-project
+```
+
 在这个例子中我们将源码放在了 `src/` 下，利用 `webpack` 将其打包生成到 `dist/` 目录下。
 
 此外还对于样式的编写加入了预处理器的功能

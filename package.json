@@ -1,6 +1,6 @@
 {
     "name": "tua-mp",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "description": "A helper for coding miniprogram like Vue",
     "main": "examples/basic/utils/tua-mp.js",
     "files": [
@@ -20,19 +20,21 @@
         "bail": true,
         "clearMocks": true,
         "setupFiles": [
-            "./test/wxMock.js"
+            "./__mocks__/wxMock.js"
         ],
         "transform": {
             "^.+\\.js$": "babel-jest"
         },
         "testPathIgnorePatterns": [
-            "/examples/"
+            "./__tests__/utils.js",
+            "./examples/"
         ],
         "collectCoverage": true,
         "coveragePathIgnorePatterns": [
-            "test/utils.js",
-            "test/wxMock.js",
-            "src/utils/index.js"
+            "./package.json",
+            "./src/utils/index.js",
+            "./__tests__/utils.js",
+            "./__mocks__/wxMock.js"
         ]
     },
     "eslintIgnore": [

@@ -57,11 +57,11 @@ TuaPage({
         }
 
         // feature test
-        // testArrayData(this)
-        // testSimpleData(this)
-        // testNestedData(this)
+        testArrayData(this)
+        testSimpleData(this)
+        testNestedData(this)
         testNestedArrayData(this)
-        // testInsertNestedArrayData(this)
+        testInsertNestedArrayData(this)
     },
     computed: {
         reversedG () {
