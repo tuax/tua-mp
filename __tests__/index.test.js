@@ -105,7 +105,7 @@ describe('TuaComp', () => {
     })
 
     test('edge case', () => {
-        const data = jest.fn()
+        const data = jest.fn(() => ({}))
         const attached = jest.fn()
         TuaComp({ data, attached })
 
@@ -134,6 +134,128 @@ describe('TuaComp', () => {
 })
 
 describe('TuaPage', () => {
+    // test('deep watch', (done) => {
+    //     const vm = TuaPage({
+    //         data () {
+    //             return { steve: 'young' }
+    //         },
+    //         computed: {
+    //             steveLen () {
+    //                 return this.steve.length
+    //             },
+    //         },
+    //         watch: {
+    //             'steve': {
+    //                 deep: true,
+    //                 handler (newVal) {
+    //                     this.young = newVal
+    //                 },
+    //             },
+    //             'steveLen': {
+    //                 deep: true,
+    //                 handler: 'onSteveLen',
+    //             },
+    //         },
+    //         methods: {
+    //             onSteveLen (newVal) {
+    //                 this.youngLen = newVal
+    //             },
+    //         },
+    //     })
+    //     vm.steve = 'nash'
+    //     expect(vm.young).toBe('young')
+    //     expect(vm.youngLen).toBe(5)
+
+    //     afterSetData(() => {
+    //         expect(vm.young).toBe('nash')
+    //         expect(vm.youngLen).toBe(4)
+    //         done()
+    //     })
+    // })
+
+    test('immediate watch', (done) => {
+        const vm = TuaPage({
+            data () {
+                return {
+                    steve: 'young',
+                    a: { b: 'c' },
+                }
+            },
+            computed: {
+                steveLen () {
+                    return this.steve.length
+                },
+            },
+            watch: {
+                'steve': {
+                    immediate: true,
+                    handler (newVal) {
+                        this.young = newVal
+                    },
+                },
+                'steveLen': {
+                    immediate: true,
+                    handler: 'onSteveLen',
+                },
+                'a.b': {
+                    immediate: true,
+                    handler: 'onAB',
+                },
+            },
+            methods: {
+                onAB (newVal) {
+                    this.ab = newVal
+                },
+                onSteveLen (newVal) {
+                    this.youngLen = newVal
+                },
+            },
+        })
+        vm.steve = 'nash'
+        expect(vm.ab).toBe('c')
+        expect(vm.young).toBe('young')
+        expect(vm.youngLen).toBe(5)
+
+        afterSetData(() => {
+            expect(vm.young).toBe('nash')
+            expect(vm.youngLen).toBe(4)
+            done()
+        })
+    })
+
+    test('watch string method name', (done) => {
+        const vm = TuaPage({
+            data () {
+                return { steve: 'young' }
+            },
+            computed: {
+                steveLen () {
+                    return this.steve.length
+                },
+            },
+            watch: {
+                steve: 'onSteve',
+                steveLen: 'onSteveLen',
+            },
+            methods: {
+                onSteve (newVal) {
+                    this.young = newVal
+                },
+                onSteveLen (newVal) {
+                    this.youngLen = newVal
+                },
+            },
+        })
+
+        vm.steve = 'nash'
+
+        afterSetData(() => {
+            expect(vm.young).toBe('nash')
+            expect(vm.youngLen).toBe(4)
+            done()
+        })
+    })
+
     // close #37
     test('custom object data', () => {
         const customObj = { fn: x => x * 2 }

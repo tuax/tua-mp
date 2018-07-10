@@ -72,12 +72,21 @@ export default class VmStatus {
 
                 // 触发 watch
                 Object.keys(newState)
-                    .filter(key => isFn(watch[key]))
-                    .forEach((key) => {
-                        const watchFn = watch[key]
+                    .map((key) => {
                         const newVal = newState[key]
                         const oldVal = oldState[key]
+                        const watchFn = isFn(watch[key])
+                            ? watch[key]
+                            : watch[key] && watch[key].handler
+                                ? isFn(watch[key].handler)
+                                    ? watch[key].handler
+                                    : vm[watch[key].handler]
+                                : vm[watch[key]]
 
+                        return { newVal, oldVal, watchFn }
+                    })
+                    .filter(({ watchFn }) => isFn(watchFn))
+                    .forEach(({ newVal, oldVal, watchFn }) => {
                         watchFn.call(vm, newVal, oldVal)
                     })
             })
