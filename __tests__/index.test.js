@@ -17,6 +17,52 @@ const eventVal = {
 }
 
 describe('TuaComp', () => {
+    test('deep and immediate watch', (done) => {
+        const vm = TuaComp({
+            data () {
+                return {
+                    steve: 'young',
+                    a: { b: { c: 'd' } },
+                }
+            },
+            computed: {
+                e () { return this.steve + this.a.b.c },
+            },
+            watch: {
+                'a.b': {
+                    deep: true,
+                    immediate: true,
+                    handler (newVal, oldVal) {
+                        this.newAB = newVal
+                        this.oldAB = oldVal
+                    },
+                },
+                e: {
+                    immediate: true,
+                    handler: 'eFn',
+                },
+            },
+            methods: {
+                eFn (val) {
+                    this.newE = val
+                },
+            },
+        })
+
+        expect(vm.newE).toBe(vm.e)
+        expect(vm.e).toBe(vm.steve + 'd')
+        expect(vm.newAB).toEqual({ c: 'd' })
+        expect(vm.oldAB).toEqual(undefined)
+        vm.a.b.c = 'e'
+
+        afterSetData(() => {
+            expect(vm.e).toBe(vm.steve + 'e')
+            expect(vm.newAB).toEqual({ c: 'e' })
+            expect(vm.oldAB).toEqual({ c: 'd' })
+            done()
+        })
+    })
+
     test('use it just like MINA', (done) => {
         const vm = TuaComp({
             properties: {
@@ -64,7 +110,6 @@ describe('TuaComp', () => {
     })
 
     test('use it just like Vue', () => {
-        const watchFn = jest.fn()
         const vm = TuaComp({
             props: {
                 propA: Number,
@@ -134,44 +179,92 @@ describe('TuaComp', () => {
 })
 
 describe('TuaPage', () => {
-    // test('deep watch', (done) => {
-    //     const vm = TuaPage({
-    //         data () {
-    //             return { steve: 'young' }
-    //         },
-    //         computed: {
-    //             steveLen () {
-    //                 return this.steve.length
-    //             },
-    //         },
-    //         watch: {
-    //             'steve': {
-    //                 deep: true,
-    //                 handler (newVal) {
-    //                     this.young = newVal
-    //                 },
-    //             },
-    //             'steveLen': {
-    //                 deep: true,
-    //                 handler: 'onSteveLen',
-    //             },
-    //         },
-    //         methods: {
-    //             onSteveLen (newVal) {
-    //                 this.youngLen = newVal
-    //             },
-    //         },
-    //     })
-    //     vm.steve = 'nash'
-    //     expect(vm.young).toBe('young')
-    //     expect(vm.youngLen).toBe(5)
+    test('array watch', (done) => {
+        const vm = TuaPage({
+            data () {
+                return { a: { b: 'c' } }
+            },
+            watch: {
+                a: [
+                    {
+                        deep: true,
+                        handler (newVal, oldVal) {
+                            this.newA = newVal
+                            this.oldA = oldVal
+                        },
+                    },
+                    {
+                        immediate: true,
+                        handler (newVal, oldVal) {
+                            this.newIA = newVal
+                            this.oldIA = oldVal
+                        },
+                    },
+                    function (newVal, oldVal) {
+                        this.newArrA = newVal
+                        this.oldArrA = oldVal
+                    },
+                    {
+                        immediate: true,
+                        handler: 'aFn',
+                    },
+                ],
+            },
+            methods: {
+                aFn (newVal, oldVal) {
+                    this.newAFn = newVal
+                    this.oldAFn = oldVal
+                },
+            },
+        })
 
-    //     afterSetData(() => {
-    //         expect(vm.young).toBe('nash')
-    //         expect(vm.youngLen).toBe(4)
-    //         done()
-    //     })
-    // })
+        expect(vm.newA).toEqual(undefined)
+        expect(vm.oldA).toEqual(undefined)
+        expect(vm.newIA).toEqual({ b: 'c' })
+        expect(vm.oldIA).toEqual(undefined)
+        expect(vm.newArrA).toEqual(undefined)
+        expect(vm.oldArrA).toEqual(undefined)
+        expect(vm.newAFn).toEqual({ b: 'c' })
+        expect(vm.oldAFn).toEqual(undefined)
+        vm.a.b = 'd'
+
+        afterSetData(() => {
+            expect(vm.newA).toEqual({ b: 'd' })
+            expect(vm.oldA).toEqual({ b: 'c' })
+            expect(vm.newIA).toEqual({ b: 'd' })
+            expect(vm.oldIA).toEqual(undefined)
+            expect(vm.newArrA).toEqual(undefined)
+            expect(vm.oldArrA).toEqual(undefined)
+            expect(vm.newAFn).toEqual({ b: 'd' })
+            expect(vm.oldAFn).toEqual(undefined)
+            done()
+        })
+    })
+
+    test('deep watch', (done) => {
+        const vm = TuaPage({
+            data () {
+                return { a: { b: 'c' } }
+            },
+            watch: {
+                a: {
+                    deep: true,
+                    handler (newVal, oldVal) {
+                        this.newA = newVal
+                        this.oldA = oldVal
+                    },
+                },
+            },
+        })
+
+        vm.a.b = 'd'
+
+        afterSetData(() => {
+            expect(vm.newA).toEqual({ b: 'd' })
+            expect(vm.oldA).toEqual({ b: 'c' })
+            done()
+        })
+    })
 
     test('immediate watch', (done) => {
         const vm = TuaPage({

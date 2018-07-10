@@ -1,4 +1,4 @@
-var version = "0.6.6";
+var version = "0.7.0";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -165,6 +165,20 @@ var pathStr2Arr = function pathStr2Arr(str) {
     }).reduce(function (acc, cur) {
         return acc.concat(cur);
     }, []);
+};
+
+/**
+ * 根据 path 获取目标对象 obj 上的值
+ * @param {Object} obj 目标对象
+ * @param {String} path 路径字符串
+ * @returns {Any} obj
+ */
+var getValByPath = function getValByPath(obj) {
+    return function (path) {
+        return pathStr2Arr(path).reduce(function (acc, cur) {
+            return acc[cur];
+        }, obj);
+    };
 };
 
 /**
@@ -405,6 +419,32 @@ var getKeyFromVM = function getKeyFromVM(_ref) {
 };
 
 /**
+ * 判断 deep watch 的 key 是否是当前变化值的 key 的前缀
+ * @param {String} key 当前变化值的 key
+ * @param {String} dKey deep watch 的 key
+ * @return {Boolean} 是不是前缀
+ */
+var isDeepWatchMatched = function isDeepWatchMatched(key) {
+    return function (dKey) {
+        return new RegExp('^' + dKey + '(\\.|\\[)').test(key);
+    };
+};
+
+var getWatchFnArrByVm = function getWatchFnArrByVm(vm) {
+    return function (watchObj) {
+        return isFn(watchObj)
+        // 直接写的函数，或是数组
+        ? watchObj : watchObj && watchObj.handler ? isFn(watchObj.handler)
+        // 函数写在 handler 中
+        ? watchObj.handler
+        // handler 是字符串
+        : vm[watchObj.handler]
+        // 直接写的字符串
+        : vm[watchObj];
+    };
+};
+
+/**
  * 这个类负责管理 vm 的状态，在更新数据时保存状态，
  * 然后异步地进行更新，并且触发相关 watch 函数
  */
@@ -428,6 +468,7 @@ var VmStatus = function () {
      * 更新状态
      * @param {Page|Component} vm Page 或 Component 实例
      * @param {Object} watch 侦听器对象
+     * @param {Object} deepWatch 深度侦听器对象
      * @param {String} path 属性的路径
      * @param {any} newVal 新值
      * @param {any} oldVal 旧值
@@ -439,6 +480,7 @@ var VmStatus = function () {
         value: function updateState(_ref2) {
             var vm = _ref2.vm,
                 watch = _ref2.watch,
+                deepWatch = _ref2.deepWatch,
                 path = _ref2.path,
                 newVal = _ref2.newVal,
                 oldVal = _ref2.oldVal;
@@ -450,7 +492,7 @@ var VmStatus = function () {
 
             // 缓存 vm 和 watch
             if (!this.VM_MAP[key]) {
-                this.VM_MAP[key] = { vm: vm, watch: watch };
+                this.VM_MAP[key] = { vm: vm, watch: watch, deepWatch: deepWatch };
             }
         }
 
@@ -471,23 +513,52 @@ var VmStatus = function () {
             }).forEach(function (vmKey) {
                 var _VM_MAP$vmKey = _this.VM_MAP[vmKey],
                     vm = _VM_MAP$vmKey.vm,
-                    watch = _VM_MAP$vmKey.watch;
+                    watch = _VM_MAP$vmKey.watch,
+                    deepWatch = _VM_MAP$vmKey.deepWatch;
 
                 var newState = _this.newStateByVM[vmKey];
                 var oldState = _this.oldStateByVM[vmKey];
+                var getWatchFnArr = getWatchFnArrByVm(vm);
 
                 // 更新数据
                 vm.setData(newState);
 
                 // 触发 watch
-                Object.keys(newState).filter(function (key) {
-                    return isFn(watch[key]);
-                }).forEach(function (key) {
-                    var watchFn = watch[key];
+                Object.keys(newState).map(function (key) {
                     var newVal = newState[key];
                     var oldVal = oldState[key];
+                    var watchFnArr = watch[key] && watch[key].map(getWatchFnArr);
 
-                    watchFn.call(vm, newVal, oldVal);
+                    return { key: key, newVal: newVal, oldVal: oldVal, watchFnArr: watchFnArr };
+                }).forEach(function (_ref3) {
+                    var key = _ref3.key,
+                        newVal = _ref3.newVal,
+                        oldVal = _ref3.oldVal,
+                        watchFnArr = _ref3.watchFnArr;
+
+                    // 触发自身的 watch
+                    if (watchFnArr) {
+                        watchFnArr.forEach(function (fn) {
+                            return fn.call(vm, newVal, oldVal);
+                        });
+                    }
+
+                    // deep watch
+                    Object.keys(deepWatch).filter(isDeepWatchMatched(key)).forEach(function (dKey) {
+                        var newDeepVal = getValByPath(vm)(dKey);
+                        var oldDeepVal = _extends({}, newDeepVal);
+
+                        // 恢复旧值
+                        setObjByPath({
+                            obj: oldDeepVal,
+                            path: key.slice(dKey.length),
+                            val: oldVal
+                        });
+
+                        deepWatch[dKey].map(getWatchFnArr).forEach(function (fn) {
+                            return fn.call(vm, newDeepVal, oldDeepVal);
+                        });
+                    });
                 });
             });
 
@@ -515,13 +586,13 @@ var vmStatus = new VmStatus();
 /**
  * 异步 setData 提高性能
  * @param {Page|Component} vm Page 或 Component 实例
- * @param {Object} watch 侦听器对象
+ * @param {Object} watchObj 侦听器对象
  * @param {String} path 属性的路径
  * @param {any} newVal 新值
  * @param {any} oldVal 旧值
  * @param {Boolean} isArrDirty 数组下标发生变化
  */
-var getAsyncSetData = function getAsyncSetData(vm, watch) {
+var getAsyncSetData = function getAsyncSetData(vm, watchObj) {
     return function (_ref) {
         var path = _ref.path,
             newVal = _ref.newVal,
@@ -529,7 +600,26 @@ var getAsyncSetData = function getAsyncSetData(vm, watch) {
             _ref$isArrDirty = _ref.isArrDirty,
             isArrDirty = _ref$isArrDirty === undefined ? false : _ref$isArrDirty;
 
-        vmStatus.updateState({ vm: vm, watch: watch, path: path, newVal: newVal, oldVal: oldVal });
+        // 统一转成数组
+        var watch = Object.keys(watchObj).map(function (key) {
+            return Array.isArray(watchObj[key]) ? defineProperty({}, key, watchObj[key]) : defineProperty({}, key, [watchObj[key]]);
+        }).reduce(function (acc, cur) {
+            return _extends({}, acc, cur);
+        }, {});
+
+        var deepWatch = Object.keys(watch).filter(function (key) {
+            return watch[key].some(function (w) {
+                return w.deep;
+            });
+        }).map(function (key) {
+            return defineProperty({}, key, watch[key].filter(function (w) {
+                return w.deep;
+            }));
+        }).reduce(function (acc, cur) {
+            return _extends({}, acc, cur);
+        }, {});
+
+        vmStatus.updateState({ vm: vm, watch: watch, deepWatch: deepWatch, path: path, newVal: newVal, oldVal: oldVal });
 
         // 数组下标发生变化，同步修改数组
         if (isArrDirty) {
@@ -646,7 +736,7 @@ Dep.targetCb = null;
  * @param {String} key 被观察对象的属性
  * @param {any} val 被观察对象的属性的值
  * @param {function} observeDeep 递归观察函数
- * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 var defineReactive = function defineReactive(_ref) {
     var obj = _ref.obj,
@@ -858,6 +948,36 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
     vm.setData($computed);
 };
 
+/**
+ * 初始化时触发 immediate 的 watch
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} watch 侦听器对象
+ */
+var triggerImmediateWatch = function triggerImmediateWatch(vm, watch) {
+    return Object.keys(watch).forEach(function (key) {
+        var initialVal = getValByPath(vm)(key);
+
+        if (Array.isArray(watch[key])) {
+            watch[key].filter(function (w) {
+                return w.immediate;
+            }).forEach(function (_ref) {
+                var handler = _ref.handler;
+
+                var watchFn = isFn(handler) ? handler : vm[handler];
+
+                watchFn.call(vm, initialVal);
+            });
+            return;
+        }
+
+        if (!watch[key].immediate) return;
+
+        var watchFn = isFn(watch[key].handler) ? watch[key].handler : vm[watch[key].handler];
+
+        watchFn.call(vm, initialVal);
+    });
+};
+
 log('Version ' + version);
 
 /**
@@ -899,6 +1019,9 @@ var TuaComp = function TuaComp(_ref) {
 
             // 遍历观察 computed
             bindComputed(this, computed, asyncSetData);
+
+            // 触发 immediate watch
+            triggerImmediateWatch(this, watch);
 
             for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
                 options[_key] = arguments[_key];
@@ -942,6 +1065,9 @@ var TuaPage = function TuaPage(_ref2) {
 
             // 遍历观察 computed
             bindComputed(this, computed, asyncSetData);
+
+            // 触发 immediate watch
+            triggerImmediateWatch(this, watch);
 
             for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
                 options[_key3] = arguments[_key3];

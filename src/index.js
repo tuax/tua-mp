@@ -3,7 +3,6 @@ import {
     log,
     isFn,
     $emit,
-    pathStr2Arr,
     getPropertiesFromProps,
 } from './utils/index'
 import { deleteVm, getAsyncSetData } from './asyncSetData'
@@ -13,6 +12,7 @@ import {
 import {
     bindData,
     bindComputed,
+    triggerImmediateWatch,
 } from './init'
 
 log(`Version ${version}`)
@@ -55,6 +55,9 @@ export const TuaComp = ({
         // 遍历观察 computed
         bindComputed(this, computed, asyncSetData)
 
+        // 触发 immediate watch
+        triggerImmediateWatch(this, watch)
+
         rest.attached && rest.attached.apply(this, options)
     },
     detached (...options) {
@@ -96,17 +99,7 @@ export const TuaPage = ({
         bindComputed(this, computed, asyncSetData)
 
         // 触发 immediate watch
-        Object.keys(watch)
-            .filter(key => watch[key].immediate)
-            .forEach((key) => {
-                const arr = pathStr2Arr(key)
-                const watchFn = isFn(watch[key].handler)
-                    ? watch[key].handler
-                    : this[watch[key].handler]
-                const initialVal = arr.reduce((acc, cur) => acc[cur], this)
-
-                watchFn.call(this, initialVal)
-            })
+        triggerImmediateWatch(this, watch)
 
         rest.onLoad && rest.onLoad.apply(this, options)
     },

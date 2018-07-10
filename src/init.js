@@ -1,6 +1,8 @@
 import {
+    isFn,
     warn,
     proxyData,
+    getValByPath,
 } from './utils/index'
 import {
     COMMON_PROP,
@@ -86,3 +88,32 @@ export const bindComputed = (vm, computed, asyncSetData) => {
     // 初始化 computed 的数据
     vm.setData($computed)
 }
+
+/**
+ * 初始化时触发 immediate 的 watch
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} watch 侦听器对象
+ */
+export const triggerImmediateWatch = (vm, watch) => Object.keys(watch)
+    .forEach((key) => {
+        const initialVal = getValByPath(vm)(key)
+
+        if (Array.isArray(watch[key])) {
+            watch[key]
+                .filter(w => w.immediate)
+                .forEach(({ handler }) => {
+                    const watchFn = isFn(handler) ? handler : vm[handler]
+
+                    watchFn.call(vm, initialVal)
+                })
+            return
+        }
+
+        if (!watch[key].immediate) return
+
+        const watchFn = isFn(watch[key].handler)
+            ? watch[key].handler
+            : vm[watch[key].handler]
+
+        watchFn.call(vm, initialVal)
+    })

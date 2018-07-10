@@ -48,6 +48,15 @@ export const pathStr2Arr = (str) => str
     .reduce((acc, cur) => acc.concat(cur), [])
 
 /**
+ * 根据 path 获取目标对象 obj 上的值
+ * @param {Object} obj 目标对象
+ * @param {String} path 路径字符串
+ * @returns {Any} obj
+ */
+export const getValByPath = (obj) => (path) => pathStr2Arr(path)
+    .reduce((acc, cur) => acc[cur], obj)
+
+/**
  * 根据 path 将目标值 val 设置到目标对象 obj 上
  * @param {Object} obj 目标对象
  * @param {String} path 路径字符串

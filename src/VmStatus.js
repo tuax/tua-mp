@@ -1,4 +1,8 @@
-import { isFn } from './utils/index'
+import {
+    isFn,
+    getValByPath,
+    setObjByPath,
+} from './utils/index'
 
 /**
  * 根据 vm 生成 key
@@ -9,6 +13,26 @@ const getKeyFromVM = ({
     __wxWebviewId__: wId,
     __wxExparserNodeId__: nId = 'wxExparserNodeId',
 }) => `${wId}_${nId}`
+
+/**
+ * 判断 deep watch 的 key 是否是当前变化值的 key 的前缀
+ * @param {String} key 当前变化值的 key
+ * @param {String} dKey deep watch 的 key
+ * @return {Boolean} 是不是前缀
+ */
+const isDeepWatchMatched = key => dKey => new RegExp('^' + dKey + '(\\.|\\[)').test(key)
+
+const getWatchFnArrByVm = (vm) => (watchObj) => isFn(watchObj)
+    // 直接写的函数，或是数组
+    ? watchObj
+    : watchObj && watchObj.handler
+        ? isFn(watchObj.handler)
+            // 函数写在 handler 中
+            ? watchObj.handler
+            // handler 是字符串
+            : vm[watchObj.handler]
+        // 直接写的字符串
+        : vm[watchObj]
 
 /**
  * 这个类负责管理 vm 的状态，在更新数据时保存状态，
@@ -31,11 +55,12 @@ export default class VmStatus {
      * 更新状态
      * @param {Page|Component} vm Page 或 Component 实例
      * @param {Object} watch 侦听器对象
+     * @param {Object} deepWatch 深度侦听器对象
      * @param {String} path 属性的路径
      * @param {any} newVal 新值
      * @param {any} oldVal 旧值
      */
-    updateState ({ vm, watch, path, newVal, oldVal }) {
+    updateState ({ vm, watch, deepWatch, path, newVal, oldVal }) {
         const key = getKeyFromVM(vm)
 
         this.newStateByVM = {
@@ -49,7 +74,7 @@ export default class VmStatus {
 
         // 缓存 vm 和 watch
         if (!this.VM_MAP[key]) {
-            this.VM_MAP[key] = { vm, watch }
+            this.VM_MAP[key] = { vm, watch, deepWatch }
         }
     }
 
@@ -63,9 +88,10 @@ export default class VmStatus {
         vmKeys
             .filter(vmKey => this.VM_MAP[vmKey])
             .forEach((vmKey) => {
-                const { vm, watch } = this.VM_MAP[vmKey]
+                const { vm, watch, deepWatch } = this.VM_MAP[vmKey]
                 const newState = this.newStateByVM[vmKey]
                 const oldState = this.oldStateByVM[vmKey]
+                const getWatchFnArr = getWatchFnArrByVm(vm)
 
                 // 更新数据
                 vm.setData(newState)
@@ -75,19 +101,34 @@ export default class VmStatus {
                     .map((key) => {
                         const newVal = newState[key]
                         const oldVal = oldState[key]
-                        const watchFn = isFn(watch[key])
-                            ? watch[key]
-                            : watch[key] && watch[key].handler
-                                ? isFn(watch[key].handler)
-                                    ? watch[key].handler
-                                    : vm[watch[key].handler]
-                                : vm[watch[key]]
+                        const watchFnArr = watch[key] && watch[key].map(getWatchFnArr)
 
-                        return { newVal, oldVal, watchFn }
+                        return { key, newVal, oldVal, watchFnArr }
                     })
-                    .filter(({ watchFn }) => isFn(watchFn))
-                    .forEach(({ newVal, oldVal, watchFn }) => {
-                        watchFn.call(vm, newVal, oldVal)
+                    .forEach(({ key, newVal, oldVal, watchFnArr }) => {
+                        // 触发自身的 watch
+                        if (watchFnArr) {
+                            watchFnArr.forEach(fn => fn.call(vm, newVal, oldVal))
+                        }
+
+                        // deep watch
+                        Object.keys(deepWatch)
+                            .filter(isDeepWatchMatched(key))
+                            .forEach((dKey) => {
+                                const newDeepVal = getValByPath(vm)(dKey)
+                                const oldDeepVal = { ...newDeepVal }
+
+                                // 恢复旧值
+                                setObjByPath({
+                                    obj: oldDeepVal,
+                                    path: key.slice(dKey.length),
+                                    val: oldVal,
+                                })
+
+                                deepWatch[dKey]
+                                    .map(getWatchFnArr)
+                                    .forEach(fn => fn.call(vm, newDeepVal, oldDeepVal))
+                            })
                     })
             })
 

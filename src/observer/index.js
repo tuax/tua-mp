@@ -19,7 +19,7 @@ import Dep from './dep'
  * @param {String} key 被观察对象的属性
  * @param {any} val 被观察对象的属性的值
  * @param {function} observeDeep 递归观察函数
- * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 export const defineReactive = ({
     obj,
