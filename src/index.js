@@ -3,9 +3,13 @@ import {
     log,
     isFn,
     $emit,
+    checkReservedKeys,
     getPropertiesFromProps,
 } from './utils/index'
-import { deleteVm, getAsyncSetData } from './asyncSetData'
+import {
+    deleteVm,
+    getAsyncSetData,
+} from './asyncSetData'
 import {
     getObserveDeep,
 } from './observer/index'
@@ -45,6 +49,9 @@ export const TuaComp = ({
         const data = isFn(rawData) ? rawData() : rawData
         const asyncSetData = getAsyncSetData(this, watch)
         const observeDeep = getObserveDeep(asyncSetData)
+
+        // 检查是否使用了保留字
+        checkReservedKeys(data, computed, methods)
 
         // 初始化数据
         this.setData(data)
@@ -88,6 +95,9 @@ export const TuaPage = ({
         const data = isFn(rawData) ? rawData() : rawData
         const asyncSetData = getAsyncSetData(this, watch)
         const observeDeep = getObserveDeep(asyncSetData)
+
+        // 检查是否使用了保留字
+        checkReservedKeys(data, computed, methods)
 
         // 初始化数据
         this.setData(data)

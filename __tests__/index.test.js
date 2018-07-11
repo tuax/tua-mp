@@ -1,5 +1,5 @@
-import { TuaComp, TuaPage } from '../src'
 import { afterSetData } from './utils'
+import { TuaComp, TuaPage } from '../src'
 
 const event = {
     "currentTarget": {
@@ -11,12 +11,16 @@ const event = {
     "detail": { "value": [] }
 }
 
-const eventVal = {
-    "value": [],
-    "index": 0
-}
+const eventVal = { "value": [], "index": 0 }
 
 describe('TuaComp', () => {
+    test('throw error when using reserved keys', () => {
+        expect(() => TuaComp({ data: { $data: 'young' } })).toThrow()
+        expect(() => TuaComp({ data: { __TUA_PATH__: 'path' } })).toThrow()
+        expect(() => TuaComp({ computed: { $computed () { return '!' } } })).toThrow()
+        expect(() => TuaComp({ methods: { $data () {} } })).toThrow()
+    })
+
     test('deep and immediate watch', (done) => {
         const vm = TuaComp({
             data () {
@@ -138,8 +142,6 @@ describe('TuaComp', () => {
                 },
             },
         })
-        const newVal = 'StEve'
-
         expect(vm.propA).toBe(0)
         expect(vm.propB).toBe('')
         expect(vm.propC).toBe('')
@@ -179,6 +181,13 @@ describe('TuaComp', () => {
 })
 
 describe('TuaPage', () => {
+    test('throw error when using reserved keys', () => {
+        expect(() => TuaPage({ data: { $data: 'young' } })).toThrow()
+        expect(() => TuaPage({ data: { __TUA_PATH__: 'path' } })).toThrow()
+        expect(() => TuaPage({ computed: { $computed () { return '!' } } })).toThrow()
+        expect(() => TuaPage({ methods: { $data () {} } })).toThrow()
+    })
+
     test('array watch', (done) => {
         const vm = TuaPage({
             data () {

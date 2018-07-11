@@ -1,4 +1,4 @@
-var version = "0.7.0";
+var version = "0.7.0-alpha.0";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -115,6 +115,9 @@ var __TUA_PATH__ = '__TUA_PATH__';
 
 // 每个对象上挂载自己的依赖对象
 var __dep__ = '__dep__';
+
+// 被框架占用的关键字，在 data 和 computed 中如果使用这些关键字，将会抛出错误
+var reservedKeys = ['$data', '$emit', '$computed', __TUA_PATH__];
 
 var isFn = function isFn(fn) {
     return typeof fn === 'function';
@@ -262,6 +265,23 @@ var logByType = function logByType(type) {
 
 var log = logByType('log');
 var warn = logByType('warn');
+
+// reserved keys
+var isReservedKeys = function isReservedKeys(str) {
+    return reservedKeys.indexOf(str) !== -1;
+};
+var getObjHasReservedKeys = function getObjHasReservedKeys(obj) {
+    return Object.keys(obj).filter(isReservedKeys);
+};
+
+// 检查在 data、computed、methods 中是否使用了保留字
+var checkReservedKeys = function checkReservedKeys(data, computed, methods) {
+    var reservedKeysInVm = getObjHasReservedKeys(data).concat(getObjHasReservedKeys(computed)).concat(getObjHasReservedKeys(methods)).join(', ');
+
+    if (reservedKeysInVm) {
+        throw Error('\u8BF7\u52FF\u5728 data\u3001computed\u3001methods ' + ('\u4E2D\u4F7F\u7528\u4E0B\u5217\u4FDD\u7559\u5B57:\n ' + reservedKeysInVm));
+    }
+};
 
 /**
  * 断言 prop 的值是否有效
@@ -1011,6 +1031,9 @@ var TuaComp = function TuaComp(_ref) {
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
 
+            // 检查是否使用了保留字
+            checkReservedKeys(data, computed, methods);
+
             // 初始化数据
             this.setData(data);
 
@@ -1056,6 +1079,9 @@ var TuaPage = function TuaPage(_ref2) {
             var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
+
+            // 检查是否使用了保留字
+            checkReservedKeys(data, computed, methods);
 
             // 初始化数据
             this.setData(data);
