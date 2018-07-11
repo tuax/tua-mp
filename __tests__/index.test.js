@@ -107,7 +107,7 @@ describe('TuaComp', () => {
         afterSetData(() => {
             expect(vm.e).toBe(vm.steve + 'e')
             expect(vm.newAB).toEqual({ c: 'e' })
-            expect(vm.oldAB).toEqual({ c: 'd' })
+            expect(vm.oldAB).toEqual({ c: 'e' })
             done()
         })
     })
@@ -243,7 +243,10 @@ describe('TuaPage', () => {
     test('array watch', (done) => {
         const vm = TuaPage({
             data () {
-                return { a: { b: 'c' } }
+                return {
+                    a: { b: 'c' },
+                    arr: [{ d: { e: 'f' } }, { d: { e: 'ff' } }],
+                }
             },
             watch: {
                 a: [
@@ -288,7 +291,7 @@ describe('TuaPage', () => {
 
         afterSetData(() => {
             expect(vm.newA).toEqual({ b: 'd' })
-            expect(vm.oldA).toEqual({ b: 'c' })
+            expect(vm.oldA).toEqual({ b: 'd' })
             expect(vm.newIA).toEqual({ b: 'd' })
             expect(vm.oldIA).toEqual(undefined)
             expect(vm.newArrA).toEqual(undefined)
@@ -302,7 +305,10 @@ describe('TuaPage', () => {
     test('deep watch', (done) => {
         const vm = TuaPage({
             data () {
-                return { a: { b: 'c' } }
+                return {
+                    a: { b: 'c' },
+                    arr: [{ d: { e: 'f' } }, { d: { e: 'ff' } }],
+                }
             },
             watch: {
                 a: {
@@ -312,14 +318,27 @@ describe('TuaPage', () => {
                         this.oldA = oldVal
                     },
                 },
+                arr: {
+                    deep: true,
+                    handler (newVal, oldVal) {
+                        this.newArr = newVal
+                        this.oldArr = oldVal
+                    },
+                },
             },
         })
 
         vm.a.b = 'd'
+        vm.arr[0].d.e = 'g'
+        vm.arr[1].d.e = 'gg'
 
         afterSetData(() => {
             expect(vm.newA).toEqual({ b: 'd' })
-            expect(vm.oldA).toEqual({ b: 'c' })
+            expect(vm.oldA).toEqual({ b: 'd' })
+            expect(vm.newArr[0].d).toEqual({ e: 'g' })
+            expect(vm.newArr[1].d).toEqual({ e: 'gg' })
+            expect(vm.oldArr[0].d).toEqual({ e: 'g' })
+            expect(vm.oldArr[1].d).toEqual({ e: 'gg' })
             done()
         })
     })

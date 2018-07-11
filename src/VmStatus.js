@@ -1,7 +1,6 @@
 import {
     isFn,
     getValByPath,
-    setObjByPath,
 } from './utils/index'
 
 /**
@@ -119,19 +118,12 @@ export default class VmStatus {
                         Object.keys(deepWatch)
                             .filter(isDeepWatchMatched(key))
                             .forEach((dKey) => {
-                                const newDeepVal = getValByPath(vm)(dKey)
-                                const oldDeepVal = { ...newDeepVal }
-
-                                // 恢复旧值
-                                setObjByPath({
-                                    obj: oldDeepVal,
-                                    path: key.slice(dKey.length),
-                                    val: oldVal,
-                                })
+                                const deepVal = getValByPath(vm)(dKey)
 
                                 deepWatch[dKey]
                                     .map(getWatchFnArr)
-                                    .forEach(fn => fn.call(vm, newDeepVal, oldDeepVal))
+                                    // 新旧值相同
+                                    .forEach(fn => fn.call(vm, deepVal, deepVal))
                             })
                     })
             })

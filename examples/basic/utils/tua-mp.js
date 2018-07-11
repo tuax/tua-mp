@@ -1,4 +1,4 @@
-var version = "0.7.0-alpha.0";
+var version = "0.7.0-alpha.1";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -567,18 +567,12 @@ var VmStatus = function () {
 
                     // deep watch
                     Object.keys(deepWatch).filter(isDeepWatchMatched(key)).forEach(function (dKey) {
-                        var newDeepVal = getValByPath(vm)(dKey);
-                        var oldDeepVal = _extends({}, newDeepVal);
+                        var deepVal = getValByPath(vm)(dKey);
 
-                        // 恢复旧值
-                        setObjByPath({
-                            obj: oldDeepVal,
-                            path: key.slice(dKey.length),
-                            val: oldVal
-                        });
-
-                        deepWatch[dKey].map(getWatchFnArr).forEach(function (fn) {
-                            return fn.call(vm, newDeepVal, oldDeepVal);
+                        deepWatch[dKey].map(getWatchFnArr)
+                        // 新旧值相同
+                        .forEach(function (fn) {
+                            return fn.call(vm, deepVal, deepVal);
                         });
                     });
                 });
