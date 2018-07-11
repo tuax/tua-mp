@@ -540,8 +540,10 @@ var VmStatus = function () {
                 var oldState = _this.oldStateByVM[vmKey];
                 var getWatchFnArr = getWatchFnArrByVm(vm);
 
+                vm.beforeUpdate && vm.beforeUpdate();
+
                 // 更新数据
-                vm.setData(newState);
+                vm.updated ? vm.setData(newState, vm.updated) : vm.setData(newState);
 
                 // 触发 watch
                 Object.keys(newState).map(function (key) {
@@ -1026,7 +1028,21 @@ var TuaComp = function TuaComp(_ref) {
     return Component(_extends({}, rest, {
         methods: _extends({}, methods, { $emit: $emit }),
         properties: _extends({}, properties, getPropertiesFromProps(props)),
+        created: function created() {
+            for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
+                options[_key] = arguments[_key];
+            }
+
+            rest.beforeCreate && rest.beforeCreate.apply(this, options);
+            rest.created && rest.created.apply(this, options);
+        },
         attached: function attached() {
+            for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                options[_key2] = arguments[_key2];
+            }
+
+            rest.beforeMount && rest.beforeMount.apply(this, options);
+
             var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
@@ -1046,21 +1062,28 @@ var TuaComp = function TuaComp(_ref) {
             // 触发 immediate watch
             triggerImmediateWatch(this, watch);
 
-            for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
-                options[_key] = arguments[_key];
-            }
-
             rest.attached && rest.attached.apply(this, options);
         },
+        ready: function ready() {
+            for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                options[_key3] = arguments[_key3];
+            }
+
+            rest.ready && rest.ready.apply(this, options);
+            rest.mounted && rest.mounted.apply(this, options);
+        },
         detached: function detached() {
+            for (var _len4 = arguments.length, options = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                options[_key4] = arguments[_key4];
+            }
+
+            rest.beforeDestroy && rest.beforeDestroy.apply(this, options);
+
             // 从 VM_MAP 中删除自己
             deleteVm(this);
 
-            for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                options[_key2] = arguments[_key2];
-            }
-
             rest.detached && rest.detached.apply(this, options);
+            rest.destroyed && rest.destroyed.apply(this, options);
         }
     }));
 };
@@ -1076,6 +1099,12 @@ var TuaPage = function TuaPage(_ref2) {
         rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
     return Page(_extends({}, rest, methods, {
         onLoad: function onLoad() {
+            for (var _len5 = arguments.length, options = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                options[_key5] = arguments[_key5];
+            }
+
+            rest.beforeCreate && rest.beforeCreate.apply(this, options);
+
             var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
@@ -1095,21 +1124,30 @@ var TuaPage = function TuaPage(_ref2) {
             // 触发 immediate watch
             triggerImmediateWatch(this, watch);
 
-            for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                options[_key3] = arguments[_key3];
+            rest.onLoad && rest.onLoad.apply(this, options);
+            rest.created && rest.created.apply(this, options);
+        },
+        onReady: function onReady() {
+            for (var _len6 = arguments.length, options = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                options[_key6] = arguments[_key6];
             }
 
-            rest.onLoad && rest.onLoad.apply(this, options);
+            rest.beforeMount && rest.beforeMount.apply(this, options);
+            rest.onReady && rest.onReady.apply(this, options);
+            rest.mounted && rest.mounted.apply(this, options);
         },
         onUnload: function onUnload() {
+            for (var _len7 = arguments.length, options = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                options[_key7] = arguments[_key7];
+            }
+
+            rest.beforeDestroy && rest.beforeDestroy.apply(this, options);
+
             // 从 VM_MAP 中删除自己
             deleteVm(this);
 
-            for (var _len4 = arguments.length, options = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                options[_key4] = arguments[_key4];
-            }
-
             rest.onUnload && rest.onUnload.apply(this, options);
+            rest.destroyed && rest.destroyed.apply(this, options);
         }
     }));
 };

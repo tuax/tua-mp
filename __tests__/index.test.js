@@ -13,13 +13,63 @@ const event = {
 
 const eventVal = { "value": [], "index": 0 }
 
+const getTestForReservedKeys = (type) => {
+    expect(() => type({ data: { $data: 'young' } })).toThrow()
+    expect(() => type({ data: { __TUA_PATH__: 'path' } })).toThrow()
+    expect(() => type({ computed: { $computed () { return '!' } } })).toThrow()
+    expect(() => type({ methods: { $data () {} } })).toThrow()
+}
+
 describe('TuaComp', () => {
-    test('throw error when using reserved keys', () => {
-        expect(() => TuaComp({ data: { $data: 'young' } })).toThrow()
-        expect(() => TuaComp({ data: { __TUA_PATH__: 'path' } })).toThrow()
-        expect(() => TuaComp({ computed: { $computed () { return '!' } } })).toThrow()
-        expect(() => TuaComp({ methods: { $data () {} } })).toThrow()
+    test('component lifecycle', () => {
+        let lifecycleArr = []
+
+        const vm = TuaComp({
+            data: { lc: 'a' },
+            beforeCreate () {
+                lifecycleArr.push('beforeCreate')
+            },
+            created () {
+                lifecycleArr.push('created')
+            },
+            beforeMount () {
+                lifecycleArr.push('beforeMount')
+            },
+            ready () {
+                lifecycleArr.push('ready')
+            },
+            mounted () {
+                lifecycleArr.push('mounted')
+            },
+            beforeUpdate () {
+                lifecycleArr.push('beforeUpdate')
+            },
+            updated () {
+                lifecycleArr.push('updated')
+            },
+            beforeDestroy () {
+                lifecycleArr.push('beforeDestroy')
+            },
+            destroyed () {
+                lifecycleArr.push('destroyed')
+            },
+        })
+
+        expect(lifecycleArr).toEqual(['beforeCreate', 'created', 'beforeMount', 'ready', 'mounted'])
+
+        lifecycleArr = []
+        vm.lc = 'b'
+
+        afterSetData(() => {
+            expect(lifecycleArr).toEqual(['beforeUpdate', 'updated'])
+
+            lifecycleArr = []
+            vm.detached()
+            expect(lifecycleArr).toEqual(['beforeDestroy', 'destroyed'])
+        })
     })
+
+    test('throw error when using reserved keys', () => getTestForReservedKeys(TuaComp))
 
     test('deep and immediate watch', (done) => {
         const vm = TuaComp({
@@ -41,15 +91,10 @@ describe('TuaComp', () => {
                         this.oldAB = oldVal
                     },
                 },
-                e: {
-                    immediate: true,
-                    handler: 'eFn',
-                },
+                e: { immediate: true, handler: 'eFn' },
             },
             methods: {
-                eFn (val) {
-                    this.newE = val
-                },
+                eFn (val) { this.newE = val },
             },
         })
 
@@ -79,9 +124,7 @@ describe('TuaComp', () => {
                     value: 'steve',
                 },
             },
-            data: {
-                compData: 'compData',
-            },
+            data: { compData: 'compData' },
             detached () {},
             methods: {
                 onChangeVal (e) {
@@ -118,28 +161,13 @@ describe('TuaComp', () => {
             props: {
                 propA: Number,
                 propB: [String, Number],
-                propC: {
-                    type: String,
-                    required: true,
-                },
-                propD: {
-                    type: Number,
-                    default: 100,
-                },
-                propE: {
-                    type: Object,
-                    default: () => ({ message: 'hello' }),
-                },
-                propF: {
-                    validator (value) {
-                        return ['success', 'warning', 'danger'].indexOf(value) !== -1
-                    },
-                },
+                propC: { type: String, required: true },
+                propD: { type: Number, default: 100 },
+                propE: { type: Object, default: () => ({ message: 'hello' }) },
+                propF: { validator: val => ['success', 'warning', 'danger'].indexOf(val) !== -1 },
             },
             computed: {
-                dAndE () {
-                    return this.propD + this.propE.message
-                },
+                dAndE () { return this.propD + this.propE.message },
             },
         })
         expect(vm.propA).toBe(0)
@@ -164,29 +192,53 @@ describe('TuaComp', () => {
     test('not plain object data', () => {
         const now = new Date()
         const hour = now.getHours()
-
         const vm = TuaComp({
-            data () {
-                return { now }
-            },
+            data () { return { now } },
             computed: {
-                hour () {
-                    return this.now.getHours()
-                },
+                hour () { return this.now.getHours() },
             },
         })
-
         expect(hour).toBe(vm.hour)
     })
 })
 
 describe('TuaPage', () => {
-    test('throw error when using reserved keys', () => {
-        expect(() => TuaPage({ data: { $data: 'young' } })).toThrow()
-        expect(() => TuaPage({ data: { __TUA_PATH__: 'path' } })).toThrow()
-        expect(() => TuaPage({ computed: { $computed () { return '!' } } })).toThrow()
-        expect(() => TuaPage({ methods: { $data () {} } })).toThrow()
+    test('page lifecycle', () => {
+        let lifecycleArr = []
+
+        const vm = TuaPage({
+            beforeCreate () {
+                lifecycleArr.push('beforeCreate')
+            },
+            created () {
+                lifecycleArr.push('created')
+            },
+            beforeMount () {
+                lifecycleArr.push('beforeMount')
+            },
+            onReady () {
+                lifecycleArr.push('onReady')
+            },
+            mounted () {
+                lifecycleArr.push('mounted')
+            },
+            beforeDestroy () {
+                lifecycleArr.push('beforeDestroy')
+            },
+            destroyed () {
+                lifecycleArr.push('destroyed')
+            },
+        })
+
+        expect(lifecycleArr).toEqual(['beforeCreate', 'created', 'beforeMount', 'onReady', 'mounted'])
+
+        lifecycleArr = []
+        vm.onUnload()
+
+        expect(lifecycleArr).toEqual(['beforeDestroy', 'destroyed'])
     })
+
+    test('throw error when using reserved keys', () => getTestForReservedKeys(TuaPage))
 
     test('array watch', (done) => {
         const vm = TuaPage({
@@ -213,10 +265,7 @@ describe('TuaPage', () => {
                         this.newArrA = newVal
                         this.oldArrA = oldVal
                     },
-                    {
-                        immediate: true,
-                        handler: 'aFn',
-                    },
+                    { immediate: true, handler: 'aFn' },
                 ],
             },
             methods: {
@@ -364,9 +413,7 @@ describe('TuaPage', () => {
         const value = customObj.fn(1217)
 
         const vm = TuaPage({
-            data () {
-                return { customObj }
-            },
+            data () { return { customObj } },
             computed: {
                 value () {
                     return this.customObj.fn(1217)
@@ -389,9 +436,7 @@ describe('TuaPage', () => {
                 nestedArrayData: [
                     {
                         steve: 'steve',
-                        young: {
-                            young: 'young',
-                        },
+                        young: { young: 'young' },
                     },
                 ],
             },
@@ -413,16 +458,12 @@ describe('TuaPage', () => {
                 return {
                     nestedData: {
                         steve: 'steve',
-                        young: {
-                            young: 'young',
-                        },
+                        young: { young: 'young' },
                     },
                     nestedArrayData: [
                         {
                             steve: 'steve',
-                            young: {
-                                young: 'young',
-                            },
+                            young: { young: 'young' },
                         },
                     ],
                 }
@@ -466,9 +507,7 @@ describe('TuaPage', () => {
         const vm = TuaPage({
             data () {
                 return {
-                    nestedArr: [
-                        { num: n++ },
-                    ],
+                    nestedArr: [ { num: n++ } ],
                 }
             },
             computed: {
@@ -478,11 +517,7 @@ describe('TuaPage', () => {
             },
         })
 
-        vm.nestedArr = [
-            { num: n++ },
-            { num: n++ },
-        ]
-
+        vm.nestedArr = [ { num: n++ }, { num: n++ } ]
         vm.nestedArr.push({ num: n++ })
 
         expect(vm.fromNestedArr.length).toBe(2)

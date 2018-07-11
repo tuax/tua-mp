@@ -10,19 +10,23 @@ let nId = 0
 global.Page = ({ data, ...rest }) => {
     const page = {
         data,
-        setData: jest.fn(function (newData) {
+        setData: jest.fn(function (newData, cb) {
             this.data = {
                 ...this.data,
                 ...newData,
             }
+
+            cb && cb()
         }),
         onLoad: noop,
+        onReady: noop,
         onUnLoad: noop,
         __wxWebviewId__: wId++,
         ...rest,
     }
 
     page.onLoad()
+    page.onReady()
 
     return page
 }
@@ -34,7 +38,6 @@ global.Component = ({ data, properties, methods, ...rest }) => {
     const props = Object.keys(properties)
         .map((key) => {
             const prop = properties[key]
-            const { type, value } = prop
             const getValue = (obj) => isFn(obj)
                 ? obj() : obj === null
                     ? '' : obj.value == null
@@ -49,13 +52,17 @@ global.Component = ({ data, properties, methods, ...rest }) => {
     const Component = {
         data: { ...data, ...props },
         properties,
-        setData: jest.fn(function (newData) {
+        setData: jest.fn(function (newData, cb) {
             this.data = {
                 ...this.data,
                 ...newData,
             }
+
+            cb && cb()
         }),
+        created: noop,
         attached: noop,
+        ready: noop,
         detached: noop,
         __wxWebviewId__: wId++,
         __wxExparserNodeId__: nId++,
@@ -63,7 +70,9 @@ global.Component = ({ data, properties, methods, ...rest }) => {
         ...rest,
     }
 
+    Component.created()
     Component.attached()
+    Component.ready()
 
     return Component
 }

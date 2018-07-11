@@ -45,7 +45,13 @@ export const TuaComp = ({
         ...properties,
         ...getPropertiesFromProps(props),
     },
+    created (...options) {
+        rest.beforeCreate && rest.beforeCreate.apply(this, options)
+        rest.created && rest.created.apply(this, options)
+    },
     attached (...options) {
+        rest.beforeMount && rest.beforeMount.apply(this, options)
+
         const data = isFn(rawData) ? rawData() : rawData
         const asyncSetData = getAsyncSetData(this, watch)
         const observeDeep = getObserveDeep(asyncSetData)
@@ -67,11 +73,18 @@ export const TuaComp = ({
 
         rest.attached && rest.attached.apply(this, options)
     },
+    ready (...options) {
+        rest.ready && rest.ready.apply(this, options)
+        rest.mounted && rest.mounted.apply(this, options)
+    },
     detached (...options) {
+        rest.beforeDestroy && rest.beforeDestroy.apply(this, options)
+
         // 从 VM_MAP 中删除自己
         deleteVm(this)
 
         rest.detached && rest.detached.apply(this, options)
+        rest.destroyed && rest.destroyed.apply(this, options)
     },
 })
 
@@ -92,6 +105,8 @@ export const TuaPage = ({
     ...rest,
     ...methods,
     onLoad (...options) {
+        rest.beforeCreate && rest.beforeCreate.apply(this, options)
+
         const data = isFn(rawData) ? rawData() : rawData
         const asyncSetData = getAsyncSetData(this, watch)
         const observeDeep = getObserveDeep(asyncSetData)
@@ -112,11 +127,20 @@ export const TuaPage = ({
         triggerImmediateWatch(this, watch)
 
         rest.onLoad && rest.onLoad.apply(this, options)
+        rest.created && rest.created.apply(this, options)
+    },
+    onReady (...options) {
+        rest.beforeMount && rest.beforeMount.apply(this, options)
+        rest.onReady && rest.onReady.apply(this, options)
+        rest.mounted && rest.mounted.apply(this, options)
     },
     onUnload (...options) {
+        rest.beforeDestroy && rest.beforeDestroy.apply(this, options)
+
         // 从 VM_MAP 中删除自己
         deleteVm(this)
 
         rest.onUnload && rest.onUnload.apply(this, options)
+        rest.destroyed && rest.destroyed.apply(this, options)
     },
 })
