@@ -548,6 +548,8 @@ describe('TuaPage', () => {
 
         afterSetData(() => {
             expect(vm.fromNestedArr.length).toBe(3)
+            expect(vm.nestedArr.__dep__.subs.length)
+                .toEqual(vm.nestedArr[0].__dep__.subs.length)
             done()
         })
     })

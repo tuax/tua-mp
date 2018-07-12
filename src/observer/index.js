@@ -61,20 +61,19 @@ export const defineReactive = ({
             const prefix = obj[__TUA_PATH__] || ''
             const path = getPathByPrefix(prefix, key)
 
-            // 重新观察
-            val = observeDeep(newVal, path)
-
             const isNeedInheritDep =
-                val &&
+                newVal &&
                 oldVal &&
-                !val[__dep__] &&
                 oldVal[__dep__] &&
-                typeof val === 'object'
+                typeof newVal === 'object'
 
             // 继承依赖
             if (isNeedInheritDep) {
-                val[__dep__] = oldVal[__dep__]
+                newVal[__dep__] = oldVal[__dep__]
             }
+
+            // 重新观察
+            val = observeDeep(newVal, path)
 
             asyncSetData({ path, newVal, oldVal })
 
@@ -98,7 +97,9 @@ export const getObserveDeep = (asyncSetData) => {
      */
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
-            const arr = obj.map((item, idx) => {
+            const arr = obj
+
+            arr.forEach((item, idx) => {
                 // 继承依赖
                 if (!item[__dep__] && obj[__dep__]) {
                     item[__dep__] = obj[__dep__]
