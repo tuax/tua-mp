@@ -1,6 +1,6 @@
 {
     "name": "tua-mp-example-webpack-vue",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "An example of using tua-mp with webpack",
     "scripts": {
         "start": "tua-mp-service serve",
@@ -19,15 +19,12 @@
         "uuid": "^3.3.2"
     },
     "devDependencies": {
-        "@tua-mp/service": "^0.1.4",
-        "babel-core": "^6.26.3",
+        "@tua-mp/service": "^0.1.5",
         "babel-eslint": "^8.2.3",
-        "babel-loader": "^7.1.4",
         "babel-plugin-transform-runtime": "^6.23.0",
         "babel-preset-env": "^1.7.0",
         "babel-preset-stage-0": "^6.24.1",
-        "css-loader": "^0.28.11",
-        "eslint": "4.19.1",
+        "eslint": "^5.0.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-loader": "^2.0.0",
         "eslint-plugin-html": "^4.0.3",
@@ -36,13 +33,6 @@
         "eslint-plugin-promise": "^3.8.0",
         "eslint-plugin-standard": "^3.1.0",
         "eslint-plugin-vue": "^4.5.0",
-        "file-loader": "^1.1.11",
-        "less": "^3.0.4",
-        "less-loader": "^4.1.0",
-        "node-sass": "^4.9.0",
-        "rimraf": "^2.6.2",
-        "sass-loader": "^7.0.3",
-        "stylus": "^0.54.5",
-        "stylus-loader": "^3.0.2"
+        "rimraf": "^2.6.2"
     }
 }
