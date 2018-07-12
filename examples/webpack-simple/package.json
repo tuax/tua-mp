@@ -1,6 +1,6 @@
 {
     "name": "tua-mp-example-webpack-simple",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "An example of using tua-mp with webpack",
     "scripts": {
         "start": "tua-mp-service serve",
@@ -14,7 +14,9 @@
     "author": "StEve Young",
     "license": "MIT",
     "dependencies": {
-        "tua-mp": "^0.6.3"
+        "tua-mp": "^0.7.0",
+        "tua-storage": "^1.4.0",
+        "uuid": "^3.3.2"
     },
     "devDependencies": {
         "@tua-mp/service": "^0.1.4",

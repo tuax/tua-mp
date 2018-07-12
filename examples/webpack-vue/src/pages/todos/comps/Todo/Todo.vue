@@ -8,7 +8,7 @@
     <view class="li todo {{ todoClassStr }}">
         <view class="view">
             <checkbox-group
-                data-index="{{ index }}"
+                data-id="{{ todo.id }}"
                 bindchange="onToggleTodo"
             >
                 <checkbox
@@ -16,7 +16,7 @@
                     checked="{{ todo.completed }}"
                 />
                 <label
-                    data-todo="{{ todo }}"
+                    data-id="{{ todo.id }}"
                     bindlongpress="onPressTodo"
                 >
                     {{ todo.title }}
@@ -25,7 +25,7 @@
 
             <view
                 class="destroy"
-                data-index="{{ index }}"
+                data-id="{{ todo.id }}"
                 bindtap="onTapRemove"
             />
         </view>
@@ -33,7 +33,7 @@
         <input
             class="edit"
             value="{{ todo.title }}"
-            data-index="{{ index }}"
+            data-id="{{ todo.id }}"
             bindblur="onBlurTodo"
         />
     </view>
@@ -51,7 +51,6 @@ export default {
             type: Object,
             default: defaultFn,
         },
-        index: Number,
         editedTodo: {
             type: Object,
             default: defaultFn,

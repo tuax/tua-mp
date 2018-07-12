@@ -13,7 +13,7 @@ TuaPage({
             canIUse: wx.canIUse('button.open-type.getUserInfo'),
         }
     },
-    onLoad () {
+    created () {
         this.gotoTodos()
 
         if (app.globalData.userInfo) {

@@ -110,7 +110,7 @@ export default {
             },
         }
     },
-    onLoad () {
+    created () {
         log(this)
         /* eslint-disable no-global-assign */
         global = this

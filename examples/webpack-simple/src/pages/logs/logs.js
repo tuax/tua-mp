@@ -4,14 +4,16 @@ import { formatTime } from '@utils'
 
 import './logs.scss'
 
+const { globalData: { storage } } = getApp()
+
 TuaPage({
     data: {
         logs: [],
     },
-    onLoad () {
-        const logs = wx.getStorageSync('logs') || []
+    async created () {
+        const { data } = await storage.load({ key: 'logs' })
 
-        this.logs = logs
+        this.logs = data
             .map(log => new Date(log))
             .map(formatTime)
     },
