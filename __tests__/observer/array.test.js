@@ -53,7 +53,7 @@ describe('patch methods to array', () => {
         arr[__TUA_PATH__] = path
         Object.setPrototypeOf = null
         arr.__proto__ = null
-        arr.forEach = [].forEach
+        arr.map = [].map
 
         patchMethods2Array({ arr, arrayMethods })
 

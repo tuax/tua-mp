@@ -65,7 +65,8 @@ export const defineReactive = ({
                 newVal &&
                 oldVal &&
                 oldVal[__dep__] &&
-                typeof newVal === 'object'
+                typeof newVal === 'object' &&
+                !newVal[__dep__]
 
             // 继承依赖
             if (isNeedInheritDep) {
@@ -97,9 +98,7 @@ export const getObserveDeep = (asyncSetData) => {
      */
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
-            const arr = obj
-
-            arr.forEach((item, idx) => {
+            const arr = obj.map((item, idx) => {
                 // 继承依赖
                 if (!item[__dep__] && obj[__dep__]) {
                     item[__dep__] = obj[__dep__]
@@ -107,6 +106,9 @@ export const getObserveDeep = (asyncSetData) => {
 
                 return observeDeep(item, `${prefix}[${idx}]`)
             })
+
+            // 继承依赖
+            arr[__dep__] = obj[__dep__]
 
             // 每个数组挂载自己的路径
             arr[__TUA_PATH__] = prefix

@@ -1,4 +1,4 @@
-var version = "0.7.0-alpha.2";
+var version = "0.7.0-alpha.3";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -793,7 +793,7 @@ var defineReactive = function defineReactive(_ref) {
             var prefix = obj[__TUA_PATH__] || '';
             var path = getPathByPrefix(prefix, key);
 
-            var isNeedInheritDep = newVal && oldVal && oldVal[__dep__] && (typeof newVal === 'undefined' ? 'undefined' : _typeof(newVal)) === 'object';
+            var isNeedInheritDep = newVal && oldVal && oldVal[__dep__] && (typeof newVal === 'undefined' ? 'undefined' : _typeof(newVal)) === 'object' && !newVal[__dep__];
 
             // 继承依赖
             if (isNeedInheritDep) {
@@ -827,9 +827,7 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
         var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
         if (Array.isArray(obj)) {
-            var arr = obj;
-
-            arr.forEach(function (item, idx) {
+            var arr = obj.map(function (item, idx) {
                 // 继承依赖
                 if (!item[__dep__] && obj[__dep__]) {
                     item[__dep__] = obj[__dep__];
@@ -837,6 +835,9 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
 
                 return observeDeep(item, prefix + '[' + idx + ']');
             });
+
+            // 继承依赖
+            arr[__dep__] = obj[__dep__];
 
             // 每个数组挂载自己的路径
             arr[__TUA_PATH__] = prefix;
