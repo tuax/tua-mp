@@ -1,4 +1,4 @@
-var version = "0.7.0";
+var version = "0.7.1";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -828,8 +828,10 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
 
         if (Array.isArray(obj)) {
             var arr = obj.map(function (item, idx) {
+                var isNeedInheritDep = (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !item[__dep__] && obj[__dep__];
+
                 // 继承依赖
-                if (!item[__dep__] && obj[__dep__]) {
+                if (isNeedInheritDep) {
                     item[__dep__] = obj[__dep__];
                 }
 

@@ -99,8 +99,13 @@ export const getObserveDeep = (asyncSetData) => {
     return function observeDeep (obj, prefix = '') {
         if (Array.isArray(obj)) {
             const arr = obj.map((item, idx) => {
+                const isNeedInheritDep =
+                    typeof item === 'object' &&
+                    !item[__dep__] &&
+                    obj[__dep__]
+
                 // 继承依赖
-                if (!item[__dep__] && obj[__dep__]) {
+                if (isNeedInheritDep) {
                     item[__dep__] = obj[__dep__]
                 }
 

@@ -526,6 +526,7 @@ describe('TuaPage', () => {
         const vm = TuaPage({
             data () {
                 return {
+                    strArr: ['a', 'b'],
                     nestedArr: [ { num: n++ } ],
                 }
             },
@@ -533,9 +534,13 @@ describe('TuaPage', () => {
                 fromNestedArr () {
                     return this.nestedArr.filter(x => x.num > 1)
                 },
+                firstStr () {
+                    return this.strArr[0]
+                },
             },
         })
 
+        vm.strArr = ['c']
         vm.nestedArr = [ { num: n++ }, { num: n++ } ]
         vm.nestedArr.push({ num: n++ })
 
@@ -547,6 +552,7 @@ describe('TuaPage', () => {
         expect(vm.data.fromNestedArr.length).toBe(0)
 
         afterSetData(() => {
+            expect(vm.firstStr).toBe('c')
             expect(vm.fromNestedArr.length).toBe(3)
             expect(vm.nestedArr.__dep__.subs.length)
                 .toEqual(vm.nestedArr[0].__dep__.subs.length)
