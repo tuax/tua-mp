@@ -30,12 +30,6 @@ export default {
             validator: val => VALID_FILTERS.includes(val),
         },
     },
-    data () {
-        return {
-            visibility: 'test',
-            v: 'test',
-        }
-    },
     computed: {
         computedVal () {
             return this.visibility + this.filterType

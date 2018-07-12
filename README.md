@@ -29,9 +29,7 @@
 
 <image src="./imgs/open-by-tab.png" width="400" alt="open-by-tab" />
 
-[如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
-
-<image src="./imgs/minicode.png" width="300" alt="minicode" />
+[如果依然打不开，可以手动打开开发者工具导入代码片段查看](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 
 在页面入口的 js 代码中使用 TuaPage 替代小程序提供的 Page。
 
@@ -116,15 +114,19 @@ $ vue init tua-mp-templates/vue my-project
 * 实现相同的组件配置（data、computed、methods、watch）
 * 实现赋值改变数据和界面，而不是调用小程序原生的 `this.setData`
 * 实现 `computed` 功能
-* 实现 `watch` 功能
+* 实现完整 `watch` 功能
 * 实现异步 `setData` 功能，即假如在一个事件循环周期内多次对于同一个属性赋值，只会触发一次小程序原生的 `setData` 函数以及相关的 `watch` 函数（详见下面例子中的 `onLoad` 函数）
+* 实现生命周期钩子的适配
 * 实现小程序原生组件的适配
   * 可以传递 Vue 风格的 props
   * 可以使用 computed、watch
   * 并使用 $emit 封装了原生的 triggerEvent 方法
 
 ```js
-import { TuaPage } from 'tua-mp'
+import { TuaComp, TuaPage } from 'tua-mp'
+
+// 在组件中使用 TuaComp 替代小程序提供的 Component
+TuaComp({ ... })
 
 // 使用 TuaPage 替代小程序提供的 Page
 TuaPage({
@@ -173,25 +175,11 @@ TuaPage({
         }
     },
 
-    // 方法建议都挂在 methods 下
-    methods: {
-        onTap () {
-            // 类似 Vue 的操作方式
-            this.f = 'onTap'
-            this.a.b = 'onTap'
-            this.c[0].d.e = 'onTap'
-
-            // 劫持了数组的以下方法: pop, push, sort, shift, splice, unshift, reverse
-            this.c.push('onTap')
-
-            // 对于不改变原数组的以下方法: map, filter, concat, slice...
-            // 建议采取直接替换原数组的方式
-            this.c = this.c.map(x => x + 1)
-
-            // 注意：请在 data 中先声明 x！否则无法响应 x 的变化...
-            this.x = 'x'
-        },
-    },
+    // Vue 生命周期的适配
+    created () {},
+    mounted () {},
+    beforeUpdate () {},
+    updated () {},
 
     // 侦听器
     watch: {
@@ -216,6 +204,36 @@ TuaPage({
         // 监听 computed
         reversedG (newVal, oldVal) {
             // ...
+        },
+
+        // 数组、deep、immediate
+        a: [
+            { deep: true, immediate: true, handler () {} },
+            // 调用 methods 中的 aFn 方法
+            'aFn',
+            // 同样调用 methods 中的 aFn 方法
+            { immediate: true, handler: 'aFn' }
+        ],
+    },
+
+    // 方法建议都挂在 methods 下
+    methods: {
+        aFn () {},
+        onTap () {
+            // 类似 Vue 的操作方式
+            this.f = 'onTap'
+            this.a.b = 'onTap'
+            this.c[0].d.e = 'onTap'
+
+            // 劫持了数组的以下方法: pop, push, sort, shift, splice, unshift, reverse
+            this.c.push('onTap')
+
+            // 对于不改变原数组的以下方法: map, filter, concat, slice...
+            // 建议采取直接替换原数组的方式
+            this.c = this.c.map(x => x + 1)
+
+            // 注意：请在 data 中先声明 x！否则无法响应 x 的变化...
+            this.x = 'x'
         },
     },
 })

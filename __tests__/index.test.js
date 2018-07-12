@@ -1,5 +1,5 @@
-import { TuaComp, TuaPage } from '../src'
 import { afterSetData } from './utils'
+import { TuaComp, TuaPage } from '../src'
 
 const event = {
     "currentTarget": {
@@ -11,12 +11,107 @@ const event = {
     "detail": { "value": [] }
 }
 
-const eventVal = {
-    "value": [],
-    "index": 0
+const eventVal = { "value": [], "index": 0 }
+
+const getTestForReservedKeys = (type) => {
+    expect(() => type({ data: { $data: 'young' } })).toThrow()
+    expect(() => type({ data: { __TUA_PATH__: 'path' } })).toThrow()
+    expect(() => type({ computed: { $computed () { return '!' } } })).toThrow()
+    expect(() => type({ methods: { $data () {} } })).toThrow()
 }
 
 describe('TuaComp', () => {
+    test('component lifecycle', () => {
+        let lifecycleArr = []
+
+        const vm = TuaComp({
+            data: { lc: 'a' },
+            beforeCreate () {
+                lifecycleArr.push('beforeCreate')
+            },
+            created () {
+                lifecycleArr.push('created')
+            },
+            beforeMount () {
+                lifecycleArr.push('beforeMount')
+            },
+            ready () {
+                lifecycleArr.push('ready')
+            },
+            mounted () {
+                lifecycleArr.push('mounted')
+            },
+            beforeUpdate () {
+                lifecycleArr.push('beforeUpdate')
+            },
+            updated () {
+                lifecycleArr.push('updated')
+            },
+            beforeDestroy () {
+                lifecycleArr.push('beforeDestroy')
+            },
+            destroyed () {
+                lifecycleArr.push('destroyed')
+            },
+        })
+
+        expect(lifecycleArr).toEqual(['beforeCreate', 'created', 'beforeMount', 'ready', 'mounted'])
+
+        lifecycleArr = []
+        vm.lc = 'b'
+
+        afterSetData(() => {
+            expect(lifecycleArr).toEqual(['beforeUpdate', 'updated'])
+
+            lifecycleArr = []
+            vm.detached()
+            expect(lifecycleArr).toEqual(['beforeDestroy', 'destroyed'])
+        })
+    })
+
+    test('throw error when using reserved keys', () => getTestForReservedKeys(TuaComp))
+
+    test('deep and immediate watch', (done) => {
+        const vm = TuaComp({
+            data () {
+                return {
+                    steve: 'young',
+                    a: { b: { c: 'd' } },
+                }
+            },
+            computed: {
+                e () { return this.steve + this.a.b.c },
+            },
+            watch: {
+                'a.b': {
+                    deep: true,
+                    immediate: true,
+                    handler (newVal, oldVal) {
+                        this.newAB = newVal
+                        this.oldAB = oldVal
+                    },
+                },
+                e: { immediate: true, handler: 'eFn' },
+            },
+            methods: {
+                eFn (val) { this.newE = val },
+            },
+        })
+
+        expect(vm.newE).toBe(vm.e)
+        expect(vm.e).toBe(vm.steve + 'd')
+        expect(vm.newAB).toEqual({ c: 'd' })
+        expect(vm.oldAB).toEqual(undefined)
+        vm.a.b.c = 'e'
+
+        afterSetData(() => {
+            expect(vm.e).toBe(vm.steve + 'e')
+            expect(vm.newAB).toEqual({ c: 'e' })
+            expect(vm.oldAB).toEqual({ c: 'e' })
+            done()
+        })
+    })
+
     test('use it just like MINA', (done) => {
         const vm = TuaComp({
             properties: {
@@ -29,9 +124,7 @@ describe('TuaComp', () => {
                     value: 'steve',
                 },
             },
-            data: {
-                compData: 'compData',
-            },
+            data: { compData: 'compData' },
             detached () {},
             methods: {
                 onChangeVal (e) {
@@ -64,37 +157,19 @@ describe('TuaComp', () => {
     })
 
     test('use it just like Vue', () => {
-        const watchFn = jest.fn()
         const vm = TuaComp({
             props: {
                 propA: Number,
                 propB: [String, Number],
-                propC: {
-                    type: String,
-                    required: true,
-                },
-                propD: {
-                    type: Number,
-                    default: 100,
-                },
-                propE: {
-                    type: Object,
-                    default: () => ({ message: 'hello' }),
-                },
-                propF: {
-                    validator (value) {
-                        return ['success', 'warning', 'danger'].indexOf(value) !== -1
-                    },
-                },
+                propC: { type: String, required: true },
+                propD: { type: Number, default: 100 },
+                propE: { type: Object, default: () => ({ message: 'hello' }) },
+                propF: { validator: val => ['success', 'warning', 'danger'].indexOf(val) !== -1 },
             },
             computed: {
-                dAndE () {
-                    return this.propD + this.propE.message
-                },
+                dAndE () { return this.propD + this.propE.message },
             },
         })
-        const newVal = 'StEve'
-
         expect(vm.propA).toBe(0)
         expect(vm.propB).toBe('')
         expect(vm.propC).toBe('')
@@ -105,7 +180,7 @@ describe('TuaComp', () => {
     })
 
     test('edge case', () => {
-        const data = jest.fn()
+        const data = jest.fn(() => ({}))
         const attached = jest.fn()
         TuaComp({ data, attached })
 
@@ -117,32 +192,247 @@ describe('TuaComp', () => {
     test('not plain object data', () => {
         const now = new Date()
         const hour = now.getHours()
-
         const vm = TuaComp({
-            data () {
-                return { now }
-            },
+            data () { return { now } },
             computed: {
-                hour () {
-                    return this.now.getHours()
-                },
+                hour () { return this.now.getHours() },
             },
         })
-
         expect(hour).toBe(vm.hour)
     })
 })
 
 describe('TuaPage', () => {
+    test('page lifecycle', () => {
+        let lifecycleArr = []
+
+        const vm = TuaPage({
+            beforeCreate () {
+                lifecycleArr.push('beforeCreate')
+            },
+            created () {
+                lifecycleArr.push('created')
+            },
+            beforeMount () {
+                lifecycleArr.push('beforeMount')
+            },
+            onReady () {
+                lifecycleArr.push('onReady')
+            },
+            mounted () {
+                lifecycleArr.push('mounted')
+            },
+            beforeDestroy () {
+                lifecycleArr.push('beforeDestroy')
+            },
+            destroyed () {
+                lifecycleArr.push('destroyed')
+            },
+        })
+
+        expect(lifecycleArr).toEqual(['beforeCreate', 'created', 'beforeMount', 'onReady', 'mounted'])
+
+        lifecycleArr = []
+        vm.onUnload()
+
+        expect(lifecycleArr).toEqual(['beforeDestroy', 'destroyed'])
+    })
+
+    test('throw error when using reserved keys', () => getTestForReservedKeys(TuaPage))
+
+    test('array watch', (done) => {
+        const vm = TuaPage({
+            data () {
+                return {
+                    a: { b: 'c' },
+                    arr: [{ d: { e: 'f' } }, { d: { e: 'ff' } }],
+                }
+            },
+            watch: {
+                a: [
+                    {
+                        deep: true,
+                        handler (newVal, oldVal) {
+                            this.newA = newVal
+                            this.oldA = oldVal
+                        },
+                    },
+                    {
+                        immediate: true,
+                        handler (newVal, oldVal) {
+                            this.newIA = newVal
+                            this.oldIA = oldVal
+                        },
+                    },
+                    function (newVal, oldVal) {
+                        this.newArrA = newVal
+                        this.oldArrA = oldVal
+                    },
+                    { immediate: true, handler: 'aFn' },
+                ],
+            },
+            methods: {
+                aFn (newVal, oldVal) {
+                    this.newAFn = newVal
+                    this.oldAFn = oldVal
+                },
+            },
+        })
+
+        expect(vm.newA).toEqual(undefined)
+        expect(vm.oldA).toEqual(undefined)
+        expect(vm.newIA).toEqual({ b: 'c' })
+        expect(vm.oldIA).toEqual(undefined)
+        expect(vm.newArrA).toEqual(undefined)
+        expect(vm.oldArrA).toEqual(undefined)
+        expect(vm.newAFn).toEqual({ b: 'c' })
+        expect(vm.oldAFn).toEqual(undefined)
+        vm.a.b = 'd'
+
+        afterSetData(() => {
+            expect(vm.newA).toEqual({ b: 'd' })
+            expect(vm.oldA).toEqual({ b: 'd' })
+            expect(vm.newIA).toEqual({ b: 'd' })
+            expect(vm.oldIA).toEqual(undefined)
+            expect(vm.newArrA).toEqual(undefined)
+            expect(vm.oldArrA).toEqual(undefined)
+            expect(vm.newAFn).toEqual({ b: 'd' })
+            expect(vm.oldAFn).toEqual(undefined)
+            done()
+        })
+    })
+
+    test('deep watch', (done) => {
+        const vm = TuaPage({
+            data () {
+                return {
+                    a: { b: 'c' },
+                    arr: [{ d: { e: 'f' } }, { d: { e: 'ff' } }],
+                }
+            },
+            watch: {
+                a: {
+                    deep: true,
+                    handler (newVal, oldVal) {
+                        this.newA = newVal
+                        this.oldA = oldVal
+                    },
+                },
+                arr: {
+                    deep: true,
+                    handler (newVal, oldVal) {
+                        this.newArr = newVal
+                        this.oldArr = oldVal
+                    },
+                },
+            },
+        })
+
+        vm.a.b = 'd'
+        vm.arr[0].d.e = 'g'
+        vm.arr[1].d.e = 'gg'
+
+        afterSetData(() => {
+            expect(vm.newA).toEqual({ b: 'd' })
+            expect(vm.oldA).toEqual({ b: 'd' })
+            expect(vm.newArr[0].d).toEqual({ e: 'g' })
+            expect(vm.newArr[1].d).toEqual({ e: 'gg' })
+            expect(vm.oldArr[0].d).toEqual({ e: 'g' })
+            expect(vm.oldArr[1].d).toEqual({ e: 'gg' })
+            done()
+        })
+    })
+
+    test('immediate watch', (done) => {
+        const vm = TuaPage({
+            data () {
+                return {
+                    steve: 'young',
+                    a: { b: 'c' },
+                }
+            },
+            computed: {
+                steveLen () {
+                    return this.steve.length
+                },
+            },
+            watch: {
+                'steve': {
+                    immediate: true,
+                    handler (newVal) {
+                        this.young = newVal
+                    },
+                },
+                'steveLen': {
+                    immediate: true,
+                    handler: 'onSteveLen',
+                },
+                'a.b': {
+                    immediate: true,
+                    handler: 'onAB',
+                },
+            },
+            methods: {
+                onAB (newVal) {
+                    this.ab = newVal
+                },
+                onSteveLen (newVal) {
+                    this.youngLen = newVal
+                },
+            },
+        })
+        vm.steve = 'nash'
+        expect(vm.ab).toBe('c')
+        expect(vm.young).toBe('young')
+        expect(vm.youngLen).toBe(5)
+
+        afterSetData(() => {
+            expect(vm.young).toBe('nash')
+            expect(vm.youngLen).toBe(4)
+            done()
+        })
+    })
+
+    test('watch string method name', (done) => {
+        const vm = TuaPage({
+            data () {
+                return { steve: 'young' }
+            },
+            computed: {
+                steveLen () {
+                    return this.steve.length
+                },
+            },
+            watch: {
+                steve: 'onSteve',
+                steveLen: 'onSteveLen',
+            },
+            methods: {
+                onSteve (newVal) {
+                    this.young = newVal
+                },
+                onSteveLen (newVal) {
+                    this.youngLen = newVal
+                },
+            },
+        })
+
+        vm.steve = 'nash'
+
+        afterSetData(() => {
+            expect(vm.young).toBe('nash')
+            expect(vm.youngLen).toBe(4)
+            done()
+        })
+    })
+
     // close #37
     test('custom object data', () => {
         const customObj = { fn: x => x * 2 }
         const value = customObj.fn(1217)
 
         const vm = TuaPage({
-            data () {
-                return { customObj }
-            },
+            data () { return { customObj } },
             computed: {
                 value () {
                     return this.customObj.fn(1217)
@@ -165,9 +455,7 @@ describe('TuaPage', () => {
                 nestedArrayData: [
                     {
                         steve: 'steve',
-                        young: {
-                            young: 'young',
-                        },
+                        young: { young: 'young' },
                     },
                 ],
             },
@@ -189,16 +477,12 @@ describe('TuaPage', () => {
                 return {
                     nestedData: {
                         steve: 'steve',
-                        young: {
-                            young: 'young',
-                        },
+                        young: { young: 'young' },
                     },
                     nestedArrayData: [
                         {
                             steve: 'steve',
-                            young: {
-                                young: 'young',
-                            },
+                            young: { young: 'young' },
                         },
                     ],
                 }
@@ -242,9 +526,7 @@ describe('TuaPage', () => {
         const vm = TuaPage({
             data () {
                 return {
-                    nestedArr: [
-                        { num: n++ },
-                    ],
+                    nestedArr: [ { num: n++ } ],
                 }
             },
             computed: {
@@ -254,11 +536,7 @@ describe('TuaPage', () => {
             },
         })
 
-        vm.nestedArr = [
-            { num: n++ },
-            { num: n++ },
-        ]
-
+        vm.nestedArr = [ { num: n++ }, { num: n++ } ]
         vm.nestedArr.push({ num: n++ })
 
         expect(vm.fromNestedArr.length).toBe(2)
@@ -270,6 +548,8 @@ describe('TuaPage', () => {
 
         afterSetData(() => {
             expect(vm.fromNestedArr.length).toBe(3)
+            expect(vm.nestedArr.__dep__.subs.length)
+                .toEqual(vm.nestedArr[0].__dep__.subs.length)
             done()
         })
     })

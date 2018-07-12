@@ -6,7 +6,5 @@ module.exports = {
             // 因为默认入口是 ./src/app/index.js
             .clear()
             .add('./src/app/app').end()
-
-        console.log(config.toConfig())
     },
 }

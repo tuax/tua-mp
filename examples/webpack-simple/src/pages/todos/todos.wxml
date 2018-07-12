@@ -31,7 +31,6 @@
                 wx:for-item="todo"
                 wx:for-index="index"
                 todo="{{ todo }}"
-                index="{{ index }}"
                 editedTodo="{{ editedTodo }}"
                 bind:onBlurTodo="onBlurTodo"
                 bind:onPressTodo="onPressTodo"

@@ -1,4 +1,4 @@
-var version = "0.6.6";
+var version = "0.7.0";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -116,6 +116,9 @@ var __TUA_PATH__ = '__TUA_PATH__';
 // 每个对象上挂载自己的依赖对象
 var __dep__ = '__dep__';
 
+// 被框架占用的关键字，在 data 和 computed 中如果使用这些关键字，将会抛出错误
+var reservedKeys = ['$data', '$emit', '$computed', __TUA_PATH__];
+
 var isFn = function isFn(fn) {
     return typeof fn === 'function';
 };
@@ -165,6 +168,20 @@ var pathStr2Arr = function pathStr2Arr(str) {
     }).reduce(function (acc, cur) {
         return acc.concat(cur);
     }, []);
+};
+
+/**
+ * 根据 path 获取目标对象 obj 上的值
+ * @param {Object} obj 目标对象
+ * @param {String} path 路径字符串
+ * @returns {Any} obj
+ */
+var getValByPath = function getValByPath(obj) {
+    return function (path) {
+        return pathStr2Arr(path).reduce(function (acc, cur) {
+            return acc[cur];
+        }, obj);
+    };
 };
 
 /**
@@ -248,6 +265,23 @@ var logByType = function logByType(type) {
 
 var log = logByType('log');
 var warn = logByType('warn');
+
+// reserved keys
+var isReservedKeys = function isReservedKeys(str) {
+    return reservedKeys.indexOf(str) !== -1;
+};
+var getObjHasReservedKeys = function getObjHasReservedKeys(obj) {
+    return Object.keys(obj).filter(isReservedKeys);
+};
+
+// 检查在 data、computed、methods 中是否使用了保留字
+var checkReservedKeys = function checkReservedKeys(data, computed, methods) {
+    var reservedKeysInVm = getObjHasReservedKeys(data).concat(getObjHasReservedKeys(computed)).concat(getObjHasReservedKeys(methods)).join(', ');
+
+    if (reservedKeysInVm) {
+        throw Error('\u8BF7\u52FF\u5728 data\u3001computed\u3001methods ' + ('\u4E2D\u4F7F\u7528\u4E0B\u5217\u4FDD\u7559\u5B57:\n ' + reservedKeysInVm));
+    }
+};
 
 /**
  * 断言 prop 的值是否有效
@@ -405,6 +439,32 @@ var getKeyFromVM = function getKeyFromVM(_ref) {
 };
 
 /**
+ * 判断 deep watch 的 key 是否是当前变化值的 key 的前缀
+ * @param {String} key 当前变化值的 key
+ * @param {String} dKey deep watch 的 key
+ * @return {Boolean} 是不是前缀
+ */
+var isDeepWatchMatched = function isDeepWatchMatched(key) {
+    return function (dKey) {
+        return new RegExp('^' + dKey + '(\\.|\\[)').test(key);
+    };
+};
+
+var getWatchFnArrByVm = function getWatchFnArrByVm(vm) {
+    return function (watchObj) {
+        return isFn(watchObj)
+        // 直接写的函数，或是数组
+        ? watchObj : watchObj && watchObj.handler ? isFn(watchObj.handler)
+        // 函数写在 handler 中
+        ? watchObj.handler
+        // handler 是字符串
+        : vm[watchObj.handler]
+        // 直接写的字符串
+        : vm[watchObj];
+    };
+};
+
+/**
  * 这个类负责管理 vm 的状态，在更新数据时保存状态，
  * 然后异步地进行更新，并且触发相关 watch 函数
  */
@@ -428,6 +488,7 @@ var VmStatus = function () {
      * 更新状态
      * @param {Page|Component} vm Page 或 Component 实例
      * @param {Object} watch 侦听器对象
+     * @param {Object} deepWatch 深度侦听器对象
      * @param {String} path 属性的路径
      * @param {any} newVal 新值
      * @param {any} oldVal 旧值
@@ -439,6 +500,7 @@ var VmStatus = function () {
         value: function updateState(_ref2) {
             var vm = _ref2.vm,
                 watch = _ref2.watch,
+                deepWatch = _ref2.deepWatch,
                 path = _ref2.path,
                 newVal = _ref2.newVal,
                 oldVal = _ref2.oldVal;
@@ -450,7 +512,7 @@ var VmStatus = function () {
 
             // 缓存 vm 和 watch
             if (!this.VM_MAP[key]) {
-                this.VM_MAP[key] = { vm: vm, watch: watch };
+                this.VM_MAP[key] = { vm: vm, watch: watch, deepWatch: deepWatch };
             }
         }
 
@@ -471,23 +533,48 @@ var VmStatus = function () {
             }).forEach(function (vmKey) {
                 var _VM_MAP$vmKey = _this.VM_MAP[vmKey],
                     vm = _VM_MAP$vmKey.vm,
-                    watch = _VM_MAP$vmKey.watch;
+                    watch = _VM_MAP$vmKey.watch,
+                    deepWatch = _VM_MAP$vmKey.deepWatch;
 
                 var newState = _this.newStateByVM[vmKey];
                 var oldState = _this.oldStateByVM[vmKey];
+                var getWatchFnArr = getWatchFnArrByVm(vm);
+
+                vm.beforeUpdate && vm.beforeUpdate();
 
                 // 更新数据
-                vm.setData(newState);
+                vm.updated ? vm.setData(newState, vm.updated) : vm.setData(newState);
 
                 // 触发 watch
-                Object.keys(newState).filter(function (key) {
-                    return isFn(watch[key]);
-                }).forEach(function (key) {
-                    var watchFn = watch[key];
+                Object.keys(newState).map(function (key) {
                     var newVal = newState[key];
                     var oldVal = oldState[key];
+                    var watchFnArr = watch[key] && watch[key].map(getWatchFnArr);
 
-                    watchFn.call(vm, newVal, oldVal);
+                    return { key: key, newVal: newVal, oldVal: oldVal, watchFnArr: watchFnArr };
+                }).forEach(function (_ref3) {
+                    var key = _ref3.key,
+                        newVal = _ref3.newVal,
+                        oldVal = _ref3.oldVal,
+                        watchFnArr = _ref3.watchFnArr;
+
+                    // 触发自身的 watch
+                    if (watchFnArr) {
+                        watchFnArr.forEach(function (fn) {
+                            return fn.call(vm, newVal, oldVal);
+                        });
+                    }
+
+                    // deep watch
+                    Object.keys(deepWatch).filter(isDeepWatchMatched(key)).forEach(function (dKey) {
+                        var deepVal = getValByPath(vm)(dKey);
+
+                        deepWatch[dKey].map(getWatchFnArr)
+                        // 新旧值相同
+                        .forEach(function (fn) {
+                            return fn.call(vm, deepVal, deepVal);
+                        });
+                    });
                 });
             });
 
@@ -515,13 +602,13 @@ var vmStatus = new VmStatus();
 /**
  * 异步 setData 提高性能
  * @param {Page|Component} vm Page 或 Component 实例
- * @param {Object} watch 侦听器对象
+ * @param {Object} watchObj 侦听器对象
  * @param {String} path 属性的路径
  * @param {any} newVal 新值
  * @param {any} oldVal 旧值
  * @param {Boolean} isArrDirty 数组下标发生变化
  */
-var getAsyncSetData = function getAsyncSetData(vm, watch) {
+var getAsyncSetData = function getAsyncSetData(vm, watchObj) {
     return function (_ref) {
         var path = _ref.path,
             newVal = _ref.newVal,
@@ -529,7 +616,26 @@ var getAsyncSetData = function getAsyncSetData(vm, watch) {
             _ref$isArrDirty = _ref.isArrDirty,
             isArrDirty = _ref$isArrDirty === undefined ? false : _ref$isArrDirty;
 
-        vmStatus.updateState({ vm: vm, watch: watch, path: path, newVal: newVal, oldVal: oldVal });
+        // 统一转成数组
+        var watch = Object.keys(watchObj).map(function (key) {
+            return Array.isArray(watchObj[key]) ? defineProperty({}, key, watchObj[key]) : defineProperty({}, key, [watchObj[key]]);
+        }).reduce(function (acc, cur) {
+            return _extends({}, acc, cur);
+        }, {});
+
+        var deepWatch = Object.keys(watch).filter(function (key) {
+            return watch[key].some(function (w) {
+                return w.deep;
+            });
+        }).map(function (key) {
+            return defineProperty({}, key, watch[key].filter(function (w) {
+                return w.deep;
+            }));
+        }).reduce(function (acc, cur) {
+            return _extends({}, acc, cur);
+        }, {});
+
+        vmStatus.updateState({ vm: vm, watch: watch, deepWatch: deepWatch, path: path, newVal: newVal, oldVal: oldVal });
 
         // 数组下标发生变化，同步修改数组
         if (isArrDirty) {
@@ -646,7 +752,7 @@ Dep.targetCb = null;
  * @param {String} key 被观察对象的属性
  * @param {any} val 被观察对象的属性的值
  * @param {function} observeDeep 递归观察函数
- * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 var defineReactive = function defineReactive(_ref) {
     var obj = _ref.obj,
@@ -687,15 +793,15 @@ var defineReactive = function defineReactive(_ref) {
             var prefix = obj[__TUA_PATH__] || '';
             var path = getPathByPrefix(prefix, key);
 
-            // 重新观察
-            val = observeDeep(newVal, path);
-
-            var isNeedInheritDep = val && oldVal && !val[__dep__] && oldVal[__dep__] && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object';
+            var isNeedInheritDep = newVal && oldVal && oldVal[__dep__] && (typeof newVal === 'undefined' ? 'undefined' : _typeof(newVal)) === 'object' && !newVal[__dep__];
 
             // 继承依赖
             if (isNeedInheritDep) {
-                val[__dep__] = oldVal[__dep__];
+                newVal[__dep__] = oldVal[__dep__];
             }
+
+            // 重新观察
+            val = observeDeep(newVal, path);
 
             asyncSetData({ path: path, newVal: newVal, oldVal: oldVal });
 
@@ -729,6 +835,9 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
 
                 return observeDeep(item, prefix + '[' + idx + ']');
             });
+
+            // 继承依赖
+            arr[__dep__] = obj[__dep__];
 
             // 每个数组挂载自己的路径
             arr[__TUA_PATH__] = prefix;
@@ -858,6 +967,36 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
     vm.setData($computed);
 };
 
+/**
+ * 初始化时触发 immediate 的 watch
+ * @param {Page|Component} vm Page 或 Component 实例
+ * @param {Object} watch 侦听器对象
+ */
+var triggerImmediateWatch = function triggerImmediateWatch(vm, watch) {
+    return Object.keys(watch).forEach(function (key) {
+        var initialVal = getValByPath(vm)(key);
+
+        if (Array.isArray(watch[key])) {
+            watch[key].filter(function (w) {
+                return w.immediate;
+            }).forEach(function (_ref) {
+                var handler = _ref.handler;
+
+                var watchFn = isFn(handler) ? handler : vm[handler];
+
+                watchFn.call(vm, initialVal);
+            });
+            return;
+        }
+
+        if (!watch[key].immediate) return;
+
+        var watchFn = isFn(watch[key].handler) ? watch[key].handler : vm[watch[key].handler];
+
+        watchFn.call(vm, initialVal);
+    });
+};
+
 log('Version ' + version);
 
 /**
@@ -886,10 +1025,27 @@ var TuaComp = function TuaComp(_ref) {
     return Component(_extends({}, rest, {
         methods: _extends({}, methods, { $emit: $emit }),
         properties: _extends({}, properties, getPropertiesFromProps(props)),
+        created: function created() {
+            for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
+                options[_key] = arguments[_key];
+            }
+
+            rest.beforeCreate && rest.beforeCreate.apply(this, options);
+            rest.created && rest.created.apply(this, options);
+        },
         attached: function attached() {
+            for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                options[_key2] = arguments[_key2];
+            }
+
+            rest.beforeMount && rest.beforeMount.apply(this, options);
+
             var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
+
+            // 检查是否使用了保留字
+            checkReservedKeys(data, computed, methods);
 
             // 初始化数据
             this.setData(data);
@@ -900,21 +1056,31 @@ var TuaComp = function TuaComp(_ref) {
             // 遍历观察 computed
             bindComputed(this, computed, asyncSetData);
 
-            for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
-                options[_key] = arguments[_key];
-            }
+            // 触发 immediate watch
+            triggerImmediateWatch(this, watch);
 
             rest.attached && rest.attached.apply(this, options);
         },
+        ready: function ready() {
+            for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                options[_key3] = arguments[_key3];
+            }
+
+            rest.ready && rest.ready.apply(this, options);
+            rest.mounted && rest.mounted.apply(this, options);
+        },
         detached: function detached() {
+            for (var _len4 = arguments.length, options = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                options[_key4] = arguments[_key4];
+            }
+
+            rest.beforeDestroy && rest.beforeDestroy.apply(this, options);
+
             // 从 VM_MAP 中删除自己
             deleteVm(this);
 
-            for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                options[_key2] = arguments[_key2];
-            }
-
             rest.detached && rest.detached.apply(this, options);
+            rest.destroyed && rest.destroyed.apply(this, options);
         }
     }));
 };
@@ -930,9 +1096,18 @@ var TuaPage = function TuaPage(_ref2) {
         rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
     return Page(_extends({}, rest, methods, {
         onLoad: function onLoad() {
+            for (var _len5 = arguments.length, options = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                options[_key5] = arguments[_key5];
+            }
+
+            rest.beforeCreate && rest.beforeCreate.apply(this, options);
+
             var data = isFn(rawData) ? rawData() : rawData;
             var asyncSetData = getAsyncSetData(this, watch);
             var observeDeep = getObserveDeep(asyncSetData);
+
+            // 检查是否使用了保留字
+            checkReservedKeys(data, computed, methods);
 
             // 初始化数据
             this.setData(data);
@@ -943,21 +1118,33 @@ var TuaPage = function TuaPage(_ref2) {
             // 遍历观察 computed
             bindComputed(this, computed, asyncSetData);
 
-            for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                options[_key3] = arguments[_key3];
-            }
+            // 触发 immediate watch
+            triggerImmediateWatch(this, watch);
 
             rest.onLoad && rest.onLoad.apply(this, options);
+            rest.created && rest.created.apply(this, options);
+        },
+        onReady: function onReady() {
+            for (var _len6 = arguments.length, options = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                options[_key6] = arguments[_key6];
+            }
+
+            rest.beforeMount && rest.beforeMount.apply(this, options);
+            rest.onReady && rest.onReady.apply(this, options);
+            rest.mounted && rest.mounted.apply(this, options);
         },
         onUnload: function onUnload() {
+            for (var _len7 = arguments.length, options = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                options[_key7] = arguments[_key7];
+            }
+
+            rest.beforeDestroy && rest.beforeDestroy.apply(this, options);
+
             // 从 VM_MAP 中删除自己
             deleteVm(this);
 
-            for (var _len4 = arguments.length, options = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                options[_key4] = arguments[_key4];
-            }
-
             rest.onUnload && rest.onUnload.apply(this, options);
+            rest.destroyed && rest.destroyed.apply(this, options);
         }
     }));
 };

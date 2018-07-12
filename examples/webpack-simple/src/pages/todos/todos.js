@@ -1,3 +1,4 @@
+import uuidv1 from 'uuid/v1'
 import { TuaPage } from 'tua-mp'
 
 import { VALID_FILTERS } from '@const'
@@ -7,15 +8,12 @@ import '@/styles/todomvc-common-base.css'
 import '@/styles/todomvc-app-css.css'
 import './todos.less'
 
-let uid = 0
+const { globalData: { storage } } = getApp()
 
 TuaPage({
     data () {
         return {
-            todos: [
-                { id: uid++, title: 'a', completed: true },
-                { id: uid++, title: 'b', completed: false },
-            ],
+            todos: [],
             newTodo: '',
             editedTodo: null,
             visibility: 'all',
@@ -43,9 +41,28 @@ TuaPage({
             return `visibility: ${visibility};`
         },
     },
-    watch: {
+    async mounted () {
+        const { data } = await storage.load({
+            key: 'todos',
+            syncFn: () => Promise.resolve([]),
+        })
+
+        // 初始化
+        this.todos = data
     },
-    onLoad () {
+    watch: {
+        todos: {
+            deep: true,
+            // 存到 storage 中
+            handler (todos) {
+                storage.save({
+                    key: 'todos',
+                    // 永久存储
+                    expires: null,
+                    data: { data: todos },
+                })
+            },
+        },
     },
     methods: {
         toggleAll (e) {
@@ -62,8 +79,8 @@ TuaPage({
             }
         },
         onToggleTodo (e) {
-            const { index } = getValFromEvent(e)
-            const todo = this.todos[index]
+            const { id } = getValFromEvent(e)
+            const todo = this.getTodoById(id)
 
             todo.completed = !todo.completed
         },
@@ -79,13 +96,13 @@ TuaPage({
             ].join(' ')
         },
         onPressTodo (e) {
-            const { todo } = getValFromEvent(e)
+            const { id } = getValFromEvent(e)
 
-            this.editTodo(todo)
+            this.editedTodo = this.getTodoById(id)
         },
         onBlurTodo (e) {
-            const { index, value } = getValFromEvent(e)
-            const todo = this.todos[index]
+            const { id, value } = getValFromEvent(e)
+            const todo = this.getTodoById(id)
 
             if (!this.editedTodo) return
 
@@ -97,9 +114,9 @@ TuaPage({
             }
         },
         onTapRemove (e) {
-            const { index } = getValFromEvent(e)
+            const { id } = getValFromEvent(e)
 
-            this.removeTodo(this.todos[index])
+            this.removeTodo(this.getTodoById(id))
         },
         onChangeFilter (e) {
             const { filter } = getValFromEvent(e)
@@ -114,7 +131,7 @@ TuaPage({
             if (!value) return
 
             this.todos.push({
-                id: uid++,
+                id: uuidv1(),
                 title: value,
                 completed: false,
             })
@@ -124,26 +141,11 @@ TuaPage({
             const index = this.todos.indexOf(todo)
             this.todos.splice(index, 1)
         },
-        editTodo (todo) {
-            this.beforeEditCache = todo.title
-            this.editedTodo = todo
-        },
-        doneEdit (todo) {
-            if (!this.editedTodo) return
-
-            this.editedTodo = null
-            todo.title = todo.title.trim()
-
-            if (!todo.title) {
-                this.removeTodo(todo)
-            }
-        },
-        cancelEdit (todo) {
-            this.editedTodo = null
-            todo.title = this.beforeEditCache
-        },
         removeCompleted () {
             this.todos = filterFns.active(this.todos)
+        },
+        getTodoById (id) {
+            return this.todos.find(t => t.id === id)
         },
     },
 })

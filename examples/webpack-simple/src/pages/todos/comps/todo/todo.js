@@ -13,7 +13,6 @@ TuaComp({
             type: Object,
             default: defaultFn,
         },
-        index: Number,
         editedTodo: {
             type: Object,
             default: defaultFn,

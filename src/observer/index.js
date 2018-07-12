@@ -19,7 +19,7 @@ import Dep from './dep'
  * @param {String} key 被观察对象的属性
  * @param {any} val 被观察对象的属性的值
  * @param {function} observeDeep 递归观察函数
- * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 export const defineReactive = ({
     obj,
@@ -61,20 +61,20 @@ export const defineReactive = ({
             const prefix = obj[__TUA_PATH__] || ''
             const path = getPathByPrefix(prefix, key)
 
-            // 重新观察
-            val = observeDeep(newVal, path)
-
             const isNeedInheritDep =
-                val &&
+                newVal &&
                 oldVal &&
-                !val[__dep__] &&
                 oldVal[__dep__] &&
-                typeof val === 'object'
+                typeof newVal === 'object' &&
+                !newVal[__dep__]
 
             // 继承依赖
             if (isNeedInheritDep) {
-                val[__dep__] = oldVal[__dep__]
+                newVal[__dep__] = oldVal[__dep__]
             }
+
+            // 重新观察
+            val = observeDeep(newVal, path)
 
             asyncSetData({ path, newVal, oldVal })
 
@@ -106,6 +106,9 @@ export const getObserveDeep = (asyncSetData) => {
 
                 return observeDeep(item, `${prefix}[${idx}]`)
             })
+
+            // 继承依赖
+            arr[__dep__] = obj[__dep__]
 
             // 每个数组挂载自己的路径
             arr[__TUA_PATH__] = prefix

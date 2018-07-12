@@ -1,6 +1,7 @@
 import {
     _toString,
     innerAttrRe,
+    reservedKeys,
 } from '../constants'
 
 export const isFn = fn => typeof fn === 'function'
@@ -46,6 +47,15 @@ export const pathStr2Arr = (str) => str
         .filter(x => x)
     )
     .reduce((acc, cur) => acc.concat(cur), [])
+
+/**
+ * 根据 path 获取目标对象 obj 上的值
+ * @param {Object} obj 目标对象
+ * @param {String} path 路径字符串
+ * @returns {Any} obj
+ */
+export const getValByPath = (obj) => (path) => pathStr2Arr(path)
+    .reduce((acc, cur) => acc[cur], obj)
 
 /**
  * 根据 path 将目标值 val 设置到目标对象 obj 上
@@ -124,3 +134,22 @@ const logByType = (type) => (out) => {
 export const log = logByType('log')
 export const warn = logByType('warn')
 export const error = logByType('error')
+
+// reserved keys
+const isReservedKeys = str => reservedKeys.indexOf(str) !== -1
+const getObjHasReservedKeys = obj => Object.keys(obj).filter(isReservedKeys)
+
+// 检查在 data、computed、methods 中是否使用了保留字
+export const checkReservedKeys = (data, computed, methods) => {
+    const reservedKeysInVm = getObjHasReservedKeys(data)
+        .concat(getObjHasReservedKeys(computed))
+        .concat(getObjHasReservedKeys(methods))
+        .join(', ')
+
+    if (reservedKeysInVm) {
+        throw Error(
+            `请勿在 data、computed、methods ` +
+            `中使用下列保留字:\n ${reservedKeysInVm}`
+        )
+    }
+}

@@ -24,16 +24,18 @@
 <script>
 import { formatTime } from '@utils'
 
+const { globalData: { storage } } = getApp()
+
 export default {
     data () {
         return {
             logs: [],
         }
     },
-    onLoad () {
-        const logs = wx.getStorageSync('logs') || []
+    async created () {
+        const { data } = await storage.load({ key: 'logs' })
 
-        this.logs = logs
+        this.logs = data
             .map(log => new Date(log))
             .map(formatTime)
     },
