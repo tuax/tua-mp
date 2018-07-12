@@ -1,4 +1,4 @@
-var version = "0.7.0-alpha.3";
+var version = "0.7.0";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
