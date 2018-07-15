@@ -5,7 +5,7 @@
 </h5>
 
 <p align="center">
-    <a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg" alt="Standard - JavaScript Style"></a>
+    <a href="https://github.com/feross/standard"><img src="./imgs/standard.svg" alt="Standard - JavaScript Style"></a>
 </p>
 
 <p align="center">
