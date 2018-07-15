@@ -1,0 +1,5 @@
+{
+    "usingComponents": {
+        "view-button": "/comps/view-button/view-button"
+    }
+}

@@ -9,6 +9,8 @@ import {
 
 let n = 0
 
+const watchLog = (prefix) => (newVal, oldVal) => console.log(`${prefix}: ${oldVal} -> ${newVal}`)
+
 TuaPage({
     data () {
         return {
@@ -47,7 +49,9 @@ TuaPage({
             },
         }
     },
-    onLoad () {
+
+    // 兼容 Vue 的生命周期方法
+    created () {
         console.log(this)
         global = this
 
@@ -63,6 +67,19 @@ TuaPage({
         testNestedArrayData(this)
         testInsertNestedArrayData(this)
     },
+
+    // 在 setData 前调用
+    beforeUpdate () {
+        console.log('beforeUpdate')
+        this.stringifyLog(this.data)
+    },
+
+    // 在 setData 第二个参数中调用（渲染完毕的回调）
+    updated () {
+        console.log('updated')
+        this.stringifyLog(this.data)
+    },
+
     computed: {
         reversedG () {
             return this.reverseStr(this.g)
@@ -74,6 +91,7 @@ TuaPage({
             return this.g + ' + ' + this.reversedG
         },
     },
+
     watch: {
         msg (newVal, oldVal) {
             console.log(`msg: ${oldVal} -> ${newVal}`)
@@ -84,17 +102,37 @@ TuaPage({
                 this.msg = this.reverseStr(this.msg)
             }, 1000)
         },
-        'g' (newVal, oldVal) {
-            console.log(`g: ${oldVal} -> ${newVal}`)
-        },
-        'reversedG' (newVal, oldVal) {
-            console.log(`reversedG: ${oldVal} -> ${newVal}`)
+        // 数组
+        'g': [
+            watchLog('g'),
+        ],
+        // immediate
+        'reversedG': {
+            immediate: true,
+            // 直接填写 methods 名称
+            handler: 'logFromMethods',
         },
         'gAndAB' (newVal, oldVal) {
             console.log(`gAndAB: ${oldVal} -> ${newVal}`)
         },
+        // deep
+        arr: [
+            watchLog('arr'),
+            {
+                deep: true,
+                immediate: true,
+                handler: 'stringifyLog',
+            },
+        ],
     },
+
     methods: {
+        logFromMethods (newVal, oldVal) {
+            console.log(`logFromMethods: ${oldVal} -> ${newVal}`)
+        },
+        stringifyLog (newVal) {
+            console.log(`stringifyLog: ${JSON.stringify(newVal, null, 4)}`)
+        },
         tapMsg () {
             this.msg += n++
         },
@@ -121,6 +159,9 @@ TuaPage({
         },
         unshiftNested () {
             this.arr.unshift({ c: { d: 'hey' } })
+        },
+        gotoLogs () {
+            wx.navigateTo({ url: '/pages/logs/logs' })
         },
     },
 })

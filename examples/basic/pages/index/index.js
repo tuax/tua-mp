@@ -1,7 +1,9 @@
+import { TuaPage } from '../../utils/tua-mp'
+
 // 获取应用实例
 const app = getApp()
 
-Page({
+TuaPage({
     data: {
         motto: 'Hello World',
         userInfo: {},

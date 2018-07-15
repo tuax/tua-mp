@@ -23,11 +23,11 @@ $ vue init tua-mp-templates/vue my-project
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="../../imgs/logs.vue.png" width="400" alt="logs.vue" />
+<image src="../../docs/.vuepress/public/logs.vue.png" width="400" alt="logs.vue" />
 
 其中 `/pages/todos/todos` 页面实现了 todos 应用。
 
-<image src="../../imgs/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+<image src="../../docs/.vuepress/public/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
 
 ## 如何使用
 * 开发时运行 `npm start`，`webpack` 就会开启监听
@@ -39,11 +39,9 @@ $ vue init tua-mp-templates/vue my-project
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
-<image src="../../imgs/open-by-tab.png" width="400" alt="open-by-tab" />
+<image src="../../docs/.vuepress/public/open-by-tab.png" width="400" alt="open-by-tab" />
 
-[如果依然打不开，可以手动打开开发者工具导入代码片段查看，如下图所示：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
-
-<image src="../../imgs/minicode.png" width="400" alt="minicode" />
+[如果依然打不开，可以手动打开开发者工具导入代码片段查看：](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 
 ## 文件结构
 
@@ -147,8 +145,6 @@ $ vue init tua-mp-templates/vue my-project
 │   │   └── todomvc-common-base.css
 │   └── templates
 │       └── info.wxml
-├── webpack.config.babel.js
-├── webpackUtils.js
 └── yarn.lock
 ```
 

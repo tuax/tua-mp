@@ -1,0 +1,5 @@
+/* comps/view-button.wxss */
+
+view {
+    text-align: center;
+}
