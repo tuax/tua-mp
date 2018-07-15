@@ -1,16 +1,20 @@
 ---
 home: true
-actionText: 指南 →
-actionLink: /guide/
+actionText: 快速上手 →
+actionLink: /quick-start/
 features:
 - title: 渐进式
   details: 可以由浅入深地用于你的小程序项目。
 - title: 高性能
-  details: 异步且精确调用 this.setData 方法，无冗余数据
+  details: 异步批量精确调用 setData 方法，无冗余数据传递。
 - title: 原生组件
-  details: 兼容微信小程序原生自定义组件，而非使用 <template> 模拟。
+  details: 兼容小程序原生自定义组件，而非使用 <template> 模拟。
 - title: 基于 webpack
-  details: 和前端开发一样采用 webpack 作为构建工具，因此轻松支持 npm、Babel、Yaml、Less、Scss、Stylus 等等功能，同时也很方便自由扩展。No hacks...
+  details: 和前端开发一样采用 webpack v4+ 作为构建工具，因此轻松支持 npm、Babel、Yaml、Less、Scss、Stylus 等等功能，同时也很方便自由扩展。No hacks...
+- title: 单文件组件
+  details: 借助 vue-loader v15+ 支持使用 .vue 形式的单文件组件编写小程序代码
+- title: 轻量
+  details: 从底层适配小程序，压缩后仅 19KB。
 footer: MIT Licensed | Copyright © 2018-present StEve Young
 ---
 

@@ -8,7 +8,7 @@
     ],
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "docs": "vuepress dev docs",
+        "docs": "vuepress dev docs -h localhost",
         "docs:build": "vuepress build docs",
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
