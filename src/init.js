@@ -59,7 +59,10 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                 Dep.targetCb = () => {
                     const newVal = getVal()
 
+                    if (newVal === oldVal) return
+
                     asyncSetData({ path: key, newVal, oldVal })
+                    oldVal = newVal
                     dep.notify()
                 }
                 Dep.targetCb.key = key

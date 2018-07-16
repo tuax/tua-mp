@@ -83,7 +83,7 @@ describe('observe functions', () => {
 
                 expect(vm.sAndsyPlusHey).toBe('y' + plusHey(newVal2))
                 expect(watch.sAndsyPlusHey).toBeCalledWith('y' + plusHey(newVal2), 'y' + plusHey(newVal1))
-                expect(watch.nestedArrLen).toHaveBeenCalledTimes(2)
+                expect(watch.nestedArrLen).toHaveBeenCalledTimes(0)
                 done()
             })
         })

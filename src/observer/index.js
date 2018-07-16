@@ -13,6 +13,30 @@ import {
 } from './array'
 import Dep from './dep'
 
+const addSubDeep = ({ obj, targetCb }) => {
+    if (Array.isArray(obj)) {
+        obj
+            .map((item) => {
+                item[__dep__] && item[__dep__].addSub(targetCb)
+                return item
+            })
+            .map(obj => ({ obj, targetCb }))
+            .forEach(addSubDeep)
+        return
+    }
+
+    if (typeof obj === 'object') {
+        Object.keys(obj)
+            .map((key) => {
+                const item = obj[key]
+                item[__dep__] && item[__dep__].addSub(targetCb)
+                return key
+            })
+            .map(key => ({ obj: obj[key], targetCb }))
+            .forEach(addSubDeep)
+    }
+}
+
 /**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
  * @param {Object} obj 被观察对象
@@ -46,9 +70,9 @@ export const defineReactive = ({
 
                 // 同时子属性也被依赖
                 if (Array.isArray(val)) {
-                    val.forEach((item) => {
-                        item[__dep__] && item[__dep__].addSub(Dep.targetCb)
-                    })
+                    val
+                        .map(obj => ({ obj, targetCb: Dep.targetCb }))
+                        .forEach(addSubDeep)
 
                     val[__dep__] = dep
                 }
@@ -128,15 +152,6 @@ export const getObserveDeep = (asyncSetData) => {
         }
 
         if (obj !== null && typeof obj === 'object') {
-            // 继承依赖
-            if (obj[__dep__]) {
-                Object.defineProperty(obj, __dep__, {
-                    value: obj[__dep__],
-                    enumerable: false,
-                    configurable: true,
-                })
-            }
-
             // 将路径前缀挂在父节点上
             Object.defineProperty(obj, __TUA_PATH__, {
                 value: prefix,
@@ -147,6 +162,24 @@ export const getObserveDeep = (asyncSetData) => {
             Object.keys(obj)
                 // 过滤 __wxWebviewId__ 等内部属性
                 .filter(isNotInnerAttr)
+                .map((key) => {
+                    const item = obj[key]
+                    const isNeedInheritDep =
+                        typeof item === 'object' &&
+                        !item[__dep__] &&
+                        obj[__dep__]
+
+                    // 继承依赖
+                    if (isNeedInheritDep) {
+                        Object.defineProperty(item, __dep__, {
+                            value: obj[__dep__],
+                            enumerable: false,
+                            configurable: true,
+                        })
+                    }
+
+                    return key
+                })
                 .map((key) => ({
                     obj,
                     key,

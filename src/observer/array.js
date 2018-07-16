@@ -17,8 +17,8 @@ const methodsToPatch = [
 
 /**
  * 改写数组原始的可变方法
- * @param {fucntion} observeDeep 递归观察函数
- * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {function} observeDeep 递归观察函数
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 export const getArrayMethods = ({
     observeDeep,
@@ -52,7 +52,7 @@ export const getArrayMethods = ({
 /**
  * 劫持数组的可变方法
  * @param {Array} arr 原始数组
- * @param {fucntion} arrayMethods 改写后的可变方法
+ * @param {function} arrayMethods 改写后的可变方法
  * @return {Array} 被劫持方法后的数组
  */
 export const patchMethods2Array = ({

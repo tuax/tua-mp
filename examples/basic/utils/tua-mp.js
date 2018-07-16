@@ -1,4 +1,4 @@
-var version = "0.7.1";
+var version = "0.7.2";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -657,8 +657,8 @@ var methodsToPatch = ['pop', 'push', 'sort', 'shift', 'splice', 'unshift', 'reve
 
 /**
  * 改写数组原始的可变方法
- * @param {fucntion} observeDeep 递归观察函数
- * @param {fucntion} asyncSetData 绑定了 vm 的异步 setData 函数
+ * @param {function} observeDeep 递归观察函数
+ * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
 var getArrayMethods = function getArrayMethods(_ref) {
     var observeDeep = _ref.observeDeep,
@@ -697,7 +697,7 @@ var getArrayMethods = function getArrayMethods(_ref) {
 /**
  * 劫持数组的可变方法
  * @param {Array} arr 原始数组
- * @param {fucntion} arrayMethods 改写后的可变方法
+ * @param {function} arrayMethods 改写后的可变方法
  * @return {Array} 被劫持方法后的数组
  */
 var patchMethods2Array = function patchMethods2Array(_ref2) {
@@ -746,6 +746,31 @@ var Dep = function () {
 
 Dep.targetCb = null;
 
+var addSubDeep = function addSubDeep(_ref) {
+    var obj = _ref.obj,
+        targetCb = _ref.targetCb;
+
+    if (Array.isArray(obj)) {
+        obj.map(function (item) {
+            item[__dep__] && item[__dep__].addSub(targetCb);
+            return item;
+        }).map(function (obj) {
+            return { obj: obj, targetCb: targetCb };
+        }).forEach(addSubDeep);
+        return;
+    }
+
+    if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
+        Object.keys(obj).map(function (key) {
+            var item = obj[key];
+            item[__dep__] && item[__dep__].addSub(targetCb);
+            return key;
+        }).map(function (key) {
+            return { obj: obj[key], targetCb: targetCb };
+        }).forEach(addSubDeep);
+    }
+};
+
 /**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
  * @param {Object} obj 被观察对象
@@ -754,12 +779,12 @@ Dep.targetCb = null;
  * @param {function} observeDeep 递归观察函数
  * @param {function} asyncSetData 绑定了 vm 的异步 setData 函数
  */
-var defineReactive = function defineReactive(_ref) {
-    var obj = _ref.obj,
-        key = _ref.key,
-        val = _ref.val,
-        observeDeep = _ref.observeDeep,
-        asyncSetData = _ref.asyncSetData;
+var defineReactive = function defineReactive(_ref2) {
+    var obj = _ref2.obj,
+        key = _ref2.key,
+        val = _ref2.val,
+        observeDeep = _ref2.observeDeep,
+        asyncSetData = _ref2.asyncSetData;
 
     var dep = obj[__dep__] || new Dep();
 
@@ -778,9 +803,9 @@ var defineReactive = function defineReactive(_ref) {
 
                 // 同时子属性也被依赖
                 if (Array.isArray(val)) {
-                    val.forEach(function (item) {
-                        item[__dep__] && item[__dep__].addSub(Dep.targetCb);
-                    });
+                    val.map(function (obj) {
+                        return { obj: obj, targetCb: Dep.targetCb };
+                    }).forEach(addSubDeep);
 
                     val[__dep__] = dep;
                 }
@@ -854,15 +879,6 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
         }
 
         if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
-            // 继承依赖
-            if (obj[__dep__]) {
-                Object.defineProperty(obj, __dep__, {
-                    value: obj[__dep__],
-                    enumerable: false,
-                    configurable: true
-                });
-            }
-
             // 将路径前缀挂在父节点上
             Object.defineProperty(obj, __TUA_PATH__, {
                 value: prefix,
@@ -873,6 +889,20 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
             Object.keys(obj)
             // 过滤 __wxWebviewId__ 等内部属性
             .filter(isNotInnerAttr).map(function (key) {
+                var item = obj[key];
+                var isNeedInheritDep = (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !item[__dep__] && obj[__dep__];
+
+                // 继承依赖
+                if (isNeedInheritDep) {
+                    Object.defineProperty(item, __dep__, {
+                        value: obj[__dep__],
+                        enumerable: false,
+                        configurable: true
+                    });
+                }
+
+                return key;
+            }).map(function (key) {
                 return {
                     obj: obj,
                     key: key,
@@ -939,7 +969,10 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
                 Dep.targetCb = function () {
                     var newVal = getVal();
 
+                    if (newVal === oldVal) return;
+
                     asyncSetData({ path: key, newVal: newVal, oldVal: oldVal });
+                    oldVal = newVal;
                     dep.notify();
                 };
                 Dep.targetCb.key = key;

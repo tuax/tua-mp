@@ -527,10 +527,13 @@ describe('TuaPage', () => {
             data () {
                 return {
                     strArr: ['a', 'b'],
-                    nestedArr: [ { num: n++ } ],
+                    nestedArr: [ { num: n++, e: [{ v: { e: 'e' } }] } ],
                 }
             },
             computed: {
+                stringifyNA () {
+                    return JSON.stringify(this.fromNestedArr)
+                },
                 fromNestedArr () {
                     return this.nestedArr.filter(x => x.num > 1)
                 },
@@ -542,16 +545,21 @@ describe('TuaPage', () => {
 
         vm.strArr = ['c']
         vm.nestedArr = [ { num: n++ }, { num: n++ } ]
-        vm.nestedArr.push({ num: n++ })
+        vm.nestedArr.push({ num: n++, s: { t: 't' } })
 
         expect(vm.fromNestedArr.length).toBe(2)
+
         vm.nestedArr.forEach(x => x.num++)
         expect(vm.fromNestedArr.length).toBe(3)
+
         vm.nestedArr.forEach(x => x.num++)
         expect(vm.fromNestedArr.length).toBe(3)
         expect(vm.data.fromNestedArr.length).toBe(0)
 
         afterSetData(() => {
+            expect(vm.nestedArr[2].s.__dep__.subs.length)
+                .toEqual(vm.nestedArr.__dep__.subs.length)
+
             expect(vm.firstStr).toBe('c')
             expect(vm.fromNestedArr.length).toBe(3)
             expect(vm.nestedArr.__dep__.subs.length)
