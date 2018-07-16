@@ -36,7 +36,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
         const dep = new Dep()
         const getVal = computed[key].bind(vm)
 
-        let oldVal = getVal()
+        let oldVal
         let isInit = true
 
         Object.defineProperty($computed, key, {
@@ -59,7 +59,12 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                 Dep.targetCb = () => {
                     const newVal = getVal()
 
+                    if (newVal === oldVal) return
+
                     asyncSetData({ path: key, newVal, oldVal })
+
+                    // 重置 oldVal
+                    oldVal = newVal
                     dep.notify()
                 }
                 Dep.targetCb.key = key
