@@ -124,6 +124,7 @@ export const getObserveDeep = (asyncSetData) => {
         if (Array.isArray(obj)) {
             const arr = obj.map((item, idx) => {
                 const isNeedInheritDep =
+                    item &&
                     typeof item === 'object' &&
                     !item[__dep__] &&
                     obj[__dep__]
@@ -165,6 +166,7 @@ export const getObserveDeep = (asyncSetData) => {
                 .map((key) => {
                     const item = obj[key]
                     const isNeedInheritDep =
+                        item &&
                         typeof item === 'object' &&
                         !item[__dep__] &&
                         obj[__dep__]

@@ -853,7 +853,7 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
 
         if (Array.isArray(obj)) {
             var arr = obj.map(function (item, idx) {
-                var isNeedInheritDep = (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !item[__dep__] && obj[__dep__];
+                var isNeedInheritDep = item && (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !item[__dep__] && obj[__dep__];
 
                 // 继承依赖
                 if (isNeedInheritDep) {
@@ -890,7 +890,7 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
             // 过滤 __wxWebviewId__ 等内部属性
             .filter(isNotInnerAttr).map(function (key) {
                 var item = obj[key];
-                var isNeedInheritDep = (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !item[__dep__] && obj[__dep__];
+                var isNeedInheritDep = item && (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !item[__dep__] && obj[__dep__];
 
                 // 继承依赖
                 if (isNeedInheritDep) {
@@ -948,6 +948,7 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
         var getVal = computed[key].bind(vm);
 
         var oldVal = void 0;
+        var oldValStr = void 0;
         var isInit = true;
 
         Object.defineProperty($computed, key, _extends({}, COMMON_PROP, {
@@ -961,6 +962,7 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
                 if (!isInit) {
                     // 重置 oldVal
                     oldVal = getVal();
+                    oldValStr = JSON.stringify(oldVal);
 
                     return oldVal;
                 }
@@ -968,19 +970,23 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
                 // 开始依赖收集
                 Dep.targetCb = function () {
                     var newVal = getVal();
+                    var newValStr = JSON.stringify(newVal);
 
-                    if (newVal === oldVal) return;
+                    if (newValStr === oldValStr) return;
 
                     asyncSetData({ path: key, newVal: newVal, oldVal: oldVal });
 
                     // 重置 oldVal
                     oldVal = newVal;
+                    oldValStr = newValStr;
+
                     dep.notify();
                 };
                 Dep.targetCb.key = key;
 
                 // 重置 oldVal
                 oldVal = getVal();
+                oldValStr = JSON.stringify(oldVal);
 
                 // 依赖收集完毕
                 Dep.targetCb = null;
