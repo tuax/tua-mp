@@ -1,4 +1,6 @@
 import {
+    defDep,
+    defTuaPath,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils/index'
@@ -54,11 +56,7 @@ export const defineReactive = ({
 }) => {
     const dep = obj[__dep__] || new Dep()
 
-    Object.defineProperty(obj, __dep__, {
-        value: dep,
-        enumerable: false,
-        configurable: true,
-    })
+    defDep({ value: dep })(obj)
 
     Object.defineProperty(obj, key, {
         ...COMMON_PROP,
@@ -94,7 +92,7 @@ export const defineReactive = ({
 
             // 继承依赖
             if (isNeedInheritDep) {
-                newVal[__dep__] = oldVal[__dep__]
+                defDep({ value: oldVal[__dep__] })(newVal)
             }
 
             // 重新观察
@@ -154,11 +152,7 @@ export const getObserveDeep = (asyncSetData) => {
 
         if (obj !== null && typeof obj === 'object') {
             // 将路径前缀挂在父节点上
-            Object.defineProperty(obj, __TUA_PATH__, {
-                value: prefix,
-                enumerable: false,
-                configurable: true,
-            })
+            defTuaPath({ value: prefix })(obj)
 
             Object.keys(obj)
                 // 过滤 __wxWebviewId__ 等内部属性
@@ -173,11 +167,7 @@ export const getObserveDeep = (asyncSetData) => {
 
                     // 继承依赖
                     if (isNeedInheritDep) {
-                        Object.defineProperty(item, __dep__, {
-                            value: obj[__dep__],
-                            enumerable: false,
-                            configurable: true,
-                        })
+                        defDep({ value: obj[__dep__] })(item)
                     }
 
                     return key

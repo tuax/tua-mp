@@ -284,6 +284,32 @@ var checkReservedKeys = function checkReservedKeys(data, computed, methods) {
 };
 
 /**
+ * 在对象上定义属性
+ * @param {String} key 属性名
+ * @param {any} value 值
+ * @param {Object} target 对象
+ */
+var def = function def(key) {
+    return function (_ref3) {
+        var value = _ref3.value,
+            _ref3$enumerable = _ref3.enumerable,
+            enumerable = _ref3$enumerable === undefined ? false : _ref3$enumerable,
+            _ref3$configurable = _ref3.configurable,
+            configurable = _ref3$configurable === undefined ? true : _ref3$configurable,
+            rest = objectWithoutProperties(_ref3, ['value', 'enumerable', 'configurable']);
+        return function (target) {
+            Object.defineProperty(target, key, _extends({
+                value: value,
+                enumerable: enumerable,
+                configurable: configurable
+            }, rest));
+        };
+    };
+};
+var defDep = def(__dep__);
+var defTuaPath = def(__TUA_PATH__);
+
+/**
  * 断言 prop 的值是否有效
  * ps 小程序就没有 required 的概念
  * @param {Object} prop 定义
@@ -670,6 +696,7 @@ var getArrayMethods = function getArrayMethods(_ref) {
         var original = arrayProto[method];
 
         arrayMethods[method] = function () {
+            var oldVal = this;
             var path = this[__TUA_PATH__];
 
             for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -679,12 +706,12 @@ var getArrayMethods = function getArrayMethods(_ref) {
             var result = original.apply(this, args);
 
             if (method === 'pop') {
-                asyncSetData({ path: path, newVal: this });
+                asyncSetData({ path: path, newVal: this, oldVal: oldVal });
             } else {
                 var newVal = observeDeep(this, path);
 
-                Object.assign(this, newVal);
-                asyncSetData({ path: path, newVal: newVal, isArrDirty: true });
+                asyncSetData({ path: path, newVal: newVal, oldVal: oldVal, isArrDirty: true });
+                oldVal = newVal;
             }
 
             return result;
@@ -788,11 +815,7 @@ var defineReactive = function defineReactive(_ref2) {
 
     var dep = obj[__dep__] || new Dep();
 
-    Object.defineProperty(obj, __dep__, {
-        value: dep,
-        enumerable: false,
-        configurable: true
-    });
+    defDep({ value: dep })(obj);
 
     Object.defineProperty(obj, key, _extends({}, COMMON_PROP, {
         get: function get$$1() {
@@ -822,7 +845,7 @@ var defineReactive = function defineReactive(_ref2) {
 
             // 继承依赖
             if (isNeedInheritDep) {
-                newVal[__dep__] = oldVal[__dep__];
+                defDep({ value: oldVal[__dep__] })(newVal);
             }
 
             // 重新观察
@@ -880,11 +903,7 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
 
         if (obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
             // 将路径前缀挂在父节点上
-            Object.defineProperty(obj, __TUA_PATH__, {
-                value: prefix,
-                enumerable: false,
-                configurable: true
-            });
+            defTuaPath({ value: prefix })(obj);
 
             Object.keys(obj)
             // 过滤 __wxWebviewId__ 等内部属性
@@ -894,11 +913,7 @@ var getObserveDeep = function getObserveDeep(asyncSetData) {
 
                 // 继承依赖
                 if (isNeedInheritDep) {
-                    Object.defineProperty(item, __dep__, {
-                        value: obj[__dep__],
-                        enumerable: false,
-                        configurable: true
-                    });
+                    defDep({ value: obj[__dep__] })(item);
                 }
 
                 return key;

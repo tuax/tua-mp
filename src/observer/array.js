@@ -30,16 +30,17 @@ export const getArrayMethods = ({
         const original = arrayProto[method]
 
         arrayMethods[method] = function (...args) {
+            let oldVal = this
             const path = this[__TUA_PATH__]
             const result = original.apply(this, args)
 
             if (method === 'pop') {
-                asyncSetData({ path, newVal: this })
+                asyncSetData({ path, newVal: this, oldVal })
             } else {
                 const newVal = observeDeep(this, path)
 
-                Object.assign(this, newVal)
-                asyncSetData({ path, newVal, isArrDirty: true })
+                asyncSetData({ path, newVal, oldVal, isArrDirty: true })
+                oldVal = newVal
             }
 
             return result

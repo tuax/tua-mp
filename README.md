@@ -23,7 +23,7 @@
 ## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)
 下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
 
-代码片段地址为：**wechatide://minicode/w0RhXWma7t00**
+代码片段地址为：**wechatide://minicode/9EFKeZmk7DE7**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
