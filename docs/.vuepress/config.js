@@ -35,6 +35,11 @@ module.exports = {
                     children: [
                         'installation',
                         '',
+                        'instance',
+                        'computed',
+                        'components',
+                        'simple-app',
+                        'vue-app',
                     ],
                 },
             ],

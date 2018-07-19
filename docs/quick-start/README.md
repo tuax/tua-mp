@@ -26,7 +26,7 @@
 
 ```js
 TuaPage({
-    data: { msg: 'msg' },
+    data: { msg: 'steve' },
     created () {
         // 将当前页面实例挂到全局变量中方便测试
         global = this
@@ -36,4 +36,11 @@ TuaPage({
 
 我们已经成功创建了第一个 `tua-mp` 应用！看起来这跟渲染一个字符串模板非常类似，但是 `tua-mp` 在背后做了一点微小的工作。
 
-现在改变数据已经不需要调用 `setData`，所有东西都是响应式的。我们要怎么确认呢？[👉点击这里打开代码片段👈](wechatide://minicode/9EFKeZmk7DE7)，在控制台里修改 `global.msg` 的值，你将看到上例相应地更新。
+现在改变数据已经不需要调用 `setData`，所有数据都是响应式的。我们要怎么确认呢？[👉点击这里打开代码片段👈](wechatide://minicode/9EFKeZmk7DE7)，在控制台里修改 `global.msg` 的值，你将看到上例相应地更新。
+
+```js
+// 在开发者工具的控制台中
+global.msg = 'young'
+```
+
+
