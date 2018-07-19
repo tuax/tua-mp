@@ -15,7 +15,7 @@
         "prebuild": "yarn test",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
-        "deploy": "yarn docs:build && gh-pages -d docs/.vuepress/dist",
+        "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
         "start": "yarn watch",
         "pub": "yarn build && npm publish"
     },

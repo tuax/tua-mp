@@ -6,6 +6,9 @@ module.exports = {
             description: '🖖一款类 Vue 的渐进式小程序框架'
         }
     },
+    head: [
+        ['link', { rel: 'icon', href: `/logo.png` }],
+    ],
     serviceWorker: true,
     themeConfig: {
         repo: 'tuateam/tua-mp',

@@ -7,7 +7,9 @@
 官方指南假设你已了解关于 [微信小程序开发](https://developers.weixin.qq.com/miniprogram/dev/index.html) 和 [Vue.js](https://cn.vuejs.org/v2/guide/index.html) 的基础知识。
 :::
 
-尝试 `tua-mp` 最简单的方法是 [👉点击这里打开代码片段👈](wechatide://minicode/9EFKeZmk7DE7)，这个操作会打开你的**微信开发者工具**，并导入代码片段。（详情可参阅 [代码片段文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)）
+尝试 `tua-mp` 最简单的方法是 [👉点击这里打开代码片段👉](wechatide://minicode/9EFKeZmk7DE7)，这个操作会打开你的**微信开发者工具**，并导入代码片段。（详情可参阅 [代码片段文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)）
+
+如果还没有安装 【微信开发者工具】 [👉点击这里下载👉](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
 
 [安装教程](./installation.md) 给出了更多安装 `tua-mp` 的方式：
 
@@ -42,5 +44,3 @@ TuaPage({
 // 在开发者工具的控制台中
 global.msg = 'young'
 ```
-
-
