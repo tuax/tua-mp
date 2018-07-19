@@ -21,7 +21,7 @@ importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox
 self.__precacheManifest = [
   {
     "url": "404.html",
-    "revision": "b9723eb7574052fb2a1d7e39c6b1bf97"
+    "revision": "4b2dfc560af22d62a0b646abd85dba62"
   },
   {
     "url": "assets/css/0.styles.9a3af1cc.css",
@@ -72,16 +72,16 @@ self.__precacheManifest = [
     "revision": "1fbf6b675d3cba72094a01da1b972422"
   },
   {
-    "url": "assets/js/9.b5b2171f.js",
-    "revision": "fffb7bb5cef3e33101db3d996c572657"
+    "url": "assets/js/9.d98179d7.js",
+    "revision": "f563483226b3f6fb46a1895617a581db"
   },
   {
-    "url": "assets/js/app.95305af6.js",
-    "revision": "e5e6e7b29ad6dee9a4421c16b4dc51c2"
+    "url": "assets/js/app.8333306c.js",
+    "revision": "e3df7728e6b70bff7034f41cf23d3db3"
   },
   {
     "url": "index.html",
-    "revision": "b429103df56b83a18c90c85d77ff9662"
+    "revision": "ed186ae547213c1de65fea811f212ab2"
   },
   {
     "url": "logs.vue.png",
@@ -93,31 +93,31 @@ self.__precacheManifest = [
   },
   {
     "url": "quick-start/components.html",
-    "revision": "f3f92e4d2ce0a8f6c726dd76d5ee19f3"
+    "revision": "0f6ddd4102637751ca8a0f14560eb42c"
   },
   {
     "url": "quick-start/computed.html",
-    "revision": "579da4928a8640913fbf33bb5604d7f1"
+    "revision": "ce3b69e2205808d178efe9bbfad7baf1"
   },
   {
     "url": "quick-start/index.html",
-    "revision": "ae64995a8ac4b25d584aeb153aace36b"
+    "revision": "19dda908669ac9cecdcedaa18becbaf3"
   },
   {
     "url": "quick-start/installation.html",
-    "revision": "186f3f36c1aeda48418f449834ba6af2"
+    "revision": "2897010a1faa15eb4841d7f7980f80f3"
   },
   {
     "url": "quick-start/instance.html",
-    "revision": "3981e7bb767d2d6d81f301121ba2b033"
+    "revision": "ef5c8b7aec9a4a0071c4786acd214c04"
   },
   {
     "url": "quick-start/simple-app.html",
-    "revision": "903048d671ee226f8f955f5a58c8ea63"
+    "revision": "d9e714ae7ca6d44e1822c40e194520af"
   },
   {
     "url": "quick-start/vue-app.html",
-    "revision": "7bdbd958ffdb6cbe9da80bf3fc9fd1b2"
+    "revision": "7d99e011b15525165e679cbba5ac3aaa"
   },
   {
     "url": "standard.svg",
@@ -125,7 +125,7 @@ self.__precacheManifest = [
   },
   {
     "url": "tua-mp-service/index.html",
-    "revision": "b8d0c0c96cfd00af50d667af0f550464"
+    "revision": "9542f9f99f15514214bc945f5a022a97"
   },
   {
     "url": "tua-mp-todos.gif",
@@ -133,7 +133,7 @@ self.__precacheManifest = [
   },
   {
     "url": "tua-storage/index.html",
-    "revision": "592af06002749937b8ef8628acb54542"
+    "revision": "6e4ea342d609767dc97d49265a3391cc"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
