@@ -12,11 +12,12 @@
         "docs:build": "vuepress build docs",
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
-        "prebuild": "npm run test",
+        "prebuild": "yarn test",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
-        "start": "npm run watch",
-        "pub": "npm run build && npm publish"
+        "deploy": "yarn docs:build && gh-pages -d docs/.vuepress/dist",
+        "start": "yarn watch",
+        "pub": "yarn build && npm publish"
     },
     "jest": {
         "bail": true,
@@ -77,6 +78,7 @@
         "eslint-plugin-node": "^6.0.1",
         "eslint-plugin-promise": "^3.8.0",
         "eslint-plugin-standard": "^3.1.0",
+        "gh-pages": "^1.2.0",
         "jest": "^23.3.0",
         "rollup": "^0.59.4",
         "rollup-plugin-babel": "^3.0.4",

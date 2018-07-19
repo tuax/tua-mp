@@ -7,7 +7,7 @@ sidebar: auto
 > inspired by [@vue/cli-service](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service)
 
 <p align="center">
-    <a href="https://github.com/feross/standard"><img src="/standard.svg" alt="Standard - JavaScript Style"></a>
+    <a href="https://github.com/feross/standard"><img :src="$withBase('/standard.svg')" alt="Standard - JavaScript Style"></a>
 </p>
 
 <p align="center">

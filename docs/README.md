@@ -23,7 +23,7 @@ footer: MIT Licensed | Copyright © 2018-present StEve Young
 </h4>
 
 <p align="center">
-    <a href="https://github.com/feross/standard"><img src="/standard.svg" alt="Standard - JavaScript Style"></a>
+    <a href="https://github.com/feross/standard"><img :src="$withBase('/standard.svg')" alt="Standard - JavaScript Style"></a>
 </p>
 
 <p align="center">

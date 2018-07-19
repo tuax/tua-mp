@@ -1,4 +1,5 @@
 module.exports = {
+    base: '/tua-mp/',
     locales: {
         '/': {
             title: 'tua-mp',
