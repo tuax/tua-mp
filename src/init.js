@@ -49,13 +49,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                     dep.addSub(Dep.targetCb)
                 }
 
-                if (!isInit) {
-                    // 重置 oldVal
-                    oldVal = getVal()
-                    oldValStr = JSON.stringify(oldVal)
-
-                    return oldVal
-                }
+                if (!isInit) return oldVal
 
                 // 开始依赖收集
                 Dep.targetCb = () => {

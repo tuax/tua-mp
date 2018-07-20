@@ -19,15 +19,17 @@
 ## 0.介绍
 `tua-mp` 是一个用于开发微信小程序的**渐进式框架**，它与其他小程序框架不同的是，`tua-mp` 可以由浅入深地用于你的小程序项目。
 
+<p align="center">
+    <a href="https://tuateam.github.io/tua-mp/">👉完整文档地址点这里👈</a>
+</p>
+
 ## 1.安装
 ## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)
 下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
 
-代码片段地址为：**wechatide://minicode/9EFKeZmk7DE7**
+代码片段地址为：**wechatide://minicode/JzXSn8mb78n8**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
-
-<image src="./docs/.vuepress/public/open-by-tab.png" width="400" alt="open-by-tab" />
 
 [如果依然打不开，可以手动打开开发者工具导入代码片段查看](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)
 

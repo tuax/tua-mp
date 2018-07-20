@@ -5,7 +5,7 @@
 
 导入后用 `TuaPage` 替换 `Page` 即可。
 
-代码片段地址为：**wechatide://minicode/9EFKeZmk7DE7**
+代码片段地址为：**wechatide://minicode/JzXSn8mb78n8**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 
