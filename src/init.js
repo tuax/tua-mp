@@ -36,7 +36,8 @@ export const bindComputed = (vm, computed, asyncSetData) => {
         const dep = new Dep()
         const getVal = computed[key].bind(vm)
 
-        let oldVal = getVal()
+        let oldVal
+        let oldValStr
         let isInit = true
 
         Object.defineProperty($computed, key, {
@@ -48,24 +49,28 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                     dep.addSub(Dep.targetCb)
                 }
 
-                if (!isInit) {
-                    // 重置 oldVal
-                    oldVal = getVal()
-
-                    return oldVal
-                }
+                if (!isInit) return oldVal
 
                 // 开始依赖收集
                 Dep.targetCb = () => {
                     const newVal = getVal()
+                    const newValStr = JSON.stringify(newVal)
+
+                    if (newValStr === oldValStr) return
 
                     asyncSetData({ path: key, newVal, oldVal })
+
+                    // 重置 oldVal
+                    oldVal = newVal
+                    oldValStr = newValStr
+
                     dep.notify()
                 }
                 Dep.targetCb.key = key
 
                 // 重置 oldVal
                 oldVal = getVal()
+                oldValStr = JSON.stringify(oldVal)
 
                 // 依赖收集完毕
                 Dep.targetCb = null

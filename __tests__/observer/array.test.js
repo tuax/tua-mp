@@ -139,7 +139,7 @@ describe('patch methods to array', () => {
         arr.push(1)
         expect(observeDeep).toBeCalledWith(arr, path)
         arr.pop()
-        expect(asyncSetData).toBeCalledWith({ path, newVal: arr })
+        expect(asyncSetData).toBeCalledWith({ path, newVal: arr, oldVal: arr })
         arr.sort()
         expect(observeDeep).toBeCalledWith(arr, path)
         arr.splice(0, 0, 2)

@@ -1,4 +1,6 @@
 import {
+    defDep,
+    defTuaPath,
     isNotInnerAttr,
     getPathByPrefix,
 } from '../utils/index'
@@ -12,6 +14,30 @@ import {
     patchMethods2Array,
 } from './array'
 import Dep from './dep'
+
+const addSubDeep = ({ obj, targetCb }) => {
+    if (Array.isArray(obj)) {
+        obj
+            .map((item) => {
+                item[__dep__] && item[__dep__].addSub(targetCb)
+                return item
+            })
+            .map(obj => ({ obj, targetCb }))
+            .forEach(addSubDeep)
+        return
+    }
+
+    if (typeof obj === 'object') {
+        Object.keys(obj)
+            .map((key) => {
+                const item = obj[key]
+                item[__dep__] && item[__dep__].addSub(targetCb)
+                return key
+            })
+            .map(key => ({ obj: obj[key], targetCb }))
+            .forEach(addSubDeep)
+    }
+}
 
 /**
  * 观察 obj[key]，当触发 setter 时调用 asyncSetData 更新数据
@@ -30,11 +56,7 @@ export const defineReactive = ({
 }) => {
     const dep = obj[__dep__] || new Dep()
 
-    Object.defineProperty(obj, __dep__, {
-        value: dep,
-        enumerable: false,
-        configurable: true,
-    })
+    defDep({ value: dep })(obj)
 
     Object.defineProperty(obj, key, {
         ...COMMON_PROP,
@@ -46,9 +68,9 @@ export const defineReactive = ({
 
                 // 同时子属性也被依赖
                 if (Array.isArray(val)) {
-                    val.forEach((item) => {
-                        item[__dep__] && item[__dep__].addSub(Dep.targetCb)
-                    })
+                    val
+                        .map(obj => ({ obj, targetCb: Dep.targetCb }))
+                        .forEach(addSubDeep)
 
                     val[__dep__] = dep
                 }
@@ -70,7 +92,7 @@ export const defineReactive = ({
 
             // 继承依赖
             if (isNeedInheritDep) {
-                newVal[__dep__] = oldVal[__dep__]
+                defDep({ value: oldVal[__dep__] })(newVal)
             }
 
             // 重新观察
@@ -100,6 +122,7 @@ export const getObserveDeep = (asyncSetData) => {
         if (Array.isArray(obj)) {
             const arr = obj.map((item, idx) => {
                 const isNeedInheritDep =
+                    item &&
                     typeof item === 'object' &&
                     !item[__dep__] &&
                     obj[__dep__]
@@ -128,25 +151,27 @@ export const getObserveDeep = (asyncSetData) => {
         }
 
         if (obj !== null && typeof obj === 'object') {
-            // 继承依赖
-            if (obj[__dep__]) {
-                Object.defineProperty(obj, __dep__, {
-                    value: obj[__dep__],
-                    enumerable: false,
-                    configurable: true,
-                })
-            }
-
             // 将路径前缀挂在父节点上
-            Object.defineProperty(obj, __TUA_PATH__, {
-                value: prefix,
-                enumerable: false,
-                configurable: true,
-            })
+            defTuaPath({ value: prefix })(obj)
 
             Object.keys(obj)
                 // 过滤 __wxWebviewId__ 等内部属性
                 .filter(isNotInnerAttr)
+                .map((key) => {
+                    const item = obj[key]
+                    const isNeedInheritDep =
+                        item &&
+                        typeof item === 'object' &&
+                        !item[__dep__] &&
+                        obj[__dep__]
+
+                    // 继承依赖
+                    if (isNeedInheritDep) {
+                        defDep({ value: obj[__dep__] })(item)
+                    }
+
+                    return key
+                })
                 .map((key) => ({
                     obj,
                     key,

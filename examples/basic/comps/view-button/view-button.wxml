@@ -1,0 +1,7 @@
+<!--comps/view-button.wxml-->
+
+<slot></slot>
+
+<button type="primary" size="mini" catchtap="onTap">
+    {{ methodContent }}
+</button>

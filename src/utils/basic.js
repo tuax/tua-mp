@@ -1,7 +1,9 @@
 import {
+    __dep__,
     _toString,
     innerAttrRe,
     reservedKeys,
+    __TUA_PATH__,
 } from '../constants'
 
 export const isFn = fn => typeof fn === 'function'
@@ -153,3 +155,25 @@ export const checkReservedKeys = (data, computed, methods) => {
         )
     }
 }
+
+/**
+ * 在对象上定义属性
+ * @param {String} key 属性名
+ * @param {any} value 值
+ * @param {Object} target 对象
+ */
+export const def = (key) => ({
+    value,
+    enumerable = false,
+    configurable = true,
+    ...rest
+}) => (target) => {
+    Object.defineProperty(target, key, {
+        value,
+        enumerable,
+        configurable,
+        ...rest,
+    })
+}
+export const defDep = def(__dep__)
+export const defTuaPath = def(__TUA_PATH__)

@@ -1,8 +1,11 @@
-<view class="container">
-    <view>msg: {{ msg }}</view>
-    <button type="primary" size="mini" catchtap="tapMsg">
-        this.msg += n++
-    </button>
+<!-- text.wxml -->
+<view class="container" catchtap="gotoLogs">
+    <view-button
+        methodContent="this.msg += n++"
+        catch:onTap="tapMsg"
+    >
+        <view>msg: {{ msg }}</view>
+    </view-button>
 
     <view>a.b: {{ a.b }}</view>
     <button type="primary" size="mini" catchtap="tapAB">
