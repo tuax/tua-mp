@@ -37,9 +37,17 @@
 
     <view>------ computed ------</view>
     <view>g: {{ g }}</view>
+    <view>count: {{ count }}</view>
+    <view>countPlus: {{ countPlus }}</view>
     <view>reversedG: {{ reversedG }}</view>
     <button type="primary" size="mini" catchtap="tapReverseG">
         this.g = this.reversedG
+    </button>
+    <button type="primary" size="mini" catchtap="tapSetCountPlus">
+        this.countPlus = 101
+    </button>
+    <button type="primary" size="mini" catchtap="tapSetReversedG">
+        this.reversedG = 229
     </button>
 
     <view>a.b: {{ a.b }}</view>

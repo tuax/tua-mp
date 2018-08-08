@@ -15,6 +15,7 @@ TuaPage({
     data () {
         return {
             msg: 'msg',
+            count: 50,
             a: {
                 b: 'a.b',
             },
@@ -90,6 +91,14 @@ TuaPage({
         dataAndComputed () {
             return this.g + ' + ' + this.reversedG
         },
+        countPlus: {
+            get: function () {
+                return this.count + 1
+            },
+            set: function (v) {
+                this.count = v - 1
+            },
+        },
     },
 
     watch: {
@@ -162,6 +171,12 @@ TuaPage({
         },
         gotoLogs () {
             wx.navigateTo({ url: '/pages/logs/logs' })
+        },
+        tapSetCountPlus () {
+            this.countPlus = 101
+        },
+        tapSetReversedG () {
+            this.reversedG = 229
         },
     },
 })

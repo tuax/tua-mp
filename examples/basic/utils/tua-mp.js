@@ -960,7 +960,7 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
 
     Object.keys(computed).forEach(function (key) {
         var dep = new Dep();
-        var getVal = computed[key].bind(vm);
+        var getVal = typeof computed[key] === 'function' ? computed[key].bind(vm) : computed[key].get.bind(vm);
 
         var oldVal = void 0;
         var oldValStr = void 0;
@@ -1004,7 +1004,12 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
                 return oldVal;
             },
             set: function set$$1() {
-                warn('\u8BF7\u52FF\u5BF9 computed \u5C5E\u6027 ' + key + ' \u8D4B\u503C\uFF0C\u5B83\u5E94\u8BE5\u7531 data \u4E2D\u7684\u4F9D\u8D56\u81EA\u52A8\u8BA1\u7B97\u5F97\u5230\uFF01');
+                if (typeof computed[key].set === 'undefined') {
+                    warn('Computed property "' + key + '" was assigned to but it has no setter.');
+                } else {
+                    var setVal = computed[key].set.bind(vm);
+                    setVal.apply(undefined, arguments);
+                }
             }
         }));
     });

@@ -14,6 +14,7 @@ const getVm = () => Page({
     data: {
         steve: 'steve',
         young: 'young',
+        count: 100,
         array: [1, 2, 3],
         nested: {
             young: 'young',
@@ -94,6 +95,14 @@ describe('observe functions', () => {
             sAndY () {
                 return this.steve + this.young
             },
+            countPlus: {
+                get: function () {
+                    return this.count + 1
+                },
+                set: function (v) {
+                    this.count = v - 1
+                },
+            },
         }
         const observeDeep = getObserveDeep(asyncSetData)
 
@@ -101,9 +110,12 @@ describe('observe functions', () => {
         bindComputed(vm, computed, asyncSetData)
 
         vm.sAndY = 'sth'
+        vm.countPlus = 50
 
         afterSetData(() => {
             expect(vm.sAndY).toBe('steveyoung')
+            expect(vm.countPlus).toBe(50)
+            expect(vm.count).toBe(49)
             done()
         })
     })

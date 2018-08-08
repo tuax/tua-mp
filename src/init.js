@@ -34,7 +34,8 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
     Object.keys(computed).forEach((key) => {
         const dep = new Dep()
-        const getVal = computed[key].bind(vm)
+        const getVal = typeof computed[key] === 'function'
+            ? computed[key].bind(vm) : computed[key].get.bind(vm)
 
         let oldVal
         let oldValStr
@@ -78,8 +79,13 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                 return oldVal
             },
-            set () {
-                warn(`请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
+            set (...options) {
+                if (typeof computed[key].set === 'undefined') {
+                    warn(`Computed property "${key}" was assigned to but it has no setter.`)
+                } else {
+                    const setVal = computed[key].set.bind(vm)
+                    setVal(...options)
+                }
             },
         })
     })
