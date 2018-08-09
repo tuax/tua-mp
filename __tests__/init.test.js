@@ -156,6 +156,40 @@ describe('observe functions', () => {
         })
     })
 
+    test('defined a computed property with arrow function', (done) => {
+        const computed = {
+            sAndY: vm => vm.steve + vm.young,
+        }
+        const watch = {
+            sAndY: jest.fn(),
+        }
+        const oldVal = 'steveyoung'
+        const newVal1 = 'abcyoung'
+        const newVal2 = 'abc123'
+        const asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+        const observeDeep = getObserveDeep(asyncSetData)
+
+        bindData(vm, vm.data, observeDeep)
+        bindComputed(vm, computed, asyncSetData)
+
+        expect(vm.sAndY).toBe(vm.data.sAndY)
+        expect(vm.sAndY).toBe(vm.$computed.sAndY)
+        expect(vm.sAndY).toBe(oldVal)
+        vm.steve = 'abc'
+
+        afterSetData(() => {
+            expect(vm.sAndY).toBe(newVal1)
+            expect(watch.sAndY).toBeCalledWith(newVal1, oldVal)
+
+            vm.young = '123'
+            afterSetData(() => {
+                expect(vm.sAndY).toBe(newVal2)
+                expect(watch.sAndY).toBeCalledWith(newVal2, newVal1)
+                done()
+            })
+        })
+    })
+
     test('bindData', () => {
         const observeDeep = getObserveDeep(asyncSetData)
         bindData(vm, vm.data, observeDeep)

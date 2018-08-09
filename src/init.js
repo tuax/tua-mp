@@ -54,7 +54,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                 // 开始依赖收集
                 Dep.targetCb = () => {
-                    const newVal = getVal()
+                    const newVal = getVal(vm)
                     const newValStr = JSON.stringify(newVal)
 
                     if (newValStr === oldValStr) return
@@ -70,7 +70,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                 Dep.targetCb.key = key
 
                 // 重置 oldVal
-                oldVal = getVal()
+                oldVal = getVal(vm)
                 oldValStr = JSON.stringify(oldVal)
 
                 // 依赖收集完毕
