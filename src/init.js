@@ -34,7 +34,8 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
     Object.keys(computed).forEach((key) => {
         const dep = new Dep()
-        const getVal = computed[key].bind(vm)
+        const getVal = typeof computed[key] === 'function'
+            ? computed[key].bind(vm) : computed[key].get.bind(vm)
 
         let oldVal
         let oldValStr
@@ -53,7 +54,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                 // 开始依赖收集
                 Dep.targetCb = () => {
-                    const newVal = getVal()
+                    const newVal = getVal(vm)
                     const newValStr = JSON.stringify(newVal)
 
                     if (newValStr === oldValStr) return
@@ -69,7 +70,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
                 Dep.targetCb.key = key
 
                 // 重置 oldVal
-                oldVal = getVal()
+                oldVal = getVal(vm)
                 oldValStr = JSON.stringify(oldVal)
 
                 // 依赖收集完毕
@@ -78,8 +79,13 @@ export const bindComputed = (vm, computed, asyncSetData) => {
 
                 return oldVal
             },
-            set () {
-                warn(`请勿对 computed 属性 ${key} 赋值，它应该由 data 中的依赖自动计算得到！`)
+            set (...options) {
+                if (typeof computed[key].set === 'undefined') {
+                    warn(`Computed property "${key}" was assigned to but it has no setter.`)
+                } else {
+                    const setVal = computed[key].set.bind(vm)
+                    setVal(...options)
+                }
             },
         })
     })

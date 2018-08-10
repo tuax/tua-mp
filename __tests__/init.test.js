@@ -14,6 +14,7 @@ const getVm = () => Page({
     data: {
         steve: 'steve',
         young: 'young',
+        count: 100,
         array: [1, 2, 3],
         nested: {
             young: 'young',
@@ -94,6 +95,14 @@ describe('observe functions', () => {
             sAndY () {
                 return this.steve + this.young
             },
+            countPlus: {
+                get: function () {
+                    return this.count + 1
+                },
+                set: function (v) {
+                    this.count = v - 1
+                },
+            },
         }
         const observeDeep = getObserveDeep(asyncSetData)
 
@@ -101,9 +110,12 @@ describe('observe functions', () => {
         bindComputed(vm, computed, asyncSetData)
 
         vm.sAndY = 'sth'
+        vm.countPlus = 50
 
         afterSetData(() => {
             expect(vm.sAndY).toBe('steveyoung')
+            expect(vm.countPlus).toBe(50)
+            expect(vm.count).toBe(49)
             done()
         })
     })
@@ -113,6 +125,40 @@ describe('observe functions', () => {
             sAndY () {
                 return this.steve + this.young
             },
+        }
+        const watch = {
+            sAndY: jest.fn(),
+        }
+        const oldVal = 'steveyoung'
+        const newVal1 = 'abcyoung'
+        const newVal2 = 'abc123'
+        const asyncSetData = jest.fn(getAsyncSetData(vm, watch))
+        const observeDeep = getObserveDeep(asyncSetData)
+
+        bindData(vm, vm.data, observeDeep)
+        bindComputed(vm, computed, asyncSetData)
+
+        expect(vm.sAndY).toBe(vm.data.sAndY)
+        expect(vm.sAndY).toBe(vm.$computed.sAndY)
+        expect(vm.sAndY).toBe(oldVal)
+        vm.steve = 'abc'
+
+        afterSetData(() => {
+            expect(vm.sAndY).toBe(newVal1)
+            expect(watch.sAndY).toBeCalledWith(newVal1, oldVal)
+
+            vm.young = '123'
+            afterSetData(() => {
+                expect(vm.sAndY).toBe(newVal2)
+                expect(watch.sAndY).toBeCalledWith(newVal2, newVal1)
+                done()
+            })
+        })
+    })
+
+    test('defined a computed property with arrow function', (done) => {
+        const computed = {
+            sAndY: vm => vm.steve + vm.young,
         }
         const watch = {
             sAndY: jest.fn(),
