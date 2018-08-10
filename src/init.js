@@ -35,7 +35,8 @@ export const bindComputed = (vm, computed, asyncSetData) => {
     Object.keys(computed).forEach((key) => {
         const dep = new Dep()
         const getVal = typeof computed[key] === 'function'
-            ? computed[key].bind(vm) : computed[key].get.bind(vm)
+            ? computed[key].bind(vm)
+            : computed[key].get.bind(vm)
 
         let oldVal
         let oldValStr
