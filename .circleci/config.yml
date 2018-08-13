@@ -33,6 +33,8 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      # bootstrap packages
+      - run: yarn run boot
+
       # run tests!
       - run: yarn test
-

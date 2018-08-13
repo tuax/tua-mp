@@ -1,0 +1,79 @@
+{
+    "name": "@tua-mp/cli",
+    "version": "0.1.0",
+    "description": "tua-mp 命令行工具",
+    "bin": {
+        "tuamp": "bin/tuamp.js"
+    },
+    "scripts": {
+        "cov": "open coverage/lcov-report/index.html",
+        "tdd": "cross-env NODE_ENV=test jest --watch",
+        "test": "cross-env NODE_ENV=test jest && codecov",
+        "lint": "eslint --fix lib/**/*.js bin/*",
+        "clean": "rimraf src && mkdir src/ src/app/ src/apis/ src/pages/ src/comps/ && echo {} > src/app/app.json",
+        "pub": "yarn test && npm publish"
+    },
+    "husky": {
+        "hooks": {
+            "pre-push": "lint-staged",
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -e $GIT_PARAMS"
+        }
+    },
+    "lint-staged": {
+        "bin/*": [
+            "yarn lint",
+            "git add"
+        ],
+        "lib/**/*.js": [
+            "yarn lint",
+            "git add"
+        ]
+    },
+    "jest": {
+        "bail": true,
+        "collectCoverage": true,
+        "testEnvironment": "node",
+        "setupFiles": [],
+        "coveragePathIgnorePatterns": [
+            "package.json"
+        ]
+    },
+    "eslintIgnore": [
+        "package.json"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tuateam/tua-mp.git"
+    },
+    "keywords": [
+        "cli",
+        "tua-mp",
+        "tua-mp-cli",
+        "@tua-mp/cli"
+    ],
+    "author": "StEve Young",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/tuateam/tua-mp/issues"
+    },
+    "homepage": "https://github.com/tuateam/tua-mp#readme",
+    "dependencies": {
+        "@vue/cli-init": "^3.0.0-rc.10",
+        "babel-preset-env": "^1.7.0",
+        "chalk": "^2.4.1",
+        "commander": "^2.16.0",
+        "handlebars": "^4.0.11",
+        "inquirer": "^6.0.0",
+        "inquirer-fuzzy-path": "^1.0.0",
+        "log-symbols": "^2.2.0",
+        "semver": "^5.5.0",
+        "treeify": "^1.1.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": ">=8"
+    }
+}
