@@ -3,20 +3,16 @@
     "private": true,
     "scripts": {
         "boot": "lerna bootstrap",
-        "test": "lerna run test"
+        "test": "lerna run test --parallel",
+        "run:scope": "lerna run --stream --scope",
+        "precommit": "lerna run --concurrency 1 --stream precommit"
     },
     "husky": {
         "hooks": {
-            "pre-push": "lint-staged",
-            "pre-commit": "lint-staged",
+            "pre-push": "npm run precommit",
+            "pre-commit": "npm run precommit",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
-    },
-    "lint-staged": {
-        "packages/**/src/*.{js,vue}": [
-            "eslint --fix",
-            "git add"
-        ]
     },
     "devDependencies": {
         "@commitlint/cli": "^7.0.0",

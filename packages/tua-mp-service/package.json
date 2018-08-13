@@ -11,7 +11,18 @@
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
         "lint": "eslint --fix lib/**/*.js bin/*",
+        "precommit": "lint-staged",
         "pub": "npm run test && npm publish"
+    },
+    "lint-staged": {
+        "bin/*": [
+            "eslint --fix",
+            "git add"
+        ],
+        "lib/**/*.js": [
+            "eslint --fix",
+            "git add"
+        ]
     },
     "jest": {
         "bail": true,

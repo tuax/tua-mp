@@ -11,22 +11,16 @@
         "test": "cross-env NODE_ENV=test jest && codecov",
         "lint": "eslint --fix lib/**/*.js bin/*",
         "clean": "rimraf src && mkdir src/ src/app/ src/apis/ src/pages/ src/comps/ && echo {} > src/app/app.json",
+        "precommit": "lint-staged",
         "pub": "yarn test && npm publish"
-    },
-    "husky": {
-        "hooks": {
-            "pre-push": "lint-staged",
-            "pre-commit": "lint-staged",
-            "commit-msg": "commitlint -e $GIT_PARAMS"
-        }
     },
     "lint-staged": {
         "bin/*": [
-            "yarn lint",
+            "eslint --fix",
             "git add"
         ],
         "lib/**/*.js": [
-            "yarn lint",
+            "eslint --fix",
             "git add"
         ]
     },

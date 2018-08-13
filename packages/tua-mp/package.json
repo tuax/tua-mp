@@ -16,9 +16,16 @@
         "prebuild": "yarn test",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
+        "precommit": "lint-staged",
         "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
         "start": "yarn watch",
         "pub": "yarn build && npm publish"
+    },
+    "lint-staged": {
+        "src/*.{js,vue}": [
+            "yarn lint",
+            "git add"
+        ]
     },
     "jest": {
         "bail": true,
