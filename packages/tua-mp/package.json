@@ -12,6 +12,7 @@
         "docs:build": "vuepress build docs",
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
+        "lint": "eslint --fix --ext .js src/",
         "prebuild": "yarn test",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
