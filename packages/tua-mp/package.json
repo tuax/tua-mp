@@ -1,0 +1,65 @@
+{
+    "name": "tua-mp",
+    "version": "0.7.3",
+    "description": "A progressive miniprogram framework for coding like Vue",
+    "main": "examples/basic/utils/tua-mp.js",
+    "files": [
+        "examples/basic/utils/tua-mp.js"
+    ],
+    "scripts": {
+        "cov": "open coverage/lcov-report/index.html",
+        "docs": "vuepress dev docs -h localhost",
+        "docs:build": "vuepress build docs",
+        "tdd": "cross-env NODE_ENV=test jest --watch",
+        "test": "cross-env NODE_ENV=test jest && codecov",
+        "prebuild": "yarn test",
+        "build": "cross-env NODE_ENV=prod rollup -c",
+        "watch": "cross-env NODE_ENV=prod rollup -c -w",
+        "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
+        "start": "yarn watch",
+        "pub": "yarn build && npm publish"
+    },
+    "jest": {
+        "bail": true,
+        "clearMocks": true,
+        "setupFiles": [
+            "./__mocks__/wxMock.js"
+        ],
+        "transform": {
+            "^.+\\.js$": "babel-jest"
+        },
+        "testPathIgnorePatterns": [
+            "./__tests__/utils.js",
+            "./examples/"
+        ],
+        "collectCoverage": true,
+        "coveragePathIgnorePatterns": [
+            "./package.json",
+            "./src/utils/index.js",
+            "./__tests__/utils.js",
+            "./__mocks__/wxMock.js"
+        ]
+    },
+    "eslintIgnore": [
+        "package.json"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tuateam/tua-mp.git"
+    },
+    "keywords": [
+        "vue",
+        "tua-mp",
+        "mp",
+        "wx",
+        "miniprogram",
+        "wxmp",
+        "weapp"
+    ],
+    "author": "StEve Young",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/tuateam/tua-mp/issues"
+    },
+    "homepage": "https://github.com/tuateam/tua-mp#readme"
+}
