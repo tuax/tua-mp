@@ -26,8 +26,8 @@ TuaComp({
 })
 ```
 
-::: tip
-注意小程序中没有 required 这个概念
+::: warning
+注意小程序的组件中并没有 required 这个概念，所以写了也没啥用...
 :::
 
 ## 通过事件向父级组件发送消息
@@ -79,5 +79,9 @@ TuaPage({
 ```
 
 ::: tip
-如果想要传递一些没有绑定在模板中的其他数据，那么需要将其放在 `detail` 属性中， `{ detail: { yourValue: 'yourValue' } }`。（因为默认会获取 `detail` 和 `currentTarget.dataset` 中的数据）
+如果想要传递一些没有绑定在模板中的其他数据，那么可以将其放在 `detail` 属性中。
+
+例如 `{ detail: { yourValue: 'yourValue' } }`。
+
+因为执行 `$emit` 时默认会获取 `detail` 和 `currentTarget.dataset` 中的数据
 :::

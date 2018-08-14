@@ -1,6 +1,6 @@
 # 安装
 ## 1.下载源码
-首先 [点我下载源码](https://raw.githubusercontent.com/tuateam/tua-mp/master/examples/basic/utils/tua-mp.js)，保存到你的小程序中（假设保存在 `utils/tua-mp.js`）。
+首先 [点我下载源码](https://raw.githubusercontent.com/tuateam/tua-mp/master/packages/tua-mp/examples/basic/utils/tua-mp.js)，保存到你的小程序中（假设保存在 `utils/tua-mp.js`）。
 
 接着在入口的 `js` 代码中：
 
@@ -30,7 +30,7 @@ TuaComp({ ... })
 :::
 
 ## 2.借助构建工具
-在这部分我们将使用 webpack 来打包我们的源码，但其中 webpack 繁琐的配置已预先封装在 [@tua-mp/service](https://github.com/tuateam/tua-mp-service) 里了。
+在这部分我们将使用 webpack 来打包我们的源码，但其中 webpack 繁琐的配置已预先封装在 [@tua-mp/service](../tua-mp-service/) 里了。
 
 因此很自然地，日常前端开发中的各位“老朋友们”又回来了~
 
@@ -41,12 +41,14 @@ TuaComp({ ... })
 * ...
 
 ### 2.1.支持预处理器的 simple 版本
-![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
+![webpack version](https://img.shields.io/badge/webpack-%5E4.12.1-green.svg)
 
-推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 或 [@tua-mp/cli](../tua-mp-cli/) 一键生成项目：
 
 ```bash
 $ vue init tua-mp-templates/simple my-project
+# OR
+$ tuamp init tua-mp-templates/simple my-project
 ```
 
 * 开发时运行 `npm start`，`webpack` 就会开启监听
@@ -63,13 +65,15 @@ $ vue init tua-mp-templates/simple my-project
 * stylus: 需要在 js 中引入，生成对应的 wxss
 
 ### 2.2.支持单文件组件的 vue 版本
-![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
-![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
+![webpack version](https://img.shields.io/badge/webpack-%5E4.12.1-green.svg)
+![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.2.4-green.svg)
 
-推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 或 [@tua-mp/cli](../tua-mp-cli/) 一键生成项目：
 
 ```bash
 $ vue init tua-mp-templates/vue my-project
+# OR
+$ tuamp init tua-mp-templates/vue my-project
 ```
 
 在这个例子中我们添加了 `vue-loader`，让我们能够使用文件扩展名为 `.vue` 的 `single-file components`(单文件组件) 。
@@ -98,8 +102,8 @@ $ vue init tua-mp-templates/vue my-project
 }
 </config>
 
-<!-- yaml 也支持 -->
-<config lang="yaml">
+<!-- yaml 或者 yml 也支持 -->
+<config lang="yml">
 navigationBarTitleText: 'tua-mp todos'
 usingComponents:
     Todo: ./comps/Todo/Todo

@@ -22,11 +22,17 @@ module.exports = {
                 link: '/quick-start/',
             },
             {
+                text: '构建工具',
+                link: '/tua-mp-service/',
+            },
+            {
+                text: '命令行工具',
+                link: '/tua-mp-cli/',
+            },
+            {
                 text: '生态系统',
                 items: [
-                    { text: '构建工具', link: '/tua-mp-service/' },
                     { text: '本地存储', link: '/tua-storage/' },
-                    // { text: '命令行工具（开发中）', link: '/tua-cli' },
                     // { text: 'api 配置（待开源）', link: '/tua-api-wx' },
                 ],
             },

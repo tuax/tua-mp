@@ -2,8 +2,11 @@
     "name": "root",
     "private": true,
     "scripts": {
+        "docs": "vuepress dev docs -h localhost",
+        "docs:build": "vuepress build docs",
         "boot": "lerna bootstrap",
         "test": "lerna run test --parallel",
+        "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
         "run:scope": "lerna run --stream --scope",
         "precommit": "lerna run --concurrency 1 --stream precommit"
     },

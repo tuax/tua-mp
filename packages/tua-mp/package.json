@@ -8,8 +8,6 @@
     ],
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "docs": "vuepress dev docs -h localhost",
-        "docs:build": "vuepress build docs",
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
         "lint": "eslint --fix --ext .js src/",
@@ -17,7 +15,6 @@
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
         "precommit": "lint-staged",
-        "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
         "start": "yarn watch",
         "pub": "yarn build && npm publish"
     },
