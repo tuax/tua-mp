@@ -11,8 +11,6 @@ sidebar: auto
 </p>
 
 <p align="center">
-    <a href="https://circleci.com/gh/tuateam/tua-mp-service/tree/master"><img src="https://img.shields.io/circleci/project/tuateam/tua-mp-service/master.svg" alt="Build Status"></a>
-    <a href="https://codecov.io/github/tuateam/tua-mp-service?branch=master"><img src="https://img.shields.io/codecov/c/github/tuateam/tua-mp-service/master.svg" alt="Coverage Status"></a>
     <a href="https://www.npmjs.com/package/@tua-mp/service"><img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version"></a>
     <a href="https://www.npmjs.com/package/@tua-mp/service"><img src="https://img.shields.io/npm/l/@tua-mp/service.svg" alt="License"></a>
 </p>
@@ -23,14 +21,6 @@ sidebar: auto
 默认内置了 yaml/css/less/scss/stylus 的支持。
 
 ```html
-<!-- yaml -->
-<config lang="yaml">
-navigationBarTitleText: 'tua-mp todos'
-usingComponents:
-    Todo: ./comps/Todo/Todo
-    Filter: /comps/Filter/Filter
-</config>
-
 <!-- 默认 json -->
 <config>
 {
@@ -40,6 +30,14 @@ usingComponents:
         "Filter": "/comps/Filter/Filter"
     }
 }
+</config>
+
+<!-- yaml 或者 yml 也支持 -->
+<config lang="yml">
+navigationBarTitleText: 'tua-mp todos'
+usingComponents:
+    Todo: ./comps/Todo/Todo
+    Filter: /comps/Filter/Filter
 </config>
 
 <!-- 默认 css -->
@@ -59,7 +57,7 @@ usingComponents:
 
 ```bash
 $ npm i -D @tua-mp/service
-
+# OR
 $ yarn add -D @tua-mp/service
 ```
 

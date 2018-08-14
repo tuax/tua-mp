@@ -1,69 +1,25 @@
 {
-    "name": "tua-mp",
-    "version": "0.7.3",
-    "description": "A progressive miniprogram framework for coding like Vue",
-    "main": "examples/basic/utils/tua-mp.js",
-    "files": [
-        "examples/basic/utils/tua-mp.js"
-    ],
+    "name": "root",
+    "private": true,
     "scripts": {
-        "cov": "open coverage/lcov-report/index.html",
         "docs": "vuepress dev docs -h localhost",
         "docs:build": "vuepress build docs",
-        "tdd": "cross-env NODE_ENV=test jest --watch",
-        "test": "cross-env NODE_ENV=test jest && codecov",
-        "prebuild": "yarn test",
-        "build": "cross-env NODE_ENV=prod rollup -c",
-        "watch": "cross-env NODE_ENV=prod rollup -c -w",
+        "boot": "lerna bootstrap",
+        "test": "lerna run test --parallel",
         "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
-        "start": "yarn watch",
-        "pub": "yarn build && npm publish"
+        "run:scope": "lerna run --stream --scope",
+        "precommit": "lerna run --concurrency 1 --stream precommit"
     },
-    "jest": {
-        "bail": true,
-        "clearMocks": true,
-        "testEnvironment": "node",
-        "setupFiles": [
-            "./__mocks__/wxMock.js"
-        ],
-        "transform": {
-            "^.+\\.js$": "babel-jest"
-        },
-        "testPathIgnorePatterns": [
-            "./__tests__/utils.js",
-            "./examples/"
-        ],
-        "collectCoverage": true,
-        "coveragePathIgnorePatterns": [
-            "./package.json",
-            "./src/utils/index.js",
-            "./__tests__/utils.js",
-            "./__mocks__/wxMock.js"
-        ]
+    "husky": {
+        "hooks": {
+            "pre-push": "npm run precommit",
+            "pre-commit": "npm run precommit",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
     },
-    "eslintIgnore": [
-        "package.json"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/tuateam/tua-mp.git"
-    },
-    "keywords": [
-        "vue",
-        "tua-mp",
-        "mp",
-        "wx",
-        "miniprogram",
-        "wxmp",
-        "weapp"
-    ],
-    "author": "StEve Young",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/tuateam/tua-mp/issues"
-    },
-    "homepage": "https://github.com/tuateam/tua-mp#readme",
     "devDependencies": {
+        "@commitlint/cli": "^7.0.0",
+        "@commitlint/config-conventional": "^7.0.1",
         "babel-core": "^6.26.3",
         "babel-eslint": "^8.2.3",
         "babel-jest": "^23.0.1",
@@ -80,12 +36,17 @@
         "eslint-plugin-promise": "^3.8.0",
         "eslint-plugin-standard": "^3.1.0",
         "gh-pages": "^1.2.0",
+        "husky": "^1.0.0-rc.13",
         "jest": "^23.3.0",
-        "rollup": "^0.64.1",
+        "lerna": "^3.0.3",
+        "lint-staged": "^7.2.2",
+        "metro-memory-fs": "^0.43.5",
+        "rimraf": "^2.6.2",
+        "rollup": "^0.59.4",
         "rollup-plugin-babel": "^3.0.4",
         "rollup-plugin-eslint": "^4.0.0",
         "rollup-plugin-json": "^3.0.0",
         "rollup-plugin-replace": "^2.0.0",
-        "vuepress": "^0.14.1"
+        "vuepress": "^0.12.0"
     }
 }

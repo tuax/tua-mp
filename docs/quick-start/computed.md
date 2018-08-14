@@ -39,9 +39,8 @@ TuaPage({
         styleStr () {
             return `styleOne: ${isLarge ? 'styleOne1' : 'styleOne2'};`
         },
-        reversedMsg () {
-            return this.message.split('').reverse().join('')
-        },
+        // 箭头函数也支持，不过要使用参数获取 vm
+        reversedMsg: vm => vm.message.split('').reverse().join(''),
     },
 })
 ```

@@ -1,12 +1,14 @@
 # 单文件组件版本
 ## 一键生成项目
-![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
-![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
+![webpack version](https://img.shields.io/badge/webpack-%5E4.12.1-green.svg)
+![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.2.4-green.svg)
 
-推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 或 [@tua-mp/cli](../tua-mp-cli/) 一键生成项目：
 
 ```bash
 $ vue init tua-mp-templates/vue my-project
+# OR
+$ tuamp init tua-mp-templates/vue my-project
 ```
 
 ## 文件结构

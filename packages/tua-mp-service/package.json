@@ -1,0 +1,85 @@
+{
+    "name": "@tua-mp/service",
+    "version": "0.1.6",
+    "description": "local service for tua-mp projects, inspired by @vue/cli-service",
+    "main": "lib/Service.js",
+    "bin": {
+        "tua-mp-service": "bin/tua-mp-service.js"
+    },
+    "scripts": {
+        "cov": "open coverage/lcov-report/index.html",
+        "tdd": "cross-env NODE_ENV=test jest --watch",
+        "test": "cross-env NODE_ENV=test jest && codecov",
+        "lint": "eslint --fix lib/**/*.js bin/*",
+        "precommit": "lint-staged",
+        "pub": "npm run test && npm publish"
+    },
+    "lint-staged": {
+        "bin/*": [
+            "eslint --fix",
+            "git add"
+        ],
+        "lib/**/*.js": [
+            "eslint --fix",
+            "git add"
+        ]
+    },
+    "jest": {
+        "bail": true,
+        "collectCoverage": true,
+        "testEnvironment": "node",
+        "coveragePathIgnorePatterns": [
+            "package.json"
+        ]
+    },
+    "eslintIgnore": [
+        "package.json"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tuateam/tua-mp.git"
+    },
+    "keywords": [
+        "cli",
+        "tua-mp",
+        "tua-mp-service"
+    ],
+    "author": "StEve Young",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/tuateam/tua-mp/issues"
+    },
+    "homepage": "https://github.com/tuateam/tua-mp#readme",
+    "dependencies": {
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.5",
+        "copy-webpack-plugin": "^4.5.1",
+        "css-loader": "^1.0.0",
+        "eslint-friendly-formatter": "^4.0.1",
+        "file-loader": "^1.1.11",
+        "friendly-errors-webpack-plugin": "^1.7.0",
+        "less": "^3.7.1",
+        "less-loader": "^4.1.0",
+        "mini-css-extract-plugin": "^0.4.0",
+        "node-sass": "^4.9.2",
+        "sass-loader": "^7.0.3",
+        "semver": "^5.5.0",
+        "style-loader": "^0.21.0",
+        "stylus": "^0.54.5",
+        "stylus-loader": "^3.0.2",
+        "url-loader": "^1.0.1",
+        "vue-loader": "^15.2.4",
+        "vue-template-compiler": "^2.5.16",
+        "webpack": "^4.12.1",
+        "webpack-chain": "^4.8.0",
+        "webpack-merge": "^4.1.3",
+        "webpackbar": "^2.6.1",
+        "yaml-loader": "^0.5.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": ">=8"
+    }
+}

@@ -14,6 +14,7 @@
     <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/v/tua-mp.svg" alt="Version"></a>
     <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/l/tua-mp.svg" alt="License"></a>
     <img src="https://img.shields.io/badge/dependencies-none-green.svg" alt="dependencies">
+    <a href="https://lernajs.io/"><img src="https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg" alt="lerna"></a>
 </p>
 
 ## 0.介绍
@@ -24,8 +25,8 @@
 </p>
 
 ## 1.安装
-## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/examples/basic)
-下载 [https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
+## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/packages/tua-mp/examples/basic)
+下载 [https://github.com/tuateam/tua-mp/blob/master/packages/tua-mp/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/packages/tua-mp/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
 
 代码片段地址为：**wechatide://minicode/JzXSn8mb78n8**
 
@@ -59,7 +60,7 @@ TuaComp({ ... })
 采用这种侵入性最小的方式，可以用于改写优化已有的小程序项目，即在部分页面中使用 `tua-mp`。
 
 ## 1.2.借助构建工具
-在这部分我们将使用 webpack 来打包我们的源码，但其中 webpack 繁琐的配置已预先封装在 [@tua-mp/service](https://github.com/tuateam/tua-mp-service) 里了。
+在这部分我们将使用 webpack 来打包我们的源码，但其中 webpack 繁琐的配置已预先封装在 [@tua-mp/service](https://tuateam.github.io/tua-mp/tua-mp-service/) 里了。
 
 因此很自然地，日常前端开发中的各位“老朋友们”又回来了~
 
@@ -72,10 +73,12 @@ TuaComp({ ... })
 ### 1.支持预处理器的 simple 版本
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 
-推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 或 [@tua-mp/cli](https://tuateam.github.io/tua-mp/tua-mp-cli/) 一键生成项目：
 
 ```bash
 $ vue init tua-mp-templates/simple my-project
+# OR
+$ tuamp init tua-mp-templates/simple my-project
 ```
 
 * 开发时运行 `npm start`，`webpack` 就会开启监听
@@ -95,10 +98,12 @@ $ vue init tua-mp-templates/simple my-project
 ![webpack version](https://img.shields.io/badge/webpack-%5E4.8.1-green.svg)
 ![vue-loader version](https://img.shields.io/badge/vue--loader-%5E15.0.12-green.svg)
 
-推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 一键生成项目：
+推荐使用 [vue-cli](https://github.com/vuejs/vue-cli) 或 [@tua-mp/cli](https://tuateam.github.io/tua-mp/tua-mp-cli/) 一键生成项目：
 
 ```bash
 $ vue init tua-mp-templates/vue my-project
+# OR
+$ tuamp init tua-mp-templates/vue my-project
 ```
 
 在这个例子中我们添加了 `vue-loader`，让我们能够使用文件扩展名为 `.vue` 的 `single-file components`(单文件组件) 。
@@ -129,8 +134,8 @@ $ vue init tua-mp-templates/vue my-project
 }
 </config>
 
-<!-- yaml 也支持 -->
-<config lang="yaml">
+<!-- yaml 或者 yml 也支持 -->
+<config lang="yml">
 navigationBarTitleText: 'tua-mp todos'
 usingComponents:
     Todo: ./comps/Todo/Todo
@@ -151,7 +156,7 @@ usingComponents:
 
 * 实现相同的组件配置（data、computed、methods、watch）
 * 实现赋值改变数据和界面，而不是调用小程序原生的 `this.setData`
-* 实现 `computed` 功能
+* 实现完整 `computed` 功能
 * 实现完整 `watch` 功能
 * 实现异步 `setData` 功能，即假如在一个事件循环周期内多次对于同一个属性赋值，只会触发一次小程序原生的 `setData` 函数以及相关的 `watch` 函数（详见下面例子中的 `onLoad` 函数）
 * 实现生命周期钩子的适配
@@ -283,6 +288,15 @@ TuaPage({
 * [1.终极蛇皮上帝视角之微信小程序之告别 setData](https://github.com/BuptStEve/blog/issues/12)
 * [2.终极蛇皮上帝视角之微信小程序之告别“刀耕火种”](https://github.com/BuptStEve/blog/issues/13)
 * [3.微信小程序之如何使用自定义组件封装原生 image 组件](https://github.com/BuptStEve/blog/issues/14)
+
+## 4.生态系统
+
+| 项目 | 状态 | 介绍 |
+| --- | --- | --- |
+| @tua-mp/cli | <img src="https://img.shields.io/npm/v/@tua-mp/cli.svg" alt="Version"> | 命令行工具
+| @tua-mp/service | <img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version"> | 项目构建工具
+| tua-storage | <img src="https://img.shields.io/npm/v/tua-storage.svg" alt="Version"> | 通用存储层
+| @tua-mp/api | 待整理开源 | api 工具
 
 ## TODO
 详见 [issues](https://github.com/tuateam/tua-mp/issues)
