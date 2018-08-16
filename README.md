@@ -5,7 +5,7 @@
 </h5>
 
 <p align="center">
-    <a href="https://github.com/feross/standard"><img src="./docs/.vuepress/public/standard.svg" alt="Standard - JavaScript Style"></a>
+    <a href="https://github.com/feross/standard"><img src="https://tuateam.github.io/tua-mp/standard.svg" alt="Standard - JavaScript Style"></a>
 </p>
 
 <p align="center">
@@ -145,11 +145,11 @@ usingComponents:
 
 > [什么是自定义块？](https://vue-loader.vuejs.org/zh/guide/custom-blocks.html)
 
-<image src="./docs/.vuepress/public/logs.vue.png" width="400" alt="logs.vue" />
+<image src="https://tuateam.github.io/tua-mp/logs.vue.png" width="400" alt="logs.vue" />
 
 **以上两个例子中的 `/pages/todos/todos` 页面都实现了 todos 应用。**
 
-<image src="./docs/.vuepress/public/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
+<image src="https://tuateam.github.io/tua-mp/tua-mp-todos.gif" width="400" alt="tua-mp-todos" />
 
 ## 2.使用说明
 使用方式上和 Vue 对齐，[对 Vue 还不熟悉？](https://cn.vuejs.org/v2/guide/)
