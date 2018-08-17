@@ -6,6 +6,8 @@
 
 ```bash
 $ vue init tua-mp-templates/simple my-project
+# OR
+$ tuamp init tua-mp-templates/simple my-project
 ```
 
 接下来让咱们一步步地将原项目代码迁移到过渡版本中。
