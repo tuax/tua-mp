@@ -3,6 +3,7 @@ import {
     log,
     isFn,
     $emit,
+    setObjByPath,
     checkReservedKeys,
     getPropertiesFromProps,
 } from './utils/index'
@@ -71,6 +72,20 @@ export const TuaComp = ({
         // 触发 immediate watch
         triggerImmediateWatch(this, watch)
 
+        // hack 原生 setData
+        const originalSetData = this.setData
+        Object.defineProperties(this, {
+            'setData': {
+                get: () => (newVal, cb) => Object.keys(newVal)
+                    .forEach((pathStr) => {
+                        setObjByPath({ obj: this, path: pathStr, val: newVal[pathStr] })
+
+                        isFn(cb) && Promise.resolve().then(cb)
+                    }),
+            },
+            '__setData__': { get: () => originalSetData },
+        })
+
         rest.attached && rest.attached.apply(this, options)
     },
     ready (...options) {
@@ -125,6 +140,20 @@ export const TuaPage = ({
 
         // 触发 immediate watch
         triggerImmediateWatch(this, watch)
+
+        // hack 原生 setData
+        const originalSetData = this.setData
+        Object.defineProperties(this, {
+            'setData': {
+                get: () => (newVal, cb) => Object.keys(newVal)
+                    .forEach((pathStr) => {
+                        setObjByPath({ obj: this, path: pathStr, val: newVal[pathStr] })
+
+                        isFn(cb) && Promise.resolve().then(cb)
+                    }),
+            },
+            '__setData__': { get: () => originalSetData },
+        })
 
         rest.onLoad && rest.onLoad.apply(this, options)
         rest.created && rest.created.apply(this, options)

@@ -11,16 +11,15 @@
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
         "lint": "eslint --fix --ext .js src/",
-        "prebuild": "yarn test",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
-        "precommit": "lint-staged",
-        "start": "yarn watch",
-        "pub": "yarn build && npm publish"
+        "start": "npm run watch",
+        "pub": "npm run build && npm run publish",
+        "precommit": "npm run build && lint-staged"
     },
     "lint-staged": {
-        "src/*.{js,vue}": [
-            "yarn lint",
+        "src/**/*.{js,vue}": [
+            "npm run lint",
             "git add"
         ]
     },
@@ -66,5 +65,12 @@
     "bugs": {
         "url": "https://github.com/tuateam/tua-mp/issues"
     },
-    "homepage": "https://github.com/tuateam/tua-mp#readme"
+    "homepage": "https://github.com/tuateam/tua-mp#readme",
+    "devDependencies": {
+        "codecov": "^3.0.4",
+        "cross-env": "^5.2.0",
+        "eslint": "^5.4.0",
+        "jest": "^23.5.0",
+        "rollup": "^0.64.1"
+    }
 }

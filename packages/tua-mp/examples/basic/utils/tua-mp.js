@@ -566,10 +566,12 @@ var VmStatus = function () {
                 var oldState = _this.oldStateByVM[vmKey];
                 var getWatchFnArr = getWatchFnArrByVm(vm);
 
+                var setData = vm.__setData__ ? vm.__setData__ : vm.setData;
+
                 vm.beforeUpdate && vm.beforeUpdate();
 
                 // 更新数据
-                vm.updated ? vm.setData(newState, vm.updated) : vm.setData(newState);
+                vm.updated ? setData.call(vm, newState, vm.updated) : setData.call(vm, newState);
 
                 // 触发 watch
                 Object.keys(newState).map(function (key) {
@@ -1091,6 +1093,8 @@ var TuaComp = function TuaComp(_ref) {
             rest.created && rest.created.apply(this, options);
         },
         attached: function attached() {
+            var _this = this;
+
             for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                 options[_key2] = arguments[_key2];
             }
@@ -1115,6 +1119,25 @@ var TuaComp = function TuaComp(_ref) {
 
             // 触发 immediate watch
             triggerImmediateWatch(this, watch);
+
+            // hack 原生 setData
+            var originalSetData = this.setData;
+            Object.defineProperties(this, {
+                'setData': {
+                    get: function get$$1() {
+                        return function (newVal, cb) {
+                            return Object.keys(newVal).forEach(function (pathStr) {
+                                setObjByPath({ obj: _this, path: pathStr, val: newVal[pathStr] });
+
+                                isFn(cb) && Promise.resolve().then(cb);
+                            });
+                        };
+                    }
+                },
+                '__setData__': { get: function get$$1() {
+                        return originalSetData;
+                    } }
+            });
 
             rest.attached && rest.attached.apply(this, options);
         },
@@ -1153,6 +1176,8 @@ var TuaPage = function TuaPage(_ref2) {
         rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
     return Page(_extends({}, rest, methods, {
         onLoad: function onLoad() {
+            var _this2 = this;
+
             for (var _len5 = arguments.length, options = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
                 options[_key5] = arguments[_key5];
             }
@@ -1177,6 +1202,25 @@ var TuaPage = function TuaPage(_ref2) {
 
             // 触发 immediate watch
             triggerImmediateWatch(this, watch);
+
+            // hack 原生 setData
+            var originalSetData = this.setData;
+            Object.defineProperties(this, {
+                'setData': {
+                    get: function get$$1() {
+                        return function (newVal, cb) {
+                            return Object.keys(newVal).forEach(function (pathStr) {
+                                setObjByPath({ obj: _this2, path: pathStr, val: newVal[pathStr] });
+
+                                isFn(cb) && Promise.resolve().then(cb);
+                            });
+                        };
+                    }
+                },
+                '__setData__': { get: function get$$1() {
+                        return originalSetData;
+                    } }
+            });
 
             rest.onLoad && rest.onLoad.apply(this, options);
             rest.created && rest.created.apply(this, options);
