@@ -2,7 +2,9 @@
     "command": {
         "publish": {
             "ignoreChanges": [
-                "*.md"
+                "**/__mocks__/**",
+                "**/__tests__/**",
+                "**/*.md"
             ]
         }
     },
