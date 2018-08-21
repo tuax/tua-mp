@@ -35,7 +35,11 @@ $ tuamp init tua-mp-templates/simple my-project
 * src/: 源码
 * dist/: 打包后代码
 * tua-mp.config.js: `@tua-mp/service` 的配置文件
-* project.config.json: 小程序开发工具配置文件，会被拷到 `dist/` 下
+* project.config.json: 小程序开发工具配置文件
+
+::: tip
+注意：微信开发者工具打开的是项目**根目录**
+:::
 
 ### src/ 目录
 ```
@@ -76,18 +80,18 @@ $ tuamp init tua-mp-templates/simple my-project
     └── info.wxml
 ```
 
-* app/: 应用入口
-* assets/: 资源文件，比如图片
-* comps/: 组件
-* pages/: 页面
-* scripts: 公用代码
-* scripts/const: 常量（已配置别名 @const）
-* scripts/utils: 辅助函数（已配置别名 @utils）
-* styles/: 公用样式
-* templates/: 模板
+* `app/`: 应用入口
+* `assets/`: 资源文件，比如图片
+* `comps/`: 全局组件
+* `pages/`: 页面
+* `scripts/`: 公用代码
+* `scripts/const`: 常量（已配置别名 @const）
+* `scripts/utils`: 辅助函数（已配置别名 @utils）
+* `styles/`: 公用样式
+* `templates/`: 模板
 
 ## tua-mp.config.js
-以上那些特性的支持是因为底层调用了 webpack 将源代码转换成小程序的代码。由于 webpack 配置太繁琐了，因此受到 [@vue/cli-service](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service) 的启发，这部分配置也用 [@tua-mp/service](https://github.com/tuateam/tua-mp-service) 进行了封装。
+以上那些特性的支持是因为底层调用了 webpack 将源代码转换成小程序的代码。由于 webpack 配置太繁琐了，因此受到 [@vue/cli-service](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service) 的启发，这部分配置也用 [@tua-mp/service](../tua-mp-service/) 进行了封装。
 
 这个配置文件提供了一个入口让开发者可以对于 webpack 进行二次配置。
 

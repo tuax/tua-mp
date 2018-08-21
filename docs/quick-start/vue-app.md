@@ -11,6 +11,10 @@ $ vue init tua-mp-templates/vue my-project
 $ tuamp init tua-mp-templates/vue my-project
 ```
 
+::: tip
+注意：微信开发者工具打开的是项目**根目录**
+:::
+
 ## 文件结构
 ### src/ 目录
 
@@ -23,10 +27,10 @@ $ tuamp init tua-mp-templates/vue my-project
 ├── assets
 │   └── vue-logo.png
 ├── comps
-│   ├── filter
+│   ├── Filter
 │   │   ├── Filter.vue
 │   │   └── index.js
-│   └── todo
+│   └── Todo
 │       ├── Todo.vue
 │       └── index.js
 ├── pages
@@ -54,17 +58,17 @@ $ tuamp init tua-mp-templates/vue my-project
     └── info.wxml
 ```
 
-* app/: 应用入口
-* assets/: 资源文件，比如图片
-* comps/: 组件
-* pages/: 页面
-    * pages/index/comps/: 属于 index 的页面级组件
-    * pages/todos/comps/: 属于 todos 的页面级组件
-* scripts: 公用代码
-* scripts/const: 常量（已配置别名 @const）
-* scripts/utils: 辅助函数（已配置别名 @utils）
-* styles/: 公用样式
-* templates/: 模板
+* `app/`: 应用入口
+* `assets/`: 资源文件，比如图片
+* `comps/`: 全局组件
+* `pages/`: 页面
+    * `pages/index/comps/`: 属于 index 的页面级组件
+    * `pages/todos/comps/`: 属于 todos 的页面级组件
+* `scripts/`: 公用代码
+* `scripts/const`: 常量（已配置别名 @const）
+* `scripts/utils`: 辅助函数（已配置别名 @utils）
+* `styles/`: 公用样式
+* `templates/`: 模板
 
 ## 单文件组件
 注意到现在咱们的 `pages/` 和 `comps/` 下的组件已经用上了单文件组件。
@@ -93,7 +97,7 @@ $ tuamp init tua-mp-templates/vue my-project
 }
 </config>
 
-<!-- yaml 也支持 -->
+<!-- yaml 或者 yml 也支持 -->
 <config lang="yaml">
 navigationBarTitleText: 'tua-mp todos'
 usingComponents:
