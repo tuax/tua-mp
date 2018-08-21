@@ -12,7 +12,7 @@
         "lint": "eslint --fix lib/**/*.js bin/*",
         "clean": "rimraf src && mkdir src/ src/app/ src/apis/ src/pages/ src/comps/ && echo {} > src/app/app.json",
         "precommit": "lint-staged",
-        "pub": "yarn test && npm publish"
+        "pub": "npm test && npm publish"
     },
     "lint-staged": {
         "bin/*": [
@@ -69,5 +69,11 @@
     },
     "engines": {
         "node": ">=8"
+    },
+    "devDependencies": {
+        "codecov": "^3.0.4",
+        "cross-env": "^5.2.0",
+        "jest": "^23.5.0",
+        "rimraf": "^2.6.2"
     }
 }
