@@ -1,5 +1,3 @@
-var version = "0.7.3";
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
@@ -451,6 +449,29 @@ var getPropertiesFromProps = function getPropertiesFromProps(props) {
         return _extends({}, acc, cur);
     }, {});
 };
+
+var hackSetData$$1 = function hackSetData$$1(vm) {
+    var originalSetData = vm.setData;
+
+    Object.defineProperties(vm, {
+        'setData': {
+            get: function get() {
+                return function (newVal, cb) {
+                    return Object.keys(newVal).forEach(function (pathStr) {
+                        setObjByPath({ obj: vm, path: pathStr, val: newVal[pathStr] });
+
+                        isFn(cb) && Promise.resolve().then(cb);
+                    });
+                };
+            }
+        },
+        '__setData__': { get: function get() {
+                return originalSetData;
+            } }
+    });
+};
+
+var version = "0.7.3";
 
 /**
  * 根据 vm 生成 key
@@ -1056,8 +1077,6 @@ var triggerImmediateWatch = function triggerImmediateWatch(vm, watch) {
     });
 };
 
-log('Version ' + version);
-
 /**
  * 适配 Vue 风格代码，生成小程序原生组件
  * @param {Object|Function} data 组件的内部数据
@@ -1093,8 +1112,6 @@ var TuaComp = function TuaComp(_ref) {
             rest.created && rest.created.apply(this, options);
         },
         attached: function attached() {
-            var _this = this;
-
             for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                 options[_key2] = arguments[_key2];
             }
@@ -1121,23 +1138,7 @@ var TuaComp = function TuaComp(_ref) {
             triggerImmediateWatch(this, watch);
 
             // hack 原生 setData
-            var originalSetData = this.setData;
-            Object.defineProperties(this, {
-                'setData': {
-                    get: function get$$1() {
-                        return function (newVal, cb) {
-                            return Object.keys(newVal).forEach(function (pathStr) {
-                                setObjByPath({ obj: _this, path: pathStr, val: newVal[pathStr] });
-
-                                isFn(cb) && Promise.resolve().then(cb);
-                            });
-                        };
-                    }
-                },
-                '__setData__': { get: function get$$1() {
-                        return originalSetData;
-                    } }
-            });
+            hackSetData$$1(this);
 
             rest.attached && rest.attached.apply(this, options);
         },
@@ -1164,22 +1165,28 @@ var TuaComp = function TuaComp(_ref) {
         }
     }));
 };
-var TuaPage = function TuaPage(_ref2) {
-    var _ref2$data = _ref2.data,
-        rawData = _ref2$data === undefined ? {} : _ref2$data,
-        _ref2$watch = _ref2.watch,
-        watch = _ref2$watch === undefined ? {} : _ref2$watch,
-        _ref2$methods = _ref2.methods,
-        methods = _ref2$methods === undefined ? {} : _ref2$methods,
-        _ref2$computed = _ref2.computed,
-        computed = _ref2$computed === undefined ? {} : _ref2$computed,
-        rest = objectWithoutProperties(_ref2, ['data', 'watch', 'methods', 'computed']);
+
+/**
+ * 适配 Vue 风格代码，生成小程序页面
+ * @param {Object|Function} data 页面组件的内部数据
+ * @param {Object} watch 侦听器对象
+ * @param {Object} methods 页面组件的方法，包括事件响应函数和任意的自定义方法
+ * @param {Object} computed 计算属性
+ */
+var TuaPage = function TuaPage(_ref) {
+    var _ref$data = _ref.data,
+        rawData = _ref$data === undefined ? {} : _ref$data,
+        _ref$watch = _ref.watch,
+        watch = _ref$watch === undefined ? {} : _ref$watch,
+        _ref$methods = _ref.methods,
+        methods = _ref$methods === undefined ? {} : _ref$methods,
+        _ref$computed = _ref.computed,
+        computed = _ref$computed === undefined ? {} : _ref$computed,
+        rest = objectWithoutProperties(_ref, ['data', 'watch', 'methods', 'computed']);
     return Page(_extends({}, rest, methods, {
         onLoad: function onLoad() {
-            var _this2 = this;
-
-            for (var _len5 = arguments.length, options = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-                options[_key5] = arguments[_key5];
+            for (var _len = arguments.length, options = Array(_len), _key = 0; _key < _len; _key++) {
+                options[_key] = arguments[_key];
             }
 
             rest.beforeCreate && rest.beforeCreate.apply(this, options);
@@ -1204,30 +1211,14 @@ var TuaPage = function TuaPage(_ref2) {
             triggerImmediateWatch(this, watch);
 
             // hack 原生 setData
-            var originalSetData = this.setData;
-            Object.defineProperties(this, {
-                'setData': {
-                    get: function get$$1() {
-                        return function (newVal, cb) {
-                            return Object.keys(newVal).forEach(function (pathStr) {
-                                setObjByPath({ obj: _this2, path: pathStr, val: newVal[pathStr] });
-
-                                isFn(cb) && Promise.resolve().then(cb);
-                            });
-                        };
-                    }
-                },
-                '__setData__': { get: function get$$1() {
-                        return originalSetData;
-                    } }
-            });
+            hackSetData$$1(this);
 
             rest.onLoad && rest.onLoad.apply(this, options);
             rest.created && rest.created.apply(this, options);
         },
         onReady: function onReady() {
-            for (var _len6 = arguments.length, options = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-                options[_key6] = arguments[_key6];
+            for (var _len2 = arguments.length, options = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                options[_key2] = arguments[_key2];
             }
 
             rest.beforeMount && rest.beforeMount.apply(this, options);
@@ -1235,8 +1226,8 @@ var TuaPage = function TuaPage(_ref2) {
             rest.mounted && rest.mounted.apply(this, options);
         },
         onUnload: function onUnload() {
-            for (var _len7 = arguments.length, options = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-                options[_key7] = arguments[_key7];
+            for (var _len3 = arguments.length, options = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                options[_key3] = arguments[_key3];
             }
 
             rest.beforeDestroy && rest.beforeDestroy.apply(this, options);
@@ -1249,5 +1240,7 @@ var TuaPage = function TuaPage(_ref2) {
         }
     }));
 };
+
+log('Version ' + version);
 
 export { TuaComp, TuaPage };
