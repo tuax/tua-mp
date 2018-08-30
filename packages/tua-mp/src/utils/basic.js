@@ -67,8 +67,24 @@ export const getValByPath = (obj) => (path) => pathStr2Arr(path)
  * @returns {Object} obj
  */
 export const setObjByPath = ({ obj, path, val }) => pathStr2Arr(path)
-    .reduce((acc, cur, idx, { length }) => {
-        if (idx === length - 1) {
+    .reduce((acc, cur, idx, arr) => {
+        // 在调用 setData 时，有的属性可能没定义
+        if (acc[cur] === undefined) {
+            const parentStr = arr
+                .slice(0, idx)
+                .reduce(
+                    (acc, cur) => /\d/.test(cur)
+                        ? `${acc}[${cur}]`
+                        : `${acc}.${cur}`,
+                    'this'
+                )
+
+            error(
+                `Property "${cur}" is not found in "${parentStr}": Make sure that this property has initialized in the data option.`
+            )
+        }
+
+        if (idx === arr.length - 1) {
             acc[cur] = val
             return
         }
@@ -125,12 +141,12 @@ export const assertType = (value, type) => {
  * @param {String} type 输出类型 log|warn|error
  * @param {any} out 输出的内容
  */
-const logByType = (type) => (out) => {
+const logByType = (type) => (...out) => {
     /* istanbul ignore else */
     if (process.env.NODE_ENV === 'test') return
 
     /* istanbul ignore next */
-    console[type](`[TUA-MP]:`, out)
+    console[type](`[TUA-MP]:`, ...out)
 }
 
 export const log = logByType('log')

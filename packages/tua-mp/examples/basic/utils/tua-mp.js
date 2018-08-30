@@ -193,10 +193,18 @@ var setObjByPath = function setObjByPath(_ref) {
     var obj = _ref.obj,
         path = _ref.path,
         val = _ref.val;
-    return pathStr2Arr(path).reduce(function (acc, cur, idx, _ref2) {
-        var length = _ref2.length;
+    return pathStr2Arr(path).reduce(function (acc, cur, idx, arr) {
+        // 在调用 setData 时，有的属性可能没定义
+        if (acc[cur] === undefined) {
+            var parentStr = arr.slice(0, idx).reduce(function (acc, cur) {
+                return (/\d/.test(cur) ? acc + '[' + cur + ']' : acc + '.' + cur
+                );
+            }, 'this');
 
-        if (idx === length - 1) {
+            error('Property "' + cur + '" is not found in "' + parentStr + '": Make sure that this property has initialized in the data option.');
+        }
+
+        if (idx === arr.length - 1) {
             acc[cur] = val;
             return;
         }
@@ -254,15 +262,21 @@ var assertType = function assertType(value, type) {
  * @param {any} out 输出的内容
  */
 var logByType = function logByType(type) {
-    return function (out) {
+    return function () {
+        var _console;
+
+        for (var _len = arguments.length, out = Array(_len), _key = 0; _key < _len; _key++) {
+            out[_key] = arguments[_key];
+        }
 
         /* istanbul ignore next */
-        console[type]('[TUA-MP]:', out);
+        (_console = console)[type].apply(_console, ['[TUA-MP]:'].concat(out));
     };
 };
 
 var log = logByType('log');
 var warn = logByType('warn');
+var error = logByType('error');
 
 // reserved keys
 var isReservedKeys = function isReservedKeys(str) {
@@ -288,13 +302,13 @@ var checkReservedKeys = function checkReservedKeys(data, computed, methods) {
  * @param {Object} target 对象
  */
 var def = function def(key) {
-    return function (_ref3) {
-        var value = _ref3.value,
-            _ref3$enumerable = _ref3.enumerable,
-            enumerable = _ref3$enumerable === undefined ? false : _ref3$enumerable,
-            _ref3$configurable = _ref3.configurable,
-            configurable = _ref3$configurable === undefined ? true : _ref3$configurable,
-            rest = objectWithoutProperties(_ref3, ['value', 'enumerable', 'configurable']);
+    return function (_ref2) {
+        var value = _ref2.value,
+            _ref2$enumerable = _ref2.enumerable,
+            enumerable = _ref2$enumerable === undefined ? false : _ref2$enumerable,
+            _ref2$configurable = _ref2.configurable,
+            configurable = _ref2$configurable === undefined ? true : _ref2$configurable,
+            rest = objectWithoutProperties(_ref2, ['value', 'enumerable', 'configurable']);
         return function (target) {
             Object.defineProperty(target, key, _extends({
                 value: value,
