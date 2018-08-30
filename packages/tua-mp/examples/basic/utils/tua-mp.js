@@ -450,7 +450,7 @@ var getPropertiesFromProps = function getPropertiesFromProps(props) {
     }, {});
 };
 
-var hackSetData$$1 = function hackSetData$$1(vm) {
+var hackSetData = function hackSetData(vm) {
     var originalSetData = vm.setData;
 
     Object.defineProperties(vm, {
@@ -471,7 +471,7 @@ var hackSetData$$1 = function hackSetData$$1(vm) {
     });
 };
 
-var version = "0.7.3";
+var version = "0.8.0";
 
 /**
  * 根据 vm 生成 key
@@ -1138,7 +1138,7 @@ var TuaComp = function TuaComp(_ref) {
             triggerImmediateWatch(this, watch);
 
             // hack 原生 setData
-            hackSetData$$1(this);
+            hackSetData(this);
 
             rest.attached && rest.attached.apply(this, options);
         },
@@ -1211,7 +1211,7 @@ var TuaPage = function TuaPage(_ref) {
             triggerImmediateWatch(this, watch);
 
             // hack 原生 setData
-            hackSetData$$1(this);
+            hackSetData(this);
 
             rest.onLoad && rest.onLoad.apply(this, options);
             rest.created && rest.created.apply(this, options);

@@ -11,7 +11,7 @@ TuaComp({
             type: String,
             // 并没有什么用，因为小程序组件没这概念
             required: true,
-            // 强行让含 msg 的内容告警
+            // 强行让不含 msg 的内容告警
             validator: val => val.indexOf('msg') !== -1,
         }
     },
@@ -26,19 +26,19 @@ TuaComp({
     },
 
     created () {
-        console.log('created')
+        console.log('[view-button]: created')
     },
 
     mounted () {
-        console.log('mounted')
+        console.log('[view-button]: mounted')
     },
 
     beforeUpdate () {
-        console.log('beforeUpdate')
+        console.log('[view-button]: beforeUpdate')
     },
 
     updated () {
-        console.log('updated')
+        console.log('[view-button]: updated')
     },
 
     /**

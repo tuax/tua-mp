@@ -1,7 +1,7 @@
 import {
     isFn,
     setObjByPath,
-} from './index'
+} from './basic'
 
 export const hackSetData = (vm) => {
     const originalSetData = vm.setData

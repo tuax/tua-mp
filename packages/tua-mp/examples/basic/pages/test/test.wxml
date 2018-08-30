@@ -1,5 +1,5 @@
 <!-- text.wxml -->
-<view class="container" catchtap="gotoLogs">
+<view class="container">
     <view-button
         methodContent="this.msg += n++"
         catch:onTap="tapMsg"
@@ -11,6 +11,13 @@
     <button type="primary" size="mini" catchtap="tapAB">
         this.a.b += n++
     </button>
+
+    <!-- 这里由于 methodContent 里不含 msg 所以控制台会告警 -->
+    <!-- 说明自定义组件中的 validator 生效了~ -->
+    <view-button
+        methodContent="this.setData({ 'a.b': this.a.b + n++ })"
+        catch:onTap="tapSetDataAB"
+    />
 
     <view>arr: {{ arr }}</view>
     <button type="primary" size="mini" catchtap="tapArr">
@@ -37,17 +44,18 @@
 
     <view>------ computed ------</view>
     <view>g: {{ g }}</view>
-    <view>count: {{ count }}</view>
-    <view>countPlus: {{ countPlus }}</view>
     <view>reversedG: {{ reversedG }}</view>
     <button type="primary" size="mini" catchtap="tapReverseG">
         this.g = this.reversedG
     </button>
-    <button type="primary" size="mini" catchtap="tapSetCountPlus">
-        this.countPlus = 101
-    </button>
     <button type="primary" size="mini" catchtap="tapSetReversedG">
         this.reversedG = 229
+    </button>
+
+    <view>count: {{ count }}</view>
+    <view>countPlus: {{ countPlus }}</view>
+    <button type="primary" size="mini" catchtap="tapSetCountPlus">
+        this.countPlus += 1
     </button>
 
     <view>a.b: {{ a.b }}</view>

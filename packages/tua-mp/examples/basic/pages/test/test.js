@@ -9,7 +9,7 @@ import {
 
 let n = 0
 
-const watchLog = (prefix) => (newVal, oldVal) => console.log(`${prefix}: ${oldVal} -> ${newVal}`)
+const watchLog = (prefix) => (newVal, oldVal) => console.log(`[WATCH]: ${prefix}: ${oldVal} -> ${newVal}`)
 
 TuaPage({
     data () {
@@ -72,13 +72,13 @@ TuaPage({
     // 在 setData 前调用
     beforeUpdate () {
         console.log('beforeUpdate')
-        this.stringifyLog(this.data)
+        // this.stringifyLog(this.data)
     },
 
     // 在 setData 第二个参数中调用（渲染完毕的回调）
     updated () {
         console.log('updated')
-        this.stringifyLog(this.data)
+        // this.stringifyLog(this.data)
     },
 
     computed: {
@@ -92,21 +92,17 @@ TuaPage({
             return this.g + ' + ' + this.reversedG
         },
         countPlus: {
-            get: function () {
-                return this.count + 1
-            },
-            set: function (v) {
+            get: vm => vm.count + 1,
+            set (v) {
                 this.count = v - 1
             },
         },
     },
 
     watch: {
-        msg (newVal, oldVal) {
-            console.log(`msg: ${oldVal} -> ${newVal}`)
-        },
+        msg: watchLog('msg'),
         'a.b' (newVal, oldVal) {
-            console.log(`a.b: ${oldVal} -> ${newVal}`)
+            console.log(`[WATCH]: a.b: ${oldVal} -> ${newVal}`)
             setTimeout(() => {
                 this.msg = this.reverseStr(this.msg)
             }, 1000)
@@ -121,9 +117,7 @@ TuaPage({
             // 直接填写 methods 名称
             handler: 'logFromMethods',
         },
-        'gAndAB' (newVal, oldVal) {
-            console.log(`gAndAB: ${oldVal} -> ${newVal}`)
-        },
+        'gAndAB': watchLog('gAndAB'),
         // deep
         arr: [
             watchLog('arr'),
@@ -148,6 +142,9 @@ TuaPage({
         tapAB () {
             this.a.b += n++
         },
+        tapSetDataAB () {
+            this.setData({ 'a.b': this.a.b + n++ })
+        },
         tapArr () {
             this.arr.push(n++)
         },
@@ -169,14 +166,11 @@ TuaPage({
         unshiftNested () {
             this.arr.unshift({ c: { d: 'hey' } })
         },
-        gotoLogs () {
-            wx.navigateTo({ url: '/pages/logs/logs' })
-        },
         tapSetCountPlus () {
-            this.countPlus = 101
+            this.countPlus += 1
         },
         tapSetReversedG () {
-            this.reversedG = 229
+            this.reversedG = 'whatever value'
         },
     },
 })
