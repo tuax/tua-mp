@@ -92,12 +92,16 @@ export default class VmStatus {
                 const oldState = this.oldStateByVM[vmKey]
                 const getWatchFnArr = getWatchFnArrByVm(vm)
 
+                const setData = vm.__setData__
+                    ? vm.__setData__
+                    : vm.setData
+
                 vm.beforeUpdate && vm.beforeUpdate()
 
                 // 更新数据
                 vm.updated
-                    ? vm.setData(newState, vm.updated)
-                    : vm.setData(newState)
+                    ? setData.call(vm, newState, vm.updated)
+                    : setData.call(vm, newState)
 
                 // 触发 watch
                 Object.keys(newState)

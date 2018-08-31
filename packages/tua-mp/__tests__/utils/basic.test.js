@@ -85,7 +85,7 @@ test('setObjByPath', () => {
     const obj = {}
     setObjByPath({ obj, path: 'a.b.c', val: 1 })
     setObjByPath({ obj, path: 'a.b.d', val: 2 })
-    setObjByPath({ obj, path: 'arr[0].b.c', val: 3 })
+    setObjByPath({ obj, path: 'arr[0].b.c', val: 3, isCheckDef: true })
 
     expect(obj.a.b.c).toEqual(1)
     expect(obj.a.b.d).toEqual(2)

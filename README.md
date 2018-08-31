@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-    <a href="https://circleci.com/gh/tuateam/tua-mp/tree/master"><img src="https://img.shields.io/circleci/project/tuateam/tua-mp/master.svg" alt="Build Status"></a>
+    <a href="https://circleci.com/gh/tuateam/tua-mp/tree/master"><img src="https://img.shields.io/circleci/project/github/tuateam/tua-mp/master.svg" alt="Build Status"></a>
     <a href="https://codecov.io/github/tuateam/tua-mp?branch=master"><img src="https://img.shields.io/codecov/c/github/tuateam/tua-mp/master.svg" alt="Coverage Status"></a>
     <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/v/tua-mp.svg" alt="Version"></a>
     <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/l/tua-mp.svg" alt="License"></a>
@@ -28,7 +28,7 @@
 ## 1.1.最基础的使用方式 -- [examples/basic/](https://github.com/tuateam/tua-mp/tree/master/packages/tua-mp/examples/basic)
 下载 [https://github.com/tuateam/tua-mp/blob/master/packages/tua-mp/examples/basic/utils/tua-mp.js](https://github.com/tuateam/tua-mp/blob/master/packages/tua-mp/examples/basic/utils/tua-mp.js) 文件到你的小程序项目中，例如保存为 `utils/tua-mp.js`。
 
-代码片段地址为：**wechatide://minicode/JzXSn8mb78n8**
+代码片段地址为：**wechatide://minicode/2n17t5mU752Z**
 
 > 可以尝试复制以上片段地址到浏览器地址栏中打开
 

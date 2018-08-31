@@ -81,5 +81,10 @@
     },
     "engines": {
         "node": ">=8"
+    },
+    "devDependencies": {
+        "codecov": "^3.0.4",
+        "cross-env": "^5.2.0",
+        "jest": "^23.5.0"
     }
 }
