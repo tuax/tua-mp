@@ -14,7 +14,7 @@
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
         "start": "npm run watch",
-        "pub": "npm run build && npm run publish",
+        "pub": "npm run build && npm publish",
         "precommit": "npm run build && lint-staged"
     },
     "lint-staged": {
