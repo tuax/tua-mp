@@ -64,12 +64,12 @@ export const getValByPath = (obj) => (path) => pathStr2Arr(path)
  * @param {Object} obj 目标对象
  * @param {String} path 路径字符串
  * @param {any} val 目标值
- * @returns {Object} obj
+ * @param {Boolean} isCheckDef 是否检查属性已定义
  */
-export const setObjByPath = ({ obj, path, val }) => pathStr2Arr(path)
+export const setObjByPath = ({ obj, path, val, isCheckDef = false }) => pathStr2Arr(path)
     .reduce((acc, cur, idx, arr) => {
         // 在调用 setData 时，有的属性可能没定义
-        if (acc[cur] === undefined) {
+        if (isCheckDef && acc[cur] === undefined) {
             const parentStr = arr
                 .slice(0, idx)
                 .reduce(
@@ -80,7 +80,8 @@ export const setObjByPath = ({ obj, path, val }) => pathStr2Arr(path)
                 )
 
             error(
-                `Property "${cur}" is not found in "${parentStr}": Make sure that this property has initialized in the data option.`
+                `Property "${cur}" is not found in "${parentStr}": ` +
+                `Make sure that this property has initialized in the data option.`
             )
         }
 
@@ -89,7 +90,7 @@ export const setObjByPath = ({ obj, path, val }) => pathStr2Arr(path)
             return
         }
 
-        // 当前属性在目标对象上并不存在
+        // 当前中间属性在目标对象上并不存在
         if (!acc[cur]) {
             acc[cur] = /\d/.test(cur) ? [] : {}
         }
@@ -102,8 +103,9 @@ export const setObjByPath = ({ obj, path, val }) => pathStr2Arr(path)
  * 因为简单的相等检查，在不同的 vms 或 iframes 中运行时会判断错误
  */
 export const getType = (fn) => {
-    const match = fn &&
-        fn.toString().match(/^\s*function (\w+)/)
+    const match = fn && fn
+        .toString()
+        .match(/^\s*function (\w+)/)
 
     return match ? match[1] : ''
 }

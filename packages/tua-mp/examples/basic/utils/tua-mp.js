@@ -187,21 +187,23 @@ var getValByPath = function getValByPath(obj) {
  * @param {Object} obj 目标对象
  * @param {String} path 路径字符串
  * @param {any} val 目标值
- * @returns {Object} obj
+ * @param {Boolean} isCheckDef 是否检查属性已定义
  */
 var setObjByPath = function setObjByPath(_ref) {
     var obj = _ref.obj,
         path = _ref.path,
-        val = _ref.val;
+        val = _ref.val,
+        _ref$isCheckDef = _ref.isCheckDef,
+        isCheckDef = _ref$isCheckDef === undefined ? false : _ref$isCheckDef;
     return pathStr2Arr(path).reduce(function (acc, cur, idx, arr) {
         // 在调用 setData 时，有的属性可能没定义
-        if (acc[cur] === undefined) {
+        if (isCheckDef && acc[cur] === undefined) {
             var parentStr = arr.slice(0, idx).reduce(function (acc, cur) {
                 return (/\d/.test(cur) ? acc + '[' + cur + ']' : acc + '.' + cur
                 );
             }, 'this');
 
-            error('Property "' + cur + '" is not found in "' + parentStr + '": Make sure that this property has initialized in the data option.');
+            error('Property "' + cur + '" is not found in "' + parentStr + '": ' + 'Make sure that this property has initialized in the data option.');
         }
 
         if (idx === arr.length - 1) {
@@ -209,7 +211,7 @@ var setObjByPath = function setObjByPath(_ref) {
             return;
         }
 
-        // 当前属性在目标对象上并不存在
+        // 当前中间属性在目标对象上并不存在
         if (!acc[cur]) {
             acc[cur] = /\d/.test(cur) ? [] : {};
         }
@@ -471,11 +473,15 @@ var hackSetData = function hackSetData(vm) {
         'setData': {
             get: function get() {
                 return function (newVal, cb) {
-                    return Object.keys(newVal).forEach(function (pathStr) {
-                        setObjByPath({ obj: vm, path: pathStr, val: newVal[pathStr] });
+                    Object.keys(newVal).forEach(function (path) {
+                        // 针对 vm 上的属性赋值
+                        setObjByPath({ obj: vm, path: path, val: newVal[path], isCheckDef: true });
 
-                        isFn(cb) && Promise.resolve().then(cb);
+                        // 针对 vm.data 上的属性赋值
+                        setObjByPath({ obj: vm.data, path: path, val: newVal[path] });
                     });
+
+                    isFn(cb) && Promise.resolve().then(cb);
                 };
             }
         },

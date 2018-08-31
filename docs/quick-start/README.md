@@ -7,7 +7,7 @@
 官方指南假设你已了解关于 [微信小程序开发](https://developers.weixin.qq.com/miniprogram/dev/index.html) 和 [Vue.js](https://cn.vuejs.org/v2/guide/index.html) 的基础知识。
 :::
 
-尝试 `tua-mp` 最简单的方法是 [👉点击这里打开代码片段👈](wechatide://minicode/VOwCj3mt7K2C)，这个操作会打开你的**微信开发者工具**，并导入代码片段。（详情可参阅 [代码片段文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)）
+尝试 `tua-mp` 最简单的方法是 [👉点击这里打开代码片段👈](wechatide://minicode/2n17t5mU752Z)，这个操作会打开你的**微信开发者工具**，并导入代码片段。（详情可参阅 [代码片段文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/minicode.html)）
 
 如果还没有安装 【微信开发者工具】 [👉点击这里下载👈](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
 
@@ -38,7 +38,7 @@ TuaPage({
 
 我们已经成功创建了第一个 `tua-mp` 应用！看起来这跟渲染一个字符串模板非常类似，但是 `tua-mp` 在背后做了一点微小的工作。
 
-现在改变数据已经不需要调用 `setData`，所有数据都是响应式的。我们要怎么确认呢？[👉点击这里打开代码片段👈](wechatide://minicode/VOwCj3mt7K2C)，在控制台里修改 `global.msg` 的值，你将看到上例相应地更新。
+现在改变数据已经不需要调用 `setData`，所有数据都是响应式的。我们要怎么确认呢？[👉点击这里打开代码片段👈](wechatide://minicode/2n17t5mU752Z)，在控制台里修改 `global.msg` 的值，你将看到上例相应地更新。
 
 ```js
 // 在开发者工具的控制台中

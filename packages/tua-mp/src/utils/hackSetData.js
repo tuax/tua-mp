@@ -8,12 +8,18 @@ export const hackSetData = (vm) => {
 
     Object.defineProperties(vm, {
         'setData': {
-            get: () => (newVal, cb) => Object.keys(newVal)
-                .forEach((pathStr) => {
-                    setObjByPath({ obj: vm, path: pathStr, val: newVal[pathStr] })
+            get: () => (newVal, cb) => {
+                Object.keys(newVal)
+                    .forEach((path) => {
+                        // 针对 vm 上的属性赋值
+                        setObjByPath({ obj: vm, path, val: newVal[path], isCheckDef: true })
 
-                    isFn(cb) && Promise.resolve().then(cb)
-                }),
+                        // 针对 vm.data 上的属性赋值
+                        setObjByPath({ obj: vm.data, path, val: newVal[path] })
+                    })
+
+                isFn(cb) && Promise.resolve().then(cb)
+            },
         },
         '__setData__': { get: () => originalSetData },
     })
