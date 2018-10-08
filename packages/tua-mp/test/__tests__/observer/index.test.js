@@ -1,10 +1,10 @@
 import {
     getObserveDeep,
     defineReactive,
-} from '../../src/observer/'
+} from '../../../src/observer/'
 import {
     getAsyncSetData,
-} from '../../src/asyncSetData'
+} from '../../../src/asyncSetData'
 import { afterSetData } from '../utils'
 
 const watch = {

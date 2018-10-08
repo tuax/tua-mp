@@ -1,5 +1,5 @@
 import { afterSetData } from './utils'
-import { TuaComp, TuaPage } from '../src'
+import { TuaComp, TuaPage } from '../../src'
 
 describe('TuaComp', () => {
     afterEach(() => {})

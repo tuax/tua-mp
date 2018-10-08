@@ -1,9 +1,9 @@
 import {
     bindData,
     bindComputed,
-} from '../src/init'
-import { getObserveDeep } from '../src/observer/'
-import { getAsyncSetData } from '../src/asyncSetData'
+} from '../../src/init'
+import { getObserveDeep } from '../../src/observer/'
+import { getAsyncSetData } from '../../src/asyncSetData'
 import { afterSetData } from './utils'
 
 const watch = {

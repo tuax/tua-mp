@@ -1,4 +1,4 @@
-import Dep from '../../src/observer/dep'
+import Dep from '../../../src/observer/dep'
 
 describe('Dep', () => {
     let dep

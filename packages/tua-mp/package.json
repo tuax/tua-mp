@@ -10,7 +10,7 @@
         "cov": "open coverage/lcov-report/index.html",
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
-        "lint": "eslint --fix --ext .js src/",
+        "lint": "eslint --fix src/ test/",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
         "start": "npm run watch",
@@ -18,7 +18,7 @@
         "precommit": "npm run build && lint-staged"
     },
     "lint-staged": {
-        "src/**/*.{js,vue}": [
+        "{src,test}/**/*.{js,vue}": [
             "npm run lint",
             "git add"
         ]
@@ -27,21 +27,18 @@
         "bail": true,
         "clearMocks": true,
         "setupFiles": [
-            "./__mocks__/wxMock.js"
+            "./test/__mocks__/wxMock.js"
         ],
         "transform": {
             "^.+\\.js$": "babel-jest"
         },
-        "testPathIgnorePatterns": [
-            "./__tests__/utils.js",
-            "./examples/"
-        ],
         "collectCoverage": true,
-        "coveragePathIgnorePatterns": [
-            "./package.json",
-            "./src/utils/index.js",
-            "./__tests__/utils.js",
-            "./__mocks__/wxMock.js"
+        "collectCoverageFrom": [
+            "src/**"
+        ],
+        "testPathIgnorePatterns": [
+            "./examples/",
+            "./test/__tests__/utils.js"
         ]
     },
     "eslintIgnore": [

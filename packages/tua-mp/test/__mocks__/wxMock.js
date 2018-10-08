@@ -1,5 +1,5 @@
 import { noop } from '../__tests__/utils'
-import { isFn } from '../src/utils'
+import { isFn } from '../../src/utils'
 
 let wId = 0
 let nId = 0

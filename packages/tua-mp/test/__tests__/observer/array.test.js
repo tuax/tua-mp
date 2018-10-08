@@ -1,14 +1,14 @@
 import {
     getObserveDeep,
-} from '../../src/observer/'
+} from '../../../src/observer/'
 import {
     getAsyncSetData,
-} from '../../src/asyncSetData'
-import { __TUA_PATH__ } from '../../src/constants'
+} from '../../../src/asyncSetData'
+import { __TUA_PATH__ } from '../../../src/constants'
 import {
     getArrayMethods,
     patchMethods2Array,
-} from '../../src/observer/array'
+} from '../../../src/observer/array'
 import { afterSetData } from '../utils'
 
 const watch = {
@@ -52,7 +52,9 @@ describe('patch methods to array', () => {
         const path = 'arr'
         arr[__TUA_PATH__] = path
         Object.setPrototypeOf = null
+        /* eslint-disable no-proto */
         arr.__proto__ = null
+        /* eslint-enable no-proto */
         arr.map = [].map
 
         patchMethods2Array({ arr, arrayMethods })
@@ -131,7 +133,6 @@ describe('patch methods to array', () => {
     test('observe array with simple value', () => {
         const arr = []
         const path = 'arr'
-        const newVal = 'this is new a'
         arr[__TUA_PATH__] = path
 
         patchMethods2Array({ arr, arrayMethods })

@@ -1,4 +1,4 @@
-import { TuaPage } from '../src'
+import { TuaPage } from '../../src/'
 import { afterSetData } from './utils'
 
 const getTestForReservedKeys = (type) => {

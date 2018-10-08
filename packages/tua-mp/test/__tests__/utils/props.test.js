@@ -1,7 +1,7 @@
 import {
     assertProp,
     getPropertiesFromProps,
-} from '../../src/utils'
+} from '../../../src/utils'
 
 const stringify = JSON.stringify.bind(JSON)
 

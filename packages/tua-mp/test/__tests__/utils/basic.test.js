@@ -7,7 +7,7 @@ import {
     pathStr2Arr,
     setObjByPath,
     isPlainObject,
-} from '../../src/utils'
+} from '../../../src/utils'
 
 test('isFn', () => {
     expect(isFn(() => {})).toBe(true)
@@ -34,7 +34,7 @@ test('proxyData', () => {
     const obj1 = {
         a: [0],
         b: 'b',
-        c: { d: 'd' }
+        c: { d: 'd' },
     }
     const obj2 = {}
     proxyData(obj1, obj2)
@@ -59,7 +59,7 @@ test('assertType', () => {
         .toEqual({ expectedType: 'Object', valid: true })
     expect(assertType([], Array))
         .toEqual({ expectedType: 'Array', valid: true })
-    expect(assertType(new Number(), Number))
+    expect(assertType(Number(), Number))
         .toEqual({ expectedType: 'Number', valid: true })
     expect(assertType(new Foo(), Foo))
         .toEqual({ expectedType: 'Foo', valid: true })

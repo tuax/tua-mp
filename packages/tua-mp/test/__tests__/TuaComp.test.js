@@ -1,17 +1,17 @@
 import { afterSetData } from './utils'
-import { TuaComp } from '../src'
+import { TuaComp } from '../../src/'
 
 const event = {
-    "currentTarget": {
-        "id": "",
-        "offsetLeft": 0,
-        "offsetTop": 0,
-        "dataset": { "index": 0 }
+    'currentTarget': {
+        'id': '',
+        'offsetLeft': 0,
+        'offsetTop': 0,
+        'dataset': { 'index': 0 },
     },
-    "detail": { "value": [] }
+    'detail': { 'value': [] },
 }
 
-const eventVal = { "value": [], "index": 0 }
+const eventVal = { 'value': [], 'index': 0 }
 
 const getTestForReservedKeys = (type) => {
     expect(() => type({ data: { $data: 'young' } })).toThrow()
