@@ -54,13 +54,13 @@ test('base', () => {
     })
 
     expect(vendors).toEqual({
-        test: /[\\\/]node_modules[\\\/]/,
+        test: /[\\/]node_modules[\\/]/,
         name: 'chunks/vendors',
         chunks: 'all',
     })
 
     expect(scripts).toEqual({
-        test: /[\\\/]src[\\\/](apis|scripts)[\\\/]/,
+        test: /[\\/]src[\\/](apis|scripts)[\\/]/,
         name: 'chunks/scripts',
         chunks: 'all',
         enforce: true,

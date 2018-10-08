@@ -7,7 +7,7 @@ const rules = [
         msg: (e, match) => (
             `Failed to resolve loader: ${match[1]}\n` +
             `You may need to install it.`
-        )
+        ),
     },
 ]
 
@@ -23,8 +23,8 @@ const transformer = (error) => {
                 return Object.assign({}, error, {
                 // type is necessary to avoid being printed as defualt error
                 // by friendly-error-webpack-plugin
-                type,
-                shortMessage: msg(error, match)
+                    type,
+                    shortMessage: msg(error, match),
                 })
             }
         }
@@ -33,7 +33,7 @@ const transformer = (error) => {
         if (!error.message) {
             return Object.assign({}, error, {
                 type: 'unknown-webpack-error',
-                shortMessage: message
+                shortMessage: message,
             })
         }
     }

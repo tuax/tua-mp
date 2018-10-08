@@ -16,7 +16,7 @@ test('dev', () => {
         watch: true,
         mode: 'development',
         stats: 'none',
-        devtool: 'source-map'
+        devtool: 'source-map',
     })
 
     process.env.NODE_ENV = preENV

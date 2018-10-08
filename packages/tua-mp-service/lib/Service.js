@@ -53,7 +53,7 @@ module.exports = class Service {
 
                 if (stats.hasErrors()) {
                     error(`Build failed with errors.`)
-                    reject()
+                    reject(stats.toJson().errors)
                 }
 
                 resolve(stats.toString(config.stats))
