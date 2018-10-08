@@ -1,6 +1,6 @@
 {
     "name": "@tua-mp/cli",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "tua-mp 命令行工具",
     "bin": {
         "tuamp": "bin/tuamp.js"
@@ -28,8 +28,8 @@
         "bail": true,
         "collectCoverage": true,
         "testEnvironment": "node",
-        "coveragePathIgnorePatterns": [
-            "package.json"
+        "collectCoverageFrom": [
+            "lib/**"
         ]
     },
     "eslintIgnore": [

@@ -33,7 +33,7 @@ $ tuamp init <template-name> <project-name>
 ```
 
 ### 2.2.添加接口命令 `add:api`
-这个命令将添加一个新文件 `<name>.js` 到 `src/apis/` 下，并且自动添加到 `src/apis/index.js` 中导出。
+这个命令将添加一个新文件 `<name>.js` 到 `src/apis/` 下，并且如果不存在 `src/apis/index.js` 则会自动创建。
 
 ```bash
 # 添加小程序端 api
