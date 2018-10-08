@@ -1,7 +1,7 @@
 const fs = require('fs')
 const { expectPrompts } = require('inquirer')
 
-const addApi = require('../lib/addApi')
+const addApi = require('../../lib/addApi')
 
 jest.mock('fs')
 jest.mock('inquirer')

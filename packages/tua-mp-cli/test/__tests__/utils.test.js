@@ -8,7 +8,7 @@ const {
     camelCaseToHyphenCase,
     hyphenCaseToCamelCase,
     hyphenCaseToUpperCamelCase,
-} = require('../lib/utils')
+} = require('../../lib/utils')
 
 jest.mock('fs')
 jest.mock('inquirer')
@@ -22,7 +22,7 @@ describe('fs', () => {
     })
 })
 
-describe('simple utils' , () => {
+describe('simple utils', () => {
     test('upperFirst', () => {
         expect(upperFirst('')).toBe('')
         expect(upperFirst('aaa')).toBe('Aaa')

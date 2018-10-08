@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { expectPrompts } = require('inquirer')
 
-const addComp = require('../lib/addComp')
+const addComp = require('../../lib/addComp')
 
 jest.mock('fs')
 jest.mock('inquirer')
