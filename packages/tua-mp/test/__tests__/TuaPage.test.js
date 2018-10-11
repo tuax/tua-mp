@@ -281,7 +281,9 @@ describe('TuaPage', () => {
     })
 
     test('use it just like Vue', (done) => {
-        const watchFn = jest.fn()
+        const watchFn = jest.fn(function () {
+            this.nestedData.steve = 'from watch'
+        })
         const vm = TuaPage({
             data () {
                 return {

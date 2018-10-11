@@ -1,5 +1,5 @@
 import { noop } from '../__tests__/utils'
-import { isFn } from '../../src/utils'
+import { isFn, setObjByPath } from '../../src/utils'
 
 let wId = 0
 let nId = 0
@@ -11,10 +11,20 @@ global.Page = ({ data, ...rest }) => {
     const page = {
         data,
         setData: jest.fn(function (newData, cb) {
-            this.data = {
-                ...this.data,
-                ...newData,
-            }
+            newData = JSON.parse(JSON.stringify(newData))
+            this.data = { ...this.data }
+
+            Object.keys(newData).forEach((path) => {
+                if (/\d|\./.test(path)) {
+                    setObjByPath({
+                        obj: this.data,
+                        path,
+                        val: newData[path],
+                    })
+                } else {
+                    this.data[path] = newData[path]
+                }
+            })
 
             cb && cb()
         }),
@@ -53,10 +63,20 @@ global.Component = ({ data, properties, methods, ...rest }) => {
         data: { ...data, ...props },
         properties,
         setData: jest.fn(function (newData, cb) {
-            this.data = {
-                ...this.data,
-                ...newData,
-            }
+            newData = JSON.parse(JSON.stringify(newData))
+            this.data = { ...this.data }
+
+            Object.keys(newData).forEach((path) => {
+                if (/\d|\./.test(path)) {
+                    setObjByPath({
+                        obj: this.data,
+                        path,
+                        val: newData[path],
+                    })
+                } else {
+                    this.data[path] = newData[path]
+                }
+            })
 
             cb && cb()
         }),

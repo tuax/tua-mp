@@ -1,6 +1,6 @@
 {
     "name": "tua-mp",
-    "version": "0.8.0",
+    "version": "0.8.1",
     "description": "A progressive miniprogram framework for coding like Vue",
     "main": "examples/basic/utils/tua-mp.js",
     "files": [
@@ -64,10 +64,10 @@
     },
     "homepage": "https://github.com/tuateam/tua-mp#readme",
     "devDependencies": {
-        "codecov": "^3.0.4",
+        "codecov": "^3.1.0",
         "cross-env": "^5.2.0",
-        "eslint": "^5.4.0",
-        "jest": "^23.5.0",
-        "rollup": "^0.64.1"
+        "eslint": "^5.6.1",
+        "jest": "^23.6.0",
+        "rollup": "^0.66.6"
     }
 }

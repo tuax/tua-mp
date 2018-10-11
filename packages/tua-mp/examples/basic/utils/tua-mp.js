@@ -491,7 +491,7 @@ var hackSetData = function hackSetData(vm) {
     });
 };
 
-var version = "0.8.0";
+var version = "0.8.1";
 
 /**
  * 根据 vm 生成 key
@@ -595,6 +595,12 @@ var VmStatus = function () {
 
             var vmKeys = Object.keys(this.newStateByVM);
 
+            var newStateByVM = this.newStateByVM;
+            var oldStateByVM = this.oldStateByVM;
+
+            this.newStateByVM = Object.create(null);
+            this.oldStateByVM = Object.create(null);
+
             vmKeys.filter(function (vmKey) {
                 return _this.VM_MAP[vmKey];
             }).forEach(function (vmKey) {
@@ -603,8 +609,8 @@ var VmStatus = function () {
                     watch = _VM_MAP$vmKey.watch,
                     deepWatch = _VM_MAP$vmKey.deepWatch;
 
-                var newState = _this.newStateByVM[vmKey];
-                var oldState = _this.oldStateByVM[vmKey];
+                var newState = newStateByVM[vmKey];
+                var oldState = oldStateByVM[vmKey];
                 var getWatchFnArr = getWatchFnArrByVm(vm);
 
                 var setData = vm.__setData__ ? vm.__setData__ : vm.setData;
@@ -646,9 +652,6 @@ var VmStatus = function () {
                     });
                 });
             });
-
-            this.newStateByVM = Object.create(null);
-            this.oldStateByVM = Object.create(null);
         }
     }, {
         key: 'deleteVm',

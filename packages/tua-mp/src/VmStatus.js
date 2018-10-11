@@ -84,12 +84,18 @@ export default class VmStatus {
     flushState () {
         const vmKeys = Object.keys(this.newStateByVM)
 
+        const newStateByVM = this.newStateByVM
+        const oldStateByVM = this.oldStateByVM
+
+        this.newStateByVM = Object.create(null)
+        this.oldStateByVM = Object.create(null)
+
         vmKeys
             .filter(vmKey => this.VM_MAP[vmKey])
             .forEach((vmKey) => {
                 const { vm, watch, deepWatch } = this.VM_MAP[vmKey]
-                const newState = this.newStateByVM[vmKey]
-                const oldState = this.oldStateByVM[vmKey]
+                const newState = newStateByVM[vmKey]
+                const oldState = oldStateByVM[vmKey]
                 const getWatchFnArr = getWatchFnArrByVm(vm)
 
                 const setData = vm.__setData__
@@ -131,9 +137,6 @@ export default class VmStatus {
                             })
                     })
             })
-
-        this.newStateByVM = Object.create(null)
-        this.oldStateByVM = Object.create(null)
     }
 
     deleteVm (vm) {
