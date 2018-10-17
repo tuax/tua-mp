@@ -6,8 +6,10 @@ const {
     info,
     exists,
     copyFile,
+    appendFile,
     catchAndThrow,
     compileTmplToTarget,
+    hyphenCaseToCamelCase,
 } = require('./utils')
 
 // TODO: 读取 .tuarc 和 tua-mp.config.js 中的配置
@@ -24,6 +26,7 @@ const addApi = (name) => {
     }
 
     // 小驼峰的名称
+    const ccName = hyphenCaseToCamelCase(name)
     const outputStr = `小程序 api -> ${name}.js`
     const treeLog = treeify.asTree({
         'src/apis': {
@@ -58,6 +61,9 @@ const addApi = (name) => {
         path.join(targetDir, `${name}.js`)
     const targetIndex = path.join(targetDir, `index.js`)
 
+    // 写入 index.js 中的代码
+    const exportStr = `export const ${ccName}Api = tuaApi.getApi(require('./${name}').default)\n`
+
     // 编译模板
     const compileParams = {
         src: srcApi,
@@ -75,10 +81,12 @@ const addApi = (name) => {
     return Promise.all(tasks)
         .then(([{ isCancel, isCover }]) => isCancel
             ? info(`取消添加${outputStr}`)
-            : log(
-                `成功${isCover ? '覆盖' : '添加'}${outputStr}\n` +
-                treeLog
-            )
+            : isCover
+                // 已有该 api，不重复添加 到 api/index.js 中
+                ? log(`成功覆盖${outputStr}\n${treeLog}`)
+                // 将该 api 添加到 apis/index.js 中
+                : appendFile(targetIndex, exportStr)
+                    .then(() => log(`成功添加${outputStr}\n${treeLog}`))
         )
         .catch(catchAndThrow)
 }

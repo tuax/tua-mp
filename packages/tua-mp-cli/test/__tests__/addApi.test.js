@@ -9,7 +9,7 @@ jest.mock('inquirer')
 
 describe('add:api', () => {
     const src = '/test-api-src'
-    const dir = '/test-api-error'
+    const dir = '/test-api-dir'
     const dist = '/test-api-dist'
     const srcApi = path.join(src, 'api.js')
     const srcIdx = path.join(src, 'index.js')
@@ -43,6 +43,7 @@ describe('add:api', () => {
 
     test('new', async () => {
         const name = 'test-new'
+        const ccName = 'testNew'
         const content = '{{ name }}'
 
         fs.writeFileSync(srcApi, content)
@@ -56,7 +57,10 @@ describe('add:api', () => {
             .then(buffers => buffers.map(b => b.toString()))
 
         expect(result[0]).toEqual(name)
-        expect(result[1]).toEqual(content)
+        expect(result[1]).toEqual(
+            `${content}` +
+            `export const ${ccName}Api = tuaApi.getApi(require('./${name}').default)\n`
+        )
     })
 
     test('cover', async () => {

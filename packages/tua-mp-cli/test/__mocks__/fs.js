@@ -7,6 +7,10 @@ fs.mkdir = (dir, cb) => {
     cb()
     fs.mkdirSync(dir)
 }
-fs.appendFile = (_, __, cb) => cb()
+fs.appendFile = (src, str, cb) => {
+    const content = fs.readFileSync(src).toString() + str
+    fs.writeFileSync(src, content)
+    cb()
+}
 
 module.exports = fs
