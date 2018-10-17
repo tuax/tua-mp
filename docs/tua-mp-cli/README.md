@@ -32,19 +32,19 @@ $ yarn global add @tua-mp/cli
 $ tuamp init <template-name> <project-name>
 ```
 
-### 2.2.添加接口命令 `add:api`
+### 2.2.添加接口命令 `add api`
 这个命令将添加一个新文件 `<name>.js` 到 `src/apis/` 下，并且如果不存在 `src/apis/index.js` 则会自动创建。
 
 ```bash
 # 添加小程序端 api
-$ tuamp add:api <name>
+$ tuamp add api <name>
 ```
 
-<img :src="$withBase('/cli/add-api.gif')" alt="add:api">
+<img :src="$withBase('/cli/add-api.gif')" alt="add api">
 
 该命令会自动在 `src/apis/index.js` 中导出该 `api`，例如 `<name>` 为 `foo-bar`，那么导出的接口名称为 `fooBarApi`（已转成小驼峰，并在结尾加上 `Api`）。
 
-### 2.3.添加页面命令 `add:page`
+### 2.3.添加页面命令 `add page`
 这个命令将添加一个新文件夹 `<name>` 到 `src/pages/` 下，并且自动添加 `pages/<name>/<name>` 到 `src/app/app.json` 中。
 
 并且如果页面以**连字符**命名，那么相关的 `.vue` 文件会被转成**大驼峰**风格。
@@ -59,14 +59,14 @@ $ tuamp add:api <name>
 
 ```bash
 # 添加小程序端 page
-$ tuamp add:page <name>
+$ tuamp add page <name>
 ```
 
-<img :src="$withBase('/cli/add-page.gif')" alt="add:page">
+<img :src="$withBase('/cli/add-page.gif')" alt="add page">
 
 该命令会自动读取 `src/app/app.json` 中的 `pages` 字段，并将新页面加入。
 
-### 2.4.添加页面命令 `add:comp`
+### 2.4.添加页面命令 `add comp`
 由于组件一般分为两种：
 
 * 全局组件（位于 `src/comps/` 下）
@@ -86,17 +86,17 @@ $ tuamp add:page <name>
 
 ```bash
 # 全局添加小程序端 comp(-g, --global)
-$ tuamp add:comp -g <name>
+$ tuamp add comp <name> -g
 ```
 
-<img :src="$withBase('/cli/add-comp-global.gif')" alt="add:comp -g">
+<img :src="$withBase('/cli/add-comp-global.gif')" alt="add comp -g">
 
 ```
 # 局部添加小程序端 comp
-$ tuamp add:comp <name>
+$ tuamp add comp <name>
 ```
 
-<img :src="$withBase('/cli/add-comp-local.gif')" alt="add:comp">
+<img :src="$withBase('/cli/add-comp-local.gif')" alt="add comp">
 
 ::: tip
 注意使用 `<Tab>` 键补全路径，输入不存在的文件夹时会自动创建。
