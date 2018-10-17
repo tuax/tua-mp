@@ -33,7 +33,7 @@ module.exports = {
                 text: '生态系统',
                 items: [
                     { text: '本地存储', link: '/tua-storage/' },
-                    // { text: 'api 配置（待开源）', link: '/tua-api-wx' },
+                    { text: 'api 生成工具', link: 'https://tuateam.github.io/tua-api/' },
                 ],
             },
         ],

@@ -5,6 +5,7 @@ const {
     log,
     info,
     exists,
+    copyFile,
     appendFile,
     catchAndThrow,
     compileTmplToTarget,
@@ -43,15 +44,16 @@ const addApi = (name) => {
     // 检查父文件夹是否存在
     if (!exists(targetDir)) {
         return catchAndThrow(
-            `请检查以下文件夹是否存在!\n` +
-            `\t- src/apis/\n`
+            `请检查以下文件夹是否存在!\n\t- src/apis/\n`
         )
     }
 
     // src
-    const templateSrc = process.env.TUA_CLI_TEST_SRC ||
+    const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        path.resolve(__dirname, '../templates/api.js')
+        path.resolve(__dirname, '../templates/api/')
+    const srcIdx = path.join(templateDir, 'index.js')
+    const srcApi = path.join(templateDir, 'api.js')
 
     // dist
     const targetPath = process.env.TUA_CLI_TEST_DIST ||
@@ -60,30 +62,31 @@ const addApi = (name) => {
     const targetIndex = path.join(targetDir, `index.js`)
 
     // 写入 index.js 中的代码
-    const exportStr = `export ${ccName}Api from './${name}'\n`
+    const exportStr = `export const ${ccName}Api = tuaApi.getApi(require('./${name}').default)\n`
 
     // 编译模板
     const compileParams = {
-        src: templateSrc,
+        src: srcApi,
         dist: targetPath,
         meta: { name },
     }
 
-    return compileTmplToTarget(compileParams)
-        .then(({ isCancel, isCover }) => isCancel
+    const tasks = [ compileTmplToTarget(compileParams) ]
+
+    // 复制 index.js
+    if (!exists(targetIndex)) {
+        tasks.push(copyFile(srcIdx, targetIndex))
+    }
+
+    return Promise.all(tasks)
+        .then(([{ isCancel, isCover }]) => isCancel
             ? info(`取消添加${outputStr}`)
             : isCover
                 // 已有该 api，不重复添加 到 api/index.js 中
-                ? log(
-                    `成功覆盖${outputStr}\n` +
-                    treeLog
-                )
+                ? log(`成功覆盖${outputStr}\n${treeLog}`)
                 // 将该 api 添加到 apis/index.js 中
                 : appendFile(targetIndex, exportStr)
-                    .then(() => log(
-                        `成功添加${outputStr}\n` +
-                        treeLog
-                    ))
+                    .then(() => log(`成功添加${outputStr}\n${treeLog}`))
         )
         .catch(catchAndThrow)
 }

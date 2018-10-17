@@ -1,6 +1,6 @@
 {
     "name": "tua-mp",
-    "version": "0.8.0",
+    "version": "0.8.1",
     "description": "A progressive miniprogram framework for coding like Vue",
     "main": "examples/basic/utils/tua-mp.js",
     "files": [
@@ -10,7 +10,7 @@
         "cov": "open coverage/lcov-report/index.html",
         "tdd": "cross-env NODE_ENV=test jest --watch",
         "test": "cross-env NODE_ENV=test jest && codecov",
-        "lint": "eslint --fix --ext .js src/",
+        "lint": "eslint --fix src/ test/",
         "build": "cross-env NODE_ENV=prod rollup -c",
         "watch": "cross-env NODE_ENV=prod rollup -c -w",
         "start": "npm run watch",
@@ -18,7 +18,7 @@
         "precommit": "npm run build && lint-staged"
     },
     "lint-staged": {
-        "src/**/*.{js,vue}": [
+        "{src,test}/**/*.{js,vue}": [
             "npm run lint",
             "git add"
         ]
@@ -27,21 +27,18 @@
         "bail": true,
         "clearMocks": true,
         "setupFiles": [
-            "./__mocks__/wxMock.js"
+            "./test/__mocks__/wxMock.js"
         ],
         "transform": {
             "^.+\\.js$": "babel-jest"
         },
-        "testPathIgnorePatterns": [
-            "./__tests__/utils.js",
-            "./examples/"
-        ],
         "collectCoverage": true,
-        "coveragePathIgnorePatterns": [
-            "./package.json",
-            "./src/utils/index.js",
-            "./__tests__/utils.js",
-            "./__mocks__/wxMock.js"
+        "collectCoverageFrom": [
+            "src/**"
+        ],
+        "testPathIgnorePatterns": [
+            "./examples/",
+            "./test/__tests__/utils.js"
         ]
     },
     "eslintIgnore": [
@@ -67,10 +64,10 @@
     },
     "homepage": "https://github.com/tuateam/tua-mp#readme",
     "devDependencies": {
-        "codecov": "^3.0.4",
+        "codecov": "^3.1.0",
         "cross-env": "^5.2.0",
-        "eslint": "^5.4.0",
-        "jest": "^23.5.0",
-        "rollup": "^0.64.1"
+        "eslint": "^5.6.1",
+        "jest": "^23.6.0",
+        "rollup": "^0.66.6"
     }
 }
