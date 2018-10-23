@@ -32,7 +32,7 @@ module.exports = {
             {
                 text: '生态系统',
                 items: [
-                    { text: '本地存储', link: '/tua-storage/' },
+                    { text: '本地存储', link: 'https://tuateam.github.io/tua-storage/' },
                     { text: 'api 生成工具', link: 'https://tuateam.github.io/tua-api/' },
                 ],
             },
@@ -53,6 +53,12 @@ module.exports = {
                     ],
                 },
             ],
+        },
+        serviceWorker: {
+            updatePopup: {
+               message: 'New content is available.',
+               buttonText: 'Refresh',
+            },
         },
     },
 }
