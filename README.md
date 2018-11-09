@@ -296,7 +296,7 @@ TuaPage({
 | @tua-mp/cli | <a href="https://tuateam.github.io/tua-mp/tua-mp-cli/"><img src="https://img.shields.io/npm/v/@tua-mp/cli.svg" alt="Version"></a> | 命令行工具
 | @tua-mp/service | <a href="https://tuateam.github.io/tua-mp/tua-mp-service/"><img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version"></a> | 项目构建工具
 | tua-api | <a href="https://tuateam.github.io/tua-api/"><img src="https://img.shields.io/npm/v/tua-api.svg" alt="Version"></a> | api 生成工具
-| tua-storage | <a href="https://tuateam.github.io/tua-mp/tua-storage/"><img src="https://img.shields.io/npm/v/tua-storage.svg" alt="Version"></a> | 通用存储层
+| tua-storage | <a href="https://tuateam.github.io/tua-storage/"><img src="https://img.shields.io/npm/v/tua-storage.svg" alt="Version"></a> | 通用存储层
 
 ## TODO
 详见 [issues](https://github.com/tuateam/tua-mp/issues)
