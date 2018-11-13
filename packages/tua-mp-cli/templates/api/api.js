@@ -37,6 +37,8 @@ export default {
          */
         {
             path: 'example-path',
+            // 自定义的新名称
+            name: 'examplePath',
             params: {},
         },
     ],
