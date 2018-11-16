@@ -293,10 +293,10 @@ TuaPage({
 
 | 项目 | 状态 | 介绍 |
 | --- | --- | --- |
-| @tua-mp/cli | <a href="https://tuateam.github.io/tua-mp/tua-mp-cli/"><img src="https://img.shields.io/npm/v/@tua-mp/cli.svg" alt="Version"></a> | 命令行工具
-| @tua-mp/service | <a href="https://tuateam.github.io/tua-mp/tua-mp-service/"><img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version"></a> | 项目构建工具
-| tua-api | <a href="https://tuateam.github.io/tua-api/"><img src="https://img.shields.io/npm/v/tua-api.svg" alt="Version"></a> | api 生成工具
-| tua-storage | <a href="https://tuateam.github.io/tua-storage/"><img src="https://img.shields.io/npm/v/tua-storage.svg" alt="Version"></a> | 通用存储层
+| <a href="https://tuateam.github.io/tua-mp/tua-mp-cli/">@tua-mp/cli</a> | <a href="https://tuateam.github.io/tua-mp/tua-mp-cli/"><img src="https://img.shields.io/npm/v/@tua-mp/cli.svg" alt="Version"></a> | <a href="https://tuateam.github.io/tua-mp/tua-mp-cli/">命令行工具</a>
+| <a href="https://tuateam.github.io/tua-mp/tua-mp-service/">@tua-mp/service</a> | <a href="https://tuateam.github.io/tua-mp/tua-mp-service/"><img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version"></a> | <a href="https://tuateam.github.io/tua-mp/tua-mp-service/">项目构建工具</a>
+| <a href="https://tuateam.github.io/tua-api/">tua-api</a> | <a href="https://tuateam.github.io/tua-api/"><img src="https://img.shields.io/npm/v/tua-api.svg" alt="Version"></a> | <a href="https://tuateam.github.io/tua-api/">api 生成工具</a>
+| <a href="https://tuateam.github.io/tua-storage/">tua-storage</a> | <a href="https://tuateam.github.io/tua-storage/"><img src="https://img.shields.io/npm/v/tua-storage.svg" alt="Version"></a> | <a href="https://tuateam.github.io/tua-storage/">通用存储层</a>
 
 ## TODO
 详见 [issues](https://github.com/tuateam/tua-mp/issues)
