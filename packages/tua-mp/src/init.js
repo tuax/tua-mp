@@ -1,13 +1,11 @@
 import {
     isFn,
-    warn,
+    logger,
     proxyData,
     getValByPath,
 } from './utils/index'
-import {
-    COMMON_PROP,
-} from './constants'
 import Dep from './observer/dep'
+import { COMMON_PROP } from './constants'
 
 /**
  * 遍历观察 vm.data 中的所有属性，并将其直接挂到 vm 上
@@ -82,7 +80,7 @@ export const bindComputed = (vm, computed, asyncSetData) => {
             },
             set (...options) {
                 if (typeof computed[key].set === 'undefined') {
-                    warn(`Computed property "${key}" was assigned to but it has no setter.`)
+                    logger.warn(`Computed property "${key}" was assigned to but it has no setter.`)
                 } else {
                     const setVal = computed[key].set.bind(vm)
                     setVal(...options)

@@ -271,6 +271,7 @@ describe('TuaPage', () => {
             },
             onUnload () {},
         })
+        vm.nestedData.young.young = { steve: 'steve' }
         vm.nestedArrayData[0].young.young = 'hey man'
 
         afterSetData(() => {

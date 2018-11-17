@@ -200,4 +200,20 @@ describe('TuaComp', () => {
         })
         expect(hour).toBe(vm.hour)
     })
+
+    // close #23
+    test('created/onLoad observer', () => {
+        const vm = TuaComp({
+            props: {
+                someProp: {
+                    type: String,
+                    default: 'default',
+                },
+            },
+        })
+        vm.$props.someProp.observer.call(vm, 'observer')
+
+        console.warn('vm.someProp', vm.someProp)
+        expect(vm.someProp).toBe('observer')
+    })
 })

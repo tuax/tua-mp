@@ -1,9 +1,9 @@
 import {
     isFn,
-    warn,
     toRawType,
     assertType,
 } from './basic'
+import { logger } from './logger'
 import { TYPES } from '../constants'
 
 /**
@@ -39,7 +39,7 @@ export const assertProp = ({ prop, name, value }) => {
     }
 
     if (!valid) {
-        warn(
+        logger.warn(
             `Invalid prop: type check failed for prop "${name}".` +
             ` Expected ${expectedTypes.join(', ')}` +
             `, got ${toRawType(value)}.`
@@ -58,15 +58,13 @@ export const assertProp = ({ prop, name, value }) => {
 export const getObserver = (name) => (prop) => {
     return function observer (value) {
         // 触发 setter
-        Promise.resolve().then(() => {
-            this[name] = value
-        })
+        this[name] = value
 
         const valid = assertProp({ prop, name, value })
         const { validator } = prop
 
         if (validator && !validator(value)) {
-            warn(`Invalid prop: custom validator check failed for prop "${name}".`)
+            logger.warn(`Invalid prop: custom validator check failed for prop "${name}".`)
             return false
         }
 

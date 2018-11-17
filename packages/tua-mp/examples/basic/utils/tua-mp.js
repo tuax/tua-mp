@@ -117,6 +117,30 @@ var __dep__ = '__dep__';
 // 被框架占用的关键字，在 data 和 computed 中如果使用这些关键字，将会抛出错误
 var reservedKeys = ['$data', '$emit', '$computed', __TUA_PATH__];
 
+/**
+ * 统一的日志输出函数，在测试环境时不输出
+ * @param {String} type 输出类型 log|warn|error
+ * @param {any} out 具体的输出内容
+ */
+var logByType = function logByType(type) {
+    return function () {
+        var _console;
+
+        for (var _len = arguments.length, out = Array(_len), _key = 0; _key < _len; _key++) {
+            out[_key] = arguments[_key];
+        }
+
+        /* istanbul ignore next */
+        (_console = console)[type].apply(_console, ['[TUA-API]:'].concat(out));
+    };
+};
+
+var logger = {
+    log: logByType('log'),
+    warn: logByType('warn'),
+    error: logByType('error')
+};
+
 var isFn = function isFn(fn) {
     return typeof fn === 'function';
 };
@@ -141,6 +165,9 @@ var isPlainObject = function isPlainObject(value) {
 var getPathByPrefix = function getPathByPrefix(prefix, key) {
     return prefix === '' ? key : prefix + '.' + key;
 };
+
+var jsonParse = JSON.parse.bind(JSON);
+var stringify = JSON.stringify.bind(JSON);
 
 /**
  * 将 source 上的属性代理到 target 上
@@ -203,7 +230,7 @@ var setObjByPath = function setObjByPath(_ref) {
                 );
             }, 'this');
 
-            error('Property "' + cur + '" is not found in "' + parentStr + '": ' + 'Make sure that this property has initialized in the data option.');
+            logger.error('Property "' + cur + '" is not found in "' + parentStr + '": ' + 'Make sure that this property has initialized in the data option.');
         }
 
         if (idx === arr.length - 1) {
@@ -257,28 +284,6 @@ var assertType = function assertType(value, type) {
 
     return { valid: valid, expectedType: expectedType };
 };
-
-/**
- * 统一的日志输出函数，在测试环境时不输出
- * @param {String} type 输出类型 log|warn|error
- * @param {any} out 输出的内容
- */
-var logByType = function logByType(type) {
-    return function () {
-        var _console;
-
-        for (var _len = arguments.length, out = Array(_len), _key = 0; _key < _len; _key++) {
-            out[_key] = arguments[_key];
-        }
-
-        /* istanbul ignore next */
-        (_console = console)[type].apply(_console, ['[TUA-MP]:'].concat(out));
-    };
-};
-
-var log = logByType('log');
-var warn = logByType('warn');
-var error = logByType('error');
 
 // reserved keys
 var isReservedKeys = function isReservedKeys(str) {
@@ -358,7 +363,7 @@ var assertProp = function assertProp(_ref) {
     }
 
     if (!valid) {
-        warn('Invalid prop: type check failed for prop "' + name + '".' + (' Expected ' + expectedTypes.join(', ')) + (', got ' + toRawType(value) + '.'));
+        logger.warn('Invalid prop: type check failed for prop "' + name + '".' + (' Expected ' + expectedTypes.join(', ')) + (', got ' + toRawType(value) + '.'));
     }
 
     return valid;
@@ -373,19 +378,15 @@ var assertProp = function assertProp(_ref) {
 var getObserver = function getObserver(name) {
     return function (prop) {
         return function observer(value) {
-            var _this = this;
-
             // 触发 setter
-            Promise.resolve().then(function () {
-                _this[name] = value;
-            });
+            this[name] = value;
 
             var valid = assertProp({ prop: prop, name: name, value: value });
             var validator = prop.validator;
 
 
             if (validator && !validator(value)) {
-                warn('Invalid prop: custom validator check failed for prop "' + name + '".');
+                logger.warn('Invalid prop: custom validator check failed for prop "' + name + '".');
                 return false;
             }
 
@@ -491,7 +492,7 @@ var hackSetData = function hackSetData(vm) {
     });
 };
 
-var version = "0.8.1";
+var version = "0.8.2";
 
 /**
  * 根据 vm 生成 key
@@ -619,6 +620,10 @@ var VmStatus = function () {
 
                 // 更新数据
                 vm.updated ? setData.call(vm, newState, vm.updated) : setData.call(vm, newState);
+
+                // 干掉原生 setData 触发的 setter，不然会死循环
+                delete _this.newStateByVM[vmKey];
+                delete _this.oldStateByVM[vmKey];
 
                 // 触发 watch
                 Object.keys(newState).map(function (key) {
@@ -1051,7 +1056,7 @@ var bindComputed = function bindComputed(vm, computed, asyncSetData) {
             },
             set: function set$$1() {
                 if (typeof computed[key].set === 'undefined') {
-                    warn('Computed property "' + key + '" was assigned to but it has no setter.');
+                    logger.warn('Computed property "' + key + '" was assigned to but it has no setter.');
                 } else {
                     var setVal = computed[key].set.bind(vm);
                     setVal.apply(undefined, arguments);
@@ -1264,6 +1269,6 @@ var TuaPage = function TuaPage(_ref) {
     }));
 };
 
-log('Version ' + version);
+logger.log('Version ' + version);
 
 export { TuaComp, TuaPage };
