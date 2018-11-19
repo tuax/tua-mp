@@ -201,7 +201,7 @@ describe('TuaComp', () => {
         expect(hour).toBe(vm.hour)
     })
 
-    // close #23
+    // close #62
     test('created/onLoad observer', () => {
         const vm = TuaComp({
             props: {
