@@ -1,8 +1,27 @@
-import { noop } from '../__tests__/utils'
 import { isFn, setObjByPath } from '../../src/utils'
 
 let wId = 0
 let nId = 0
+
+const noop = () => {}
+const setData = jest.fn(function (newData, cb) {
+    newData = JSON.parse(JSON.stringify(newData))
+    this.data = { ...this.data }
+
+    Object.keys(newData).forEach((path) => {
+        if (/\d|\./.test(path)) {
+            setObjByPath({
+                obj: this.data,
+                path,
+                val: newData[path],
+            })
+        } else {
+            this.data[path] = newData[path]
+        }
+    })
+
+    cb && cb()
+})
 
 /**
  * 对于小程序中 Page 的简单 Mock
@@ -10,24 +29,7 @@ let nId = 0
 global.Page = ({ data, ...rest }) => {
     const page = {
         data,
-        setData: jest.fn(function (newData, cb) {
-            newData = JSON.parse(JSON.stringify(newData))
-            this.data = { ...this.data }
-
-            Object.keys(newData).forEach((path) => {
-                if (/\d|\./.test(path)) {
-                    setObjByPath({
-                        obj: this.data,
-                        path,
-                        val: newData[path],
-                    })
-                } else {
-                    this.data[path] = newData[path]
-                }
-            })
-
-            cb && cb()
-        }),
+        setData,
         onLoad: noop,
         onReady: noop,
         onUnLoad: noop,
@@ -62,24 +64,7 @@ global.Component = ({ data, properties, methods, ...rest }) => {
     const Component = {
         data: { ...data, ...props },
         properties,
-        setData: jest.fn(function (newData, cb) {
-            newData = JSON.parse(JSON.stringify(newData))
-            this.data = { ...this.data }
-
-            Object.keys(newData).forEach((path) => {
-                if (/\d|\./.test(path)) {
-                    setObjByPath({
-                        obj: this.data,
-                        path,
-                        val: newData[path],
-                    })
-                } else {
-                    this.data[path] = newData[path]
-                }
-            })
-
-            cb && cb()
-        }),
+        setData,
         created: noop,
         attached: noop,
         ready: noop,

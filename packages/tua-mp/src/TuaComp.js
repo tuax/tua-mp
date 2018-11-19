@@ -45,6 +45,13 @@ export const TuaComp = ({
     created (...options) {
         rest.beforeCreate && rest.beforeCreate.apply(this, options)
         rest.created && rest.created.apply(this, options)
+
+        if (process.env.NODE_ENV === 'test') {
+            this.$props = {
+                ...properties,
+                ...getPropertiesFromProps(props),
+            }
+        }
     },
     attached (...options) {
         rest.beforeMount && rest.beforeMount.apply(this, options)

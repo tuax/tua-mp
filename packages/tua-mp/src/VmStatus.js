@@ -109,6 +109,10 @@ export default class VmStatus {
                     ? setData.call(vm, newState, vm.updated)
                     : setData.call(vm, newState)
 
+                // 干掉原生 setData 触发的 setter，不然会死循环
+                delete this.newStateByVM[vmKey]
+                delete this.oldStateByVM[vmKey]
+
                 // 触发 watch
                 Object.keys(newState)
                     .map((key) => {

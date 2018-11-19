@@ -1,4 +1,5 @@
 export * from './comp'
 export * from './basic'
 export * from './props'
+export * from './logger'
 export * from './hackSetData'

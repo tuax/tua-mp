@@ -5,6 +5,7 @@ import {
     reservedKeys,
     __TUA_PATH__,
 } from '../constants'
+import { logger } from './logger'
 
 export const isFn = fn => typeof fn === 'function'
 
@@ -19,8 +20,12 @@ export const isPlainObject = value =>
     _toString.call(value) === '[object Object]'
 
 // 根据路径前缀和 key 得到当前路径
-export const getPathByPrefix = (prefix, key) =>
-    prefix === '' ? key : `${prefix}.${key}`
+export const getPathByPrefix = (prefix, key) => prefix === ''
+    ? key
+    : `${prefix}.${key}`
+
+export const jsonParse = JSON.parse.bind(JSON)
+export const stringify = JSON.stringify.bind(JSON)
 
 /**
  * 将 source 上的属性代理到 target 上
@@ -79,7 +84,7 @@ export const setObjByPath = ({ obj, path, val, isCheckDef = false }) => pathStr2
                     'this'
                 )
 
-            error(
+            logger.error(
                 `Property "${cur}" is not found in "${parentStr}": ` +
                 `Make sure that this property has initialized in the data option.`
             )
@@ -137,23 +142,6 @@ export const assertType = (value, type) => {
 
     return { valid, expectedType }
 }
-
-/**
- * 统一的日志输出函数，在测试环境时不输出
- * @param {String} type 输出类型 log|warn|error
- * @param {any} out 输出的内容
- */
-const logByType = (type) => (...out) => {
-    /* istanbul ignore else */
-    if (process.env.NODE_ENV === 'test') return
-
-    /* istanbul ignore next */
-    console[type](`[TUA-MP]:`, ...out)
-}
-
-export const log = logByType('log')
-export const warn = logByType('warn')
-export const error = logByType('error')
 
 // reserved keys
 const isReservedKeys = str => reservedKeys.indexOf(str) !== -1
