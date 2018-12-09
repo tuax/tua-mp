@@ -51,8 +51,8 @@
     },
     "homepage": "https://github.com/tuateam/tua-mp#readme",
     "dependencies": {
-        "babel-core": "^6.26.3",
-        "babel-loader": "^7.1.5",
+        "@babel/core": "^7.0.0",
+        "babel-loader": "^8.0.0",
         "copy-webpack-plugin": "^4.5.1",
         "css-loader": "^1.0.0",
         "eslint-friendly-formatter": "^4.0.1",
@@ -77,6 +77,8 @@
         "yaml-loader": "^0.5.0"
     },
     "devDependencies": {
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^23.4.2",
         "codecov": "^3.0.4",
         "cross-env": "^5.2.0",
         "eslint": "^5.6.1",
