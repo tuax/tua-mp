@@ -11,10 +11,17 @@
 <p align="center">
     <a href="https://circleci.com/gh/tuateam/tua-mp/tree/master"><img src="https://img.shields.io/circleci/project/github/tuateam/tua-mp/master.svg" alt="Build Status"></a>
     <a href="https://codecov.io/github/tuateam/tua-mp?branch=master"><img src="https://img.shields.io/codecov/c/github/tuateam/tua-mp/master.svg" alt="Coverage Status"></a>
-    <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/v/tua-mp.svg" alt="Version"></a>
     <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/l/tua-mp.svg" alt="License"></a>
-    <img src="https://img.shields.io/badge/dependencies-none-green.svg" alt="dependencies">
     <a href="https://lernajs.io/"><img src="https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg" alt="lerna"></a>
+</p>
+
+<p align="center">
+    <a href="https://www.npmjs.com/package/tua-mp"><img src="https://img.shields.io/npm/v/tua-mp.svg" alt="Version"></a>
+    <a href="https://tuateam.github.io/tua-mp/"><img src="https://img.shields.io/badge/dependencies-none-green.svg" alt="dependencies"></a>
+    <a href="https://bundlephobia.com/result?p=tua-mp">
+        <img src="https://badgen.net/bundlephobia/min/tua-mp" alt="min">
+        <img src="https://badgen.net/bundlephobia/minzip/tua-mp" alt="minzip">
+    </a>
 </p>
 
 ## 0.介绍
