@@ -1,8 +1,6 @@
 <h1 align="center">tua-mp</h1>
 
-<h5 align="center">
-    让我们一步步地陷入用 Vue 写小程序的深渊...
-</h5>
+<h4 align="center">让我们一步步地陷入用 Vue 写小程序的深渊...</h4>
 
 <p align="center">
     <a href="https://github.com/feross/standard"><img src="https://tuateam.github.io/tua-mp/standard.svg" alt="Standard - JavaScript Style"></a>
