@@ -6,13 +6,13 @@
         "docs:build": "vuepress build docs",
         "boot": "lerna bootstrap",
         "test": "lerna run test --parallel",
-        "deploy": "yarn docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
+        "deploy": "npm run docs:build && gh-pages -m \"[ci skip]\" -d docs/.vuepress/dist",
         "run:scope": "lerna run --stream --scope",
         "precommit": "lerna run --concurrency 1 --stream precommit"
     },
     "husky": {
         "hooks": {
-            "pre-push": "npm run precommit",
+            "pre-push": "npm test",
             "pre-commit": "npm run precommit",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
