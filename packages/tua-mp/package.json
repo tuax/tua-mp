@@ -44,6 +44,15 @@
     "eslintIgnore": [
         "package.json"
     ],
+    "devDependencies": {
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^24.1.0",
+        "codecov": "^3.2.0",
+        "cross-env": "^5.2.0",
+        "eslint": "^5.15.1",
+        "jest": "^24.1.0",
+        "rollup": "^1.4.1"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/tuateam/tua-mp.git"
@@ -62,14 +71,5 @@
     "bugs": {
         "url": "https://github.com/tuateam/tua-mp/issues"
     },
-    "homepage": "https://github.com/tuateam/tua-mp#readme",
-    "devDependencies": {
-        "babel-core": "^7.0.0-bridge.0",
-        "babel-jest": "^23.6.0",
-        "codecov": "^3.1.0",
-        "cross-env": "^5.2.0",
-        "eslint": "^5.10.0",
-        "jest": "^23.6.0",
-        "rollup": "^0.67.4"
-    }
+    "homepage": "https://github.com/tuateam/tua-mp#readme"
 }
