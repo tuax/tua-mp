@@ -1,46 +1,55 @@
+const { name, description } = require('../../packages/tua-mp/package.json')
+
 module.exports = {
-    base: '/tua-mp/',
+    base: '/' + name + '/',
     locales: {
-        '/': {
-            title: 'tua-mp',
-            description: '🖖一款类 Vue 的渐进式小程序框架'
-        }
+        '/': { title: name, description },
     },
     head: [
         ['link', { rel: 'icon', href: `/logo.png` }],
     ],
+    evergreen: true,
     serviceWorker: true,
+    markdown: {
+        extendMarkdown: (md) => {
+            md.use(require('markdown-it-include'), {
+                root: './packages/',
+                includeRe: /<\[include\]\((.+)\)/i,
+            })
+        },
+    },
     themeConfig: {
         repo: 'tuateam/tua-mp',
         docsDir: 'docs',
         editLinks: true,
-        editLinkText: '在 GitHub 上编辑此页',
         lastUpdated: '上次更新',
+        sidebarDepth: 2,
+        editLinkText: '在 GitHub 上编辑此页',
         nav: [
             {
-                text: '快速上手',
-                link: '/quick-start/',
+                text: '🌱指南',
+                link: '/guide/',
             },
             {
-                text: '构建工具',
+                text: '🛠构建工具',
                 link: '/tua-mp-service/',
             },
             {
-                text: '命令行工具',
+                text: '🔩命令行工具',
                 link: '/tua-mp-cli/',
             },
             {
-                text: '生态系统',
+                text: '🔥生态系统',
                 items: [
-                    { text: '本地存储', link: 'https://tuateam.github.io/tua-storage/' },
-                    { text: 'api 生成工具', link: 'https://tuateam.github.io/tua-api/' },
+                    { text: '📦本地存储', link: 'https://tuateam.github.io/tua-storage/' },
+                    { text: '🏗api 生成工具', link: 'https://tuateam.github.io/tua-api/' },
                 ],
             },
         ],
         sidebar: {
-            '/quick-start/': [
+            '/guide/': [
                 {
-                    title: '快速上手',
+                    title: '🌱指南',
                     collapsable: false,
                     children: [
                         'installation',
