@@ -8,8 +8,9 @@
     },
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "tdd": "cross-env NODE_ENV=test jest --watch",
-        "test": "cross-env NODE_ENV=test jest && codecov",
+        "codecov": "codecov",
+        "test": "cross-env NODE_ENV=test jest",
+        "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix lib/ bin/ test/",
         "precommit": "lint-staged",
         "pub": "npm run test && npm publish"
@@ -35,6 +36,40 @@
     "eslintIgnore": [
         "package.json"
     ],
+    "dependencies": {
+        "@babel/core": "^7.3.4",
+        "babel-loader": "^8.0.5",
+        "copy-webpack-plugin": "^5.0.0",
+        "css-loader": "^2.1.0",
+        "eslint-friendly-formatter": "^4.0.1",
+        "file-loader": "^3.0.1",
+        "friendly-errors-webpack-plugin": "^1.7.0",
+        "less": "^3.9.0",
+        "less-loader": "^4.1.0",
+        "mini-css-extract-plugin": "^0.5.0",
+        "node-sass": "^4.11.0",
+        "sass-loader": "^7.1.0",
+        "semver": "^5.6.0",
+        "style-loader": "^0.23.1",
+        "stylus": "^0.54.5",
+        "stylus-loader": "^3.0.2",
+        "url-loader": "^1.1.2",
+        "vue-loader": "^15.7.0",
+        "vue-template-compiler": "^2.6.8",
+        "webpack": "^4.29.6",
+        "webpack-chain": "^5.2.0",
+        "webpack-merge": "^4.2.1",
+        "webpackbar": "^3.1.5",
+        "yaml-loader": "^0.5.0"
+    },
+    "devDependencies": {
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^24.1.0",
+        "codecov": "^3.2.0",
+        "cross-env": "^5.2.0",
+        "eslint": "^5.15.1",
+        "jest": "^24.1.0"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/tuateam/tua-mp.git"
@@ -50,40 +85,6 @@
         "url": "https://github.com/tuateam/tua-mp/issues"
     },
     "homepage": "https://github.com/tuateam/tua-mp#readme",
-    "dependencies": {
-        "@babel/core": "^7.2.0",
-        "babel-loader": "^8.0.4",
-        "copy-webpack-plugin": "^4.6.0",
-        "css-loader": "^2.0.0",
-        "eslint-friendly-formatter": "^4.0.1",
-        "file-loader": "^2.0.0",
-        "friendly-errors-webpack-plugin": "^1.7.0",
-        "less": "^3.9.0",
-        "less-loader": "^4.1.0",
-        "mini-css-extract-plugin": "^0.5.0",
-        "node-sass": "^4.11.0",
-        "sass-loader": "^7.1.0",
-        "semver": "^5.6.0",
-        "style-loader": "^0.23.1",
-        "stylus": "^0.54.5",
-        "stylus-loader": "^3.0.2",
-        "url-loader": "^1.1.2",
-        "vue-loader": "^15.4.2",
-        "vue-template-compiler": "^2.5.18",
-        "webpack": "^4.27.1",
-        "webpack-chain": "^5.0.1",
-        "webpack-merge": "^4.1.4",
-        "webpackbar": "^3.1.3",
-        "yaml-loader": "^0.5.0"
-    },
-    "devDependencies": {
-        "babel-core": "^7.0.0-bridge.0",
-        "babel-jest": "^23.6.0",
-        "codecov": "^3.1.0",
-        "cross-env": "^5.2.0",
-        "eslint": "^5.10.0",
-        "jest": "^23.6.0"
-    },
     "publishConfig": {
         "access": "public"
     },

@@ -1,7 +1,7 @@
 ---
 home: true
 actionText: 快速上手 →
-actionLink: /quick-start/
+actionLink: /guide/
 features:
 - title: 渐进式
   details: 可以由浅入深地用于你的小程序项目。

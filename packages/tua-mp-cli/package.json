@@ -7,8 +7,9 @@
     },
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "tdd": "cross-env NODE_ENV=test jest --watch",
-        "test": "cross-env NODE_ENV=test jest && codecov",
+        "codecov": "codecov",
+        "test": "cross-env NODE_ENV=test jest",
+        "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix lib/ bin/ test/",
         "clean": "rimraf src && mkdir src/ src/app/ src/apis/ src/pages/ src/comps/ && echo {} > src/app/app.json",
         "precommit": "lint-staged",
@@ -35,6 +36,25 @@
     "eslintIgnore": [
         "package.json"
     ],
+    "dependencies": {
+        "@vue/cli-init": "^3.4.1",
+        "babel-preset-env": "^1.7.0",
+        "chalk": "^2.4.2",
+        "handlebars": "^4.1.0",
+        "inquirer": "^6.2.2",
+        "inquirer-fuzzy-path": "^2.0.2",
+        "log-symbols": "^2.2.0",
+        "semver": "^5.6.0",
+        "treeify": "^1.1.0",
+        "yargs": "^13.2.1"
+    },
+    "devDependencies": {
+        "codecov": "^3.2.0",
+        "cross-env": "^5.2.0",
+        "eslint": "^5.15.1",
+        "jest": "^24.1.0",
+        "rimraf": "^2.6.3"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/tuateam/tua-mp.git"
@@ -51,25 +71,6 @@
         "url": "https://github.com/tuateam/tua-mp/issues"
     },
     "homepage": "https://github.com/tuateam/tua-mp#readme",
-    "dependencies": {
-        "@vue/cli-init": "^3.2.0",
-        "babel-preset-env": "^1.7.0",
-        "chalk": "^2.4.1",
-        "handlebars": "^4.0.12",
-        "inquirer": "^6.2.1",
-        "inquirer-fuzzy-path": "^1.0.0",
-        "log-symbols": "^2.2.0",
-        "semver": "^5.6.0",
-        "treeify": "^1.1.0",
-        "yargs": "^12.0.5"
-    },
-    "devDependencies": {
-        "codecov": "^3.1.0",
-        "cross-env": "^5.2.0",
-        "eslint": "^5.10.0",
-        "jest": "^23.6.0",
-        "rimraf": "^2.6.2"
-    },
     "publishConfig": {
         "access": "public"
     },

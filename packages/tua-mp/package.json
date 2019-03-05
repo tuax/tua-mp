@@ -1,18 +1,19 @@
 {
     "name": "tua-mp",
     "version": "0.8.2",
-    "description": "A progressive miniprogram framework for coding like Vue",
+    "description": "🖖一款类 Vue 的渐进式小程序框架(A progressive miniprogram framework for coding like Vue)",
     "main": "examples/basic/utils/tua-mp.js",
     "files": [
         "examples/basic/utils/tua-mp.js"
     ],
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "tdd": "cross-env NODE_ENV=test jest --watch",
-        "test": "cross-env NODE_ENV=test jest && codecov",
+        "codecov": "codecov",
+        "test": "cross-env NODE_ENV=test jest",
+        "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix src/ test/",
-        "build": "cross-env NODE_ENV=prod rollup -c",
-        "watch": "cross-env NODE_ENV=prod rollup -c -w",
+        "build": "cross-env NODE_ENV=production rollup -c",
+        "watch": "cross-env NODE_ENV=production rollup -c -w",
         "start": "npm run watch",
         "pub": "npm run build && npm publish",
         "precommit": "npm run build && lint-staged"
@@ -44,6 +45,14 @@
     "eslintIgnore": [
         "package.json"
     ],
+    "devDependencies": {
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^24.1.0",
+        "codecov": "^3.2.0",
+        "cross-env": "^5.2.0",
+        "jest": "^24.1.0",
+        "rollup": "^1.4.1"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/tuateam/tua-mp.git"
@@ -62,14 +71,5 @@
     "bugs": {
         "url": "https://github.com/tuateam/tua-mp/issues"
     },
-    "homepage": "https://github.com/tuateam/tua-mp#readme",
-    "devDependencies": {
-        "babel-core": "^7.0.0-bridge.0",
-        "babel-jest": "^23.6.0",
-        "codecov": "^3.1.0",
-        "cross-env": "^5.2.0",
-        "eslint": "^5.10.0",
-        "jest": "^23.6.0",
-        "rollup": "^0.67.4"
-    }
+    "homepage": "https://github.com/tuateam/tua-mp#readme"
 }

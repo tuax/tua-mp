@@ -7,14 +7,8 @@ module.exports = {
                     { targets: { 'node': 'current' } },
                 ],
             ],
-            plugins: [
-                [
-                    '@babel/plugin-proposal-decorators',
-                    { legacy: true },
-                ],
-            ],
         },
-        prod: {
+        production: {
             presets: [
                 [
                     '@babel/preset-env',
@@ -22,10 +16,6 @@ module.exports = {
                 ],
             ],
             plugins: [
-                [
-                    '@babel/plugin-proposal-decorators',
-                    { legacy: true },
-                ],
                 '@babel/plugin-proposal-object-rest-spread',
             ],
         },
