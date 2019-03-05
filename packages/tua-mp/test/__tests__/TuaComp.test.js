@@ -213,7 +213,6 @@ describe('TuaComp', () => {
         })
         vm.$props.someProp.observer.call(vm, 'observer')
 
-        console.warn('vm.someProp', vm.someProp)
         expect(vm.someProp).toBe('observer')
     })
 })

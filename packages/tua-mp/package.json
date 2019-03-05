@@ -12,8 +12,8 @@
         "test": "cross-env NODE_ENV=test jest",
         "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix src/ test/",
-        "build": "cross-env NODE_ENV=prod rollup -c",
-        "watch": "cross-env NODE_ENV=prod rollup -c -w",
+        "build": "cross-env NODE_ENV=production rollup -c",
+        "watch": "cross-env NODE_ENV=production rollup -c -w",
         "start": "npm run watch",
         "pub": "npm run build && npm publish",
         "precommit": "npm run build && lint-staged"
