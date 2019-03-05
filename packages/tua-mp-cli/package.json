@@ -7,7 +7,8 @@
     },
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
-        "test": "cross-env NODE_ENV=test jest && codecov",
+        "codecov": "codecov",
+        "test": "cross-env NODE_ENV=test jest",
         "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix lib/ bin/ test/",
         "clean": "rimraf src && mkdir src/ src/app/ src/apis/ src/pages/ src/comps/ && echo {} > src/app/app.json",
