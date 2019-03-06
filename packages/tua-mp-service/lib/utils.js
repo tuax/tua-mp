@@ -31,21 +31,41 @@ const compose = (...funcs) => {
     return funcs.reduce((a, b) => (...args) => a(b(...args)))
 }
 
-const error = (err) => {
+/**
+ * 统一的日志输出函数，在测试环境时不输出
+ * @param {String} type 输出类型 log|warn|error
+ * @param {any} out 具体的输出内容
+ */
+const logByType = (type) => (...out) => {
     /* istanbul ignore next */
     if (process.env.NODE_ENV === 'test') return
 
     /* istanbul ignore next */
-    console.error(`[TUA-MP-SERVICE]: `, err)
+    console[type](`[TUA-MP-SERVICE]:`, ...out)
+}
+
+/**
+ * 从前到后检查文件数组中的文件是否存在，若存在则返回
+ * @param {String[]} files 文件路径数组
+ */
+const fsExistsFallback = (files = []) => {
+    for (const file of files) {
+        if (!fs.existsSync(file)) continue
+
+        return file
+    }
 }
 
 module.exports = {
+    log: logByType('log'),
+    warn: logByType('warn'),
+    error: logByType('error'),
     map,
     pipe,
-    error,
     filter,
     flatten,
     compose,
     mergeAll,
     isDirectory,
+    fsExistsFallback,
 }
