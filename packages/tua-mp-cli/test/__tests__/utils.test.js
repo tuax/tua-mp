@@ -4,6 +4,8 @@ const { expectPrompts } = require('inquirer')
 const {
     rMkdir,
     upperFirst,
+    readConfigFile,
+    fsExistsFallback,
     compileTmplToTarget,
     camelCaseToHyphenCase,
     hyphenCaseToCamelCase,
@@ -19,6 +21,36 @@ describe('fs', () => {
         expect(fs.__mockDirMap[dir]).toBeFalsy()
         await rMkdir(dir)
         expect(fs.__mockDirMap[dir]).toBeTruthy()
+    })
+
+    test('fsExistsFallback', () => {
+        const file = '/a.js'
+        fs.writeFileSync(file, '')
+        const result1 = fsExistsFallback([
+            'foo',
+            'foobar',
+            'whatever',
+            file,
+        ])
+        const result2 = fsExistsFallback([
+            'foo',
+            file,
+            'whatever',
+        ])
+
+        expect(result1).toBe(file)
+        expect(result2).toBe(file)
+        expect(fsExistsFallback()).toBeUndefined()
+    })
+
+    test('readConfigFile', () => {
+        expect(readConfigFile()).toEqual({})
+
+        const tuaConfig = `/tua.config.js`
+        fs.writeFileSync(tuaConfig, ``)
+        jest.doMock(tuaConfig, () => ({ a: 1 }), { virtual: true })
+
+        expect(readConfigFile('/')).toEqual({ a: 1 })
     })
 })
 

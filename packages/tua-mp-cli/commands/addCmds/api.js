@@ -7,6 +7,7 @@ exports.builder = {}
 
 exports.handler = (argv) => {
     const name = argv.name
+    const { readConfigFile } = require('../../lib/utils/')
 
-    require('../../lib/addApi')(name)
+    require('../../lib/addApi')(name, readConfigFile())
 }

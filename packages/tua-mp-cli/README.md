@@ -30,6 +30,8 @@ $ tuamp init <template-name> <project-name>
 ```bash
 # 添加小程序端 api
 $ tuamp add api <name>
+# OR
+$ tuamp a api <name>
 ```
 
 该命令会自动在 `src/apis/index.js` 中导出该 `api`，例如 `<name>` 为 `foo-bar`，那么导出的接口名称为 `fooBarApi`（已转成小驼峰，并在结尾加上 `Api`）。
@@ -50,6 +52,8 @@ $ tuamp add api <name>
 ```bash
 # 添加小程序端 page
 $ tuamp add page <name>
+# OR
+$ tuamp a page <name>
 ```
 
 该命令会自动读取 `src/app/app.json` 中的 `pages` 字段，并将新页面加入。
@@ -75,15 +79,49 @@ $ tuamp add page <name>
 * 全局添加小程序端 comp(-g, --global)
 
 ```bash
-$ tuamp add comp <name> -g
+$ tuamp add comp <name> --global
+# OR
+$ tuamp a comp <name> -g
 ```
 
 * 局部添加小程序端 comp
 
 ```bash
 $ tuamp add comp <name>
+# OR
+$ tuamp a comp <name>
 ```
 
 ::: tip
 注意使用 `<Tab>` 键补全路径，输入不存在的文件夹时会自动创建。
 :::
+
+### 导出模板命令 `eject`
+这个命令将包中的默认模板导出到 `.templates/` 中。
+
+这样通过修改`.templates/` 下的模板文件，即可实现自定义模板功能。
+
+```bash
+$ tuamp eject
+# OR
+$ tuamp e
+```
+
+### 模板路径选项 `-t, --template`
+对于所有 `add` 命令还有 `-t, --template` 选项，用于指定模板。
+
+```bash
+$ tuamp add api --template=<template> <name>
+$ tuamp add page -t=<template> <name>
+$ tuamp add comp -t=<template> <name>
+$ tuamp add comp -t=<template> -g <name>
+```
+
+## 配置
+配置文件和 `@tua-mp/service` 一样，都是使用 `tua.config.js`。
+
+### templateDir
+* 类型：`String`
+* 默认值：`.templates`
+
+自定义模板的路径。

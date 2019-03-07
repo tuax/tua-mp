@@ -22,7 +22,7 @@ const {
  * @param {String} name 接口名称（连字符）
  * @param {Boolean} global 是否是全局组件
  */
-const addComp = (name, { global }) => {
+module.exports = (name, { global }) => {
     if (!name) {
         return catchAndThrow(`组件名称不能为空\n`)
     }
@@ -132,5 +132,3 @@ const addComp = (name, { global }) => {
         targetPath,
     })
 }
-
-module.exports = addComp

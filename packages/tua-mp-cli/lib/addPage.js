@@ -22,10 +22,8 @@ const {
  * 但在 app.json 中的页面名称保持原样
  * @param {String} name 接口名称（连字符）
  */
-const addPage = (name) => {
-    if (!name) {
-        return catchAndThrow(`页面名称不能为空\n`)
-    }
+module.exports = (name) => {
+    if (!name) return catchAndThrow(`页面名称不能为空\n`)
 
     // 连字符的名称
     const hcName = camelCaseToHyphenCase(name)
@@ -135,5 +133,3 @@ const addPage = (name) => {
         targetPath,
     })
 }
-
-module.exports = addPage

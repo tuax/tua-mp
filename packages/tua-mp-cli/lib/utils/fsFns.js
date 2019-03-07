@@ -23,6 +23,27 @@ const rMkdir = async (dir) => {
     return mkdir(dir)
 }
 
+/**
+ * 从前到后检查文件数组中的文件是否存在，若存在则返回
+ * @param {String[]} files 文件路径数组
+ */
+const fsExistsFallback = (files = []) => {
+    for (const file of files) {
+        if (!fs.existsSync(file)) continue
+
+        return file
+    }
+}
+
+/**
+ * 读取项目中的 tua.config.js 中的配置
+ */
+const readConfigFile = (base = process.cwd()) => {
+    const configPath = path.resolve(base, `tua.config.js`)
+
+    return exists(configPath) ? require(configPath) : {}
+}
+
 module.exports = {
     mkdir,
     exists,
@@ -31,4 +52,6 @@ module.exports = {
     readFile,
     writeFile,
     appendFile,
+    readConfigFile,
+    fsExistsFallback,
 }

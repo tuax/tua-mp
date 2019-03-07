@@ -8,22 +8,22 @@ const {
     copyFile,
     appendFile,
     catchAndThrow,
+    fsExistsFallback,
     compileTmplToTarget,
     hyphenCaseToCamelCase,
 } = require('./utils')
 
-// TODO: 读取 .tuarc 和 tua-mp.config.js 中的配置
+const cwd = process.cwd()
 
 /**
  * 添加 api 功能
  * 如果是连字符形式的中间接口路径需要将文件名转成小驼峰
- * 但 config 中的 prefix 依然保持原样
+ * 但 api 配置中的 prefix 依然保持原样
  * @param {String} name 接口名称
+ * @param {Object} tuaConfig 项目自定义配置
  */
-const addApi = (name) => {
-    if (!name) {
-        return catchAndThrow(`api 名称不能为空\n`)
-    }
+module.exports = (name, tuaConfig = {}) => {
+    if (!name) return catchAndThrow(`api 名称不能为空\n`)
 
     // 小驼峰的名称
     const ccName = hyphenCaseToCamelCase(name)
@@ -39,19 +39,23 @@ const addApi = (name) => {
     // 默认放在 src/apis/ 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), './src/apis/')
+        path.resolve(cwd, './src/apis/')
 
     // 检查父文件夹是否存在
     if (!exists(targetDir)) {
-        return catchAndThrow(
-            `请检查以下文件夹是否存在!\n\t- src/apis/\n`
-        )
+        const str = `请检查以下文件夹是否存在!\n\t- src/apis/\n`
+        return catchAndThrow(str)
     }
 
     // src
     const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        path.resolve(__dirname, '../templates/api/')
+        fsExistsFallback([
+            tuaConfig.templateDir,
+            path.resolve(cwd, tuaConfig.templateDir),
+            path.resolve(cwd, './templates/api/'),
+            path.resolve(__dirname, '../templates/api/'),
+        ])
     const srcIdx = path.join(templateDir, 'index.js')
     const srcApi = path.join(templateDir, 'api.js')
 
@@ -90,5 +94,3 @@ const addApi = (name) => {
         )
         .catch(catchAndThrow)
 }
-
-module.exports = addApi
