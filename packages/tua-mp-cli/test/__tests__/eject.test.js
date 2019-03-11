@@ -1,4 +1,3 @@
-const os = require('os')
 const fse = require('fs-extra')
 const path = require('path')
 const { expectPrompts } = require('inquirer')
@@ -9,7 +8,7 @@ jest.mock('inquirer')
 
 describe('eject', () => {
     // TODO: use memory fs
-    const root = path.join(os.tmpdir(), 'tua-mp-cli')
+    const root = path.join('src', 'tua-mp-cli')
     const srcDir = path.join(root, 'eject-src')
     const distDir = path.join(root, 'eject-dist')
     const srcMd = path.join(srcDir, 'README.md')
@@ -22,11 +21,13 @@ describe('eject', () => {
         process.env.TUA_CLI_TEST_SRC = srcDir
         process.env.TUA_CLI_TEST_DIST = distDir
 
+        await fse.emptyDir(srcDir)
         await fse.emptyDir(distDir)
         await fse.outputFile(distMd, '')
     })
 
     test('copy', async () => {
+        await fse.outputFile(srcMd, '')
         await fse.remove(distDir)
         expect(await existsMd()).toBe(false)
 

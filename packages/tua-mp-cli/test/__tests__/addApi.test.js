@@ -7,13 +7,18 @@ const addApi = require('../../lib/addApi')
 jest.mock('fs')
 jest.mock('inquirer')
 
-describe('add:api', () => {
+describe('add api', () => {
     const src = '/test-api-src'
     const dir = '/test-api-dir'
     const dist = '/test-api-dist'
     const srcApi = path.join(src, 'api.js')
     const srcIdx = path.join(src, 'index.js')
     const distIdx = path.join(dir, 'index.js')
+
+    const getResult = () => [
+        fs.readFileSync(dist),
+        fs.readFileSync(distIdx),
+    ].map(b => b.toString())
 
     beforeEach(() => {
         process.env.TUA_CLI_TEST_DIR = dir
@@ -31,14 +36,15 @@ describe('add:api', () => {
         process.env.TUA_CLI_TEST_SRC = null
         process.env.TUA_CLI_TEST_DIST = null
 
-        expect(addApi('', {})).rejects.toThrow()
-        expect(addApi('no src/apis/', {})).rejects.toThrow()
+        expect(addApi()).rejects.toThrow()
+        expect(addApi({ name: '' })).rejects.toThrow()
+        expect(addApi({ name: 'no src/apis/' })).rejects.toThrow()
     })
 
     test('catchAndThrow', () => {
         process.env.TUA_CLI_TEST_SRC = null
 
-        return expect(addApi('catchAndThrow', {})).rejects.toThrow()
+        return expect(addApi({ name: 'catchAndThrow' })).rejects.toThrow()
     })
 
     test('new', async () => {
@@ -49,12 +55,8 @@ describe('add:api', () => {
         fs.writeFileSync(srcApi, content)
         fs.writeFileSync(srcIdx, content)
 
-        const result = await addApi(name)
-            .then(() => [
-                fs.readFileSync(dist),
-                fs.readFileSync(distIdx),
-            ])
-            .then(buffers => buffers.map(b => b.toString()))
+        await addApi({ name })
+        const result = getResult()
 
         expect(result[0]).toEqual(name)
         expect(result[1]).toEqual(
@@ -77,12 +79,8 @@ describe('add:api', () => {
             confirm: true,
         }])
 
-        const result = await addApi(name)
-            .then(() => [
-                fs.readFileSync(dist),
-                fs.readFileSync(distIdx),
-            ])
-            .then(buffers => buffers.map(b => b.toString()))
+        await addApi({ name })
+        const result = getResult()
 
         expect(result[0]).toEqual(name)
         expect(result[1]).toEqual('')
@@ -102,12 +100,8 @@ describe('add:api', () => {
             confirm: false,
         }])
 
-        const result = await addApi(name, {})
-            .then(() => [
-                fs.readFileSync(dist),
-                fs.readFileSync(distIdx),
-            ])
-            .then(buffers => buffers.map(b => b.toString()))
+        await addApi({ name })
+        const result = getResult()
 
         expect(result[0]).toEqual('')
         expect(result[1]).toEqual('')

@@ -9,20 +9,27 @@ const {
     writeFile,
     promptAndRun,
     catchAndThrow,
+    getTemplateDir,
     compileTmplToTarget,
     camelCaseToHyphenCase,
     hyphenCaseToUpperCamelCase,
 } = require('./utils')
-
-// TODO: 读取 .tuarc 和 tua-mp.config.js 中的配置
+const { defaultTuaConfig } = require('./constants')
 
 /**
  * 添加页面功能
  * 如果是连字符形式的页面地址，需要将 .vue 文件的文件名转成大驼峰
  * 但在 app.json 中的页面名称保持原样
- * @param {String} name 接口名称（连字符）
+ * @param {Object} options
+ * @param {String} options.name 接口名称（连字符）
+ * @param {Object} options.tuaConfig 项目自定义配置
  */
-module.exports = (name) => {
+module.exports = (options = {}) => {
+    const {
+        name,
+        tuaConfig = defaultTuaConfig,
+    } = options
+
     if (!name) return catchAndThrow(`页面名称不能为空\n`)
 
     // 连字符的名称
@@ -54,18 +61,19 @@ module.exports = (name) => {
         path.join(targetDir, `${hcName}`)
 
     // 检查父文件夹和 app.json 是否存在
-    if (!exists(targetApp) || !exists(targetDir)) {
+    if (!exists(targetDir) || !exists(targetApp)) {
         return catchAndThrow(
             `请检查以下文件（夹）是否存在!\n` +
-            `\t- src/app/app.json\n` +
-            `\t- src/pages/\n`
+            `\t- src/pages/\n` +
+            `\t- src/app/app.json\n`
         )
     }
 
     // src
+    const prefix = 'page'
     const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        path.resolve(__dirname, '../templates/page/')
+        getTemplateDir(tuaConfig.templateDir, prefix)
     const srcIdx = path.join(templateDir, 'index.js')
     const srcPage = path.join(templateDir, 'Page.vue')
 

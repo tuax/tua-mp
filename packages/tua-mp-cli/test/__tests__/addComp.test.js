@@ -7,7 +7,7 @@ const addComp = require('../../lib/addComp')
 jest.mock('fs')
 jest.mock('inquirer')
 
-describe('add:comp', () => {
+describe('add comp', () => {
     const dir = '/test-comp-dir'
     const src = '/test-comp-src'
     const dist = '/test-comp-dist'
@@ -26,44 +26,45 @@ describe('add:comp', () => {
         fs.mkdirSync(dist)
     })
 
-    test('no name or src/comps/', () => {
-        process.env.TUA_CLI_TEST_DIR = null
-        process.env.TUA_CLI_TEST_SRC = null
-        process.env.TUA_CLI_TEST_DIST = null
+    describe('global', () => {
+        const global = true
 
-        expect(addComp('', { global: true })).rejects.toThrow()
-        expect(addComp('no src/pages', { global: true })).rejects.toThrow()
-        expect(addComp('no src/app/app.json', { global: true })).rejects.toThrow()
-    })
+        test('no name or src/comps/', () => {
+            process.env.TUA_CLI_TEST_DIR = null
 
-    test('catchAndThrow', () => {
-        process.env.TUA_CLI_TEST_DIST = null
+            expect(addComp()).rejects.toThrow()
+            expect(addComp({ name: '', global })).rejects.toThrow()
+            expect(addComp({ name: 'no src/pages', global })).rejects.toThrow()
+        })
 
-        return expect(addComp('catchAndThrow', { global: true })).rejects.toThrow()
-    })
+        test('catchAndThrow', () => {
+            process.env.TUA_CLI_TEST_DIST = null
 
-    test('global wx', async () => {
-        const name = 'test-wx'
-        const uccName = 'TestWx'
-        const content = '{{ name }}'
-        const distComp = path.join(dist, `${uccName}.vue`)
+            return expect(addComp({ name: 'catchAndThrow', global })).rejects.toThrow()
+        })
 
-        fs.writeFileSync(srcIdx, content)
-        fs.writeFileSync(srcComp, name)
+        test('global wx', async () => {
+            const name = 'test-wx'
+            const uccName = 'TestWx'
+            const content = '{{ name }}'
+            const distComp = path.join(dist, `${uccName}.vue`)
 
-        expectPrompts([{
-            message: 'Target directory exists. Continue?',
-            confirm: true,
-        }])
+            fs.writeFileSync(srcIdx, content)
+            fs.writeFileSync(srcComp, name)
 
-        const [ idx, page ] = await addComp(name, { global: true })
-            .then(() => [ distIdx, distComp ]
+            expectPrompts([{
+                message: 'Target directory exists. Continue?',
+                confirm: true,
+            }])
+
+            await addComp({ name, global })
+            const [ idx, page ] = [ distIdx, distComp ]
                 .map(fs.readFileSync)
                 .map(buffer => buffer.toString())
-            )
 
-        expect(idx).toEqual(uccName)
-        expect(page).toEqual(name)
+            expect(idx).toEqual(uccName)
+            expect(page).toEqual(name)
+        })
     })
 
     test('local wx', async () => {
@@ -76,7 +77,6 @@ describe('add:comp', () => {
 
         process.env.TUA_CLI_TEST_DIST = dist
 
-        // fs.mkdirSync(dist)
         fs.writeFileSync(srcIdx, content)
         fs.writeFileSync(srcComp, name)
 
@@ -85,24 +85,23 @@ describe('add:comp', () => {
             fuzzyPath: dist,
         }])
 
-        const addCompPromise = addComp(name, { global: false })
+        const addCompPromise = addComp({ name })
 
         expectPrompts([{
             message: 'Target directory exists. Continue?',
             confirm: true,
         }])
 
-        const [ idx, page ] = await addCompPromise
-            .then(() => [ distIdx, distComp ]
-                .map(fs.readFileSync)
-                .map(buffer => buffer.toString())
-            )
+        await addCompPromise
+        const [ idx, page ] = [ distIdx, distComp ]
+            .map(fs.readFileSync)
+            .map(buffer => buffer.toString())
 
         expect(idx).toEqual(uccName)
         expect(page).toEqual(name)
     })
 
-    test('cancel ', async () => {
+    test('cancel', async () => {
         const name = 'test-cancel'
         const uccName = 'TestCancel'
         const content = '{{ name }}'
@@ -118,11 +117,10 @@ describe('add:comp', () => {
             confirm: false,
         }])
 
-        const [ idx, page ] = await addComp(name, { global: true })
-            .then(() => [ distIdx, distComp ]
-                .map(fs.readFileSync)
-                .map(buffer => buffer.toString())
-            )
+        await addComp({ name, global: true })
+        const [ idx, page ] = [ distIdx, distComp ]
+            .map(fs.readFileSync)
+            .map(buffer => buffer.toString())
 
         expect(idx).toEqual(content)
         expect(page).toEqual(name)

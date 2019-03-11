@@ -9,5 +9,8 @@ exports.handler = (argv) => {
     const name = argv.name
     const { readConfigFile } = require('../../lib/utils/')
 
-    require('../../lib/addApi')(name, readConfigFile())
+    require('../../lib/addApi')({
+        name,
+        tuaConfig: readConfigFile(),
+    })
 }

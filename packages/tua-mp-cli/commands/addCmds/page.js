@@ -9,5 +9,5 @@ exports.builder = {}
 exports.handler = (argv) => {
     const name = argv.name
 
-    require('../../lib/addPage')(name)
+    require('../../lib/addPage')({ name })
 }

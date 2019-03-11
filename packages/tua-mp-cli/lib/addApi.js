@@ -8,10 +8,11 @@ const {
     copyFile,
     appendFile,
     catchAndThrow,
-    fsExistsFallback,
+    getTemplateDir,
     compileTmplToTarget,
     hyphenCaseToCamelCase,
 } = require('./utils')
+const { defaultTuaConfig } = require('./constants')
 
 const cwd = process.cwd()
 
@@ -19,10 +20,16 @@ const cwd = process.cwd()
  * 添加 api 功能
  * 如果是连字符形式的中间接口路径需要将文件名转成小驼峰
  * 但 api 配置中的 prefix 依然保持原样
- * @param {String} name 接口名称
- * @param {Object} tuaConfig 项目自定义配置
+ * @param {Object} options
+ * @param {String} options.name 接口名称
+ * @param {Object} options.tuaConfig 项目自定义配置
  */
-module.exports = (name, tuaConfig = {}) => {
+module.exports = (options = {}) => {
+    const {
+        name,
+        tuaConfig = defaultTuaConfig,
+    } = options
+
     if (!name) return catchAndThrow(`api 名称不能为空\n`)
 
     // 小驼峰的名称
@@ -43,19 +50,17 @@ module.exports = (name, tuaConfig = {}) => {
 
     // 检查父文件夹是否存在
     if (!exists(targetDir)) {
-        const str = `请检查以下文件夹是否存在!\n\t- src/apis/\n`
-        return catchAndThrow(str)
+        return catchAndThrow(
+            `请检查以下文件夹是否存在!\n` +
+            `\t- src/apis/\n`
+        )
     }
 
     // src
+    const prefix = 'api'
     const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        fsExistsFallback([
-            tuaConfig.templateDir,
-            path.resolve(cwd, tuaConfig.templateDir),
-            path.resolve(cwd, './templates/api/'),
-            path.resolve(__dirname, '../templates/api/'),
-        ])
+        getTemplateDir(tuaConfig.templateDir, prefix)
     const srcIdx = path.join(templateDir, 'index.js')
     const srcApi = path.join(templateDir, 'api.js')
 

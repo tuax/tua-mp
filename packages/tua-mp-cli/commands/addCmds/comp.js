@@ -15,5 +15,5 @@ exports.handler = (argv) => {
     const name = argv.name
     const global = argv.global
 
-    require('../../lib/addComp')(name, { global })
+    require('../../lib/addComp')({ name, global })
 }

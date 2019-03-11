@@ -39,21 +39,24 @@ describe('add:page', () => {
     })
 
     test('no name or src/app/app.json or src/pages/', () => {
-        process.env.TUA_CLI_TEST_APP = null
-        process.env.TUA_CLI_TEST_DIR = null
-        process.env.TUA_CLI_TEST_SRC = null
-        process.env.TUA_CLI_TEST_DIST = null
+        expect(addPage()).rejects.toThrow()
+        expect(addPage({ name: '' })).rejects.toThrow()
 
-        expect(addPage('')).rejects.toThrow()
-        expect(addPage('no src/pages')).rejects.toThrow()
-        expect(addPage('no src/app/app.json')).rejects.toThrow()
+        process.env.TUA_CLI_TEST_APP = null
+
+        expect(addPage({ name: 'no src/app/app.json' })).rejects.toThrow()
+
+        process.env.TUA_CLI_TEST_APP = app
+        process.env.TUA_CLI_TEST_DIR = null
+
+        expect(addPage({ name: 'no src/pages' })).rejects.toThrow()
     })
 
     test('catchAndThrow', () => {
         process.env.TUA_CLI_TEST_DIST = null
         jest.doMock(app, () => ({}), { virtual: true })
 
-        return expect(addPage('catchAndThrow')).rejects.toThrow()
+        expect(addPage({ name: 'catchAndThrow' })).rejects.toThrow()
     })
 
     test('new', async () => {
@@ -69,11 +72,10 @@ describe('add:page', () => {
         fs.writeFileSync(srcIdx, content)
         fs.writeFileSync(srcPage, name)
 
-        const [ idx, page ] = await addPage(name)
-            .then(() => [ distIdx, distPage ]
-                .map(fs.readFileSync)
-                .map(buffer => buffer.toString())
-            )
+        await addPage({ name })
+        const [ idx, page ] = [ distIdx, distPage ]
+            .map(fs.readFileSync)
+            .map(buffer => buffer.toString())
 
         expect(idx).toEqual(uccName)
         expect(page).toEqual(name)
@@ -93,11 +95,10 @@ describe('add:page', () => {
             confirm: true,
         }])
 
-        const [ idx, page ] = await addPage(name)
-            .then(() => [ distIdx, distPage ]
-                .map(fs.readFileSync)
-                .map(buffer => buffer.toString())
-            )
+        await addPage({ name })
+        const [ idx, page ] = [ distIdx, distPage ]
+            .map(fs.readFileSync)
+            .map(buffer => buffer.toString())
 
         expect(idx).toEqual(uccName)
         expect(page).toEqual(name)
@@ -119,11 +120,10 @@ describe('add:page', () => {
             confirm: false,
         }])
 
-        const [ idx, page ] = await addPage(name)
-            .then(() => [ distIdx, distPage ]
-                .map(fs.readFileSync)
-                .map(buffer => buffer.toString())
-            )
+        await addPage({ name })
+        const [ idx, page ] = [ distIdx, distPage ]
+            .map(fs.readFileSync)
+            .map(buffer => buffer.toString())
 
         expect(idx).toEqual(content)
         expect(page).toEqual(name)

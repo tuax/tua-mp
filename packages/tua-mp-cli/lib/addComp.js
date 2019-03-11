@@ -10,22 +10,30 @@ const {
     copyFile,
     promptAndRun,
     catchAndThrow,
+    getTemplateDir,
     compileTmplToTarget,
     hyphenCaseToUpperCamelCase,
 } = require('./utils')
+const { defaultTuaConfig } = require('./constants')
 
-// TODO: 读取 .tuarc 和 tua-mp.config.js 中的配置
+const cwd = process.cwd()
 
 /**
  * 添加组件功能，组件全用大驼峰命名
  * 如果没有 dist 则添加的是全局组件，有 dist 则添加到目标地址
- * @param {String} name 接口名称（连字符）
- * @param {Boolean} global 是否是全局组件
+ * @param {Object} options
+ * @param {String} options.name 接口名称（连字符）
+ * @param {Boolean} options.global 是否是全局组件
+ * @param {Object} options.tuaConfig 项目自定义配置
  */
-module.exports = (name, { global }) => {
-    if (!name) {
-        return catchAndThrow(`组件名称不能为空\n`)
-    }
+module.exports = (options = {}) => {
+    const {
+        name,
+        global = false,
+        tuaConfig = defaultTuaConfig,
+    } = options
+
+    if (!name) return catchAndThrow(`组件名称不能为空\n`)
 
     // 大驼峰的名称
     const uccName = hyphenCaseToUpperCamelCase(name)
@@ -44,15 +52,16 @@ module.exports = (name, { global }) => {
     // 全局组件放在 src/comps/ 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), relativePath)
+        path.resolve(cwd, relativePath)
     const targetPath = process.env.TUA_CLI_TEST_DIST ||
         /* istanbul ignore next */
         path.join(targetDir, `${uccName}`)
 
     // src
+    const prefix = 'comp'
     const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        path.resolve(__dirname, '../templates/comp/')
+        getTemplateDir(tuaConfig.templateDir, prefix)
     const srcIdx = path.join(templateDir, 'index.js')
     const srcComp = path.join(templateDir, 'Comp.vue')
 
@@ -102,7 +111,7 @@ module.exports = (name, { global }) => {
             const relativePath = answer.path
             const targetDir = process.env.TUA_CLI_TEST_DIR ||
                 /* istanbul ignore next */
-                path.resolve(process.cwd(), relativePath)
+                path.resolve(cwd, relativePath)
 
             const targetPath = process.env.TUA_CLI_TEST_DIST ||
                 /* istanbul ignore next */

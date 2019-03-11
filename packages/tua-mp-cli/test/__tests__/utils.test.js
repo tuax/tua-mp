@@ -1,9 +1,11 @@
 const fs = require('fs')
+const path = require('path')
 const { promisify } = require('util')
 const { expectPrompts } = require('inquirer')
 const {
     rMkdir,
     upperFirst,
+    getTemplateDir,
     readConfigFile,
     fsExistsFallback,
     compileTmplToTarget,
@@ -41,6 +43,24 @@ describe('fs', () => {
         expect(result1).toBe(file)
         expect(result2).toBe(file)
         expect(fsExistsFallback()).toBeUndefined()
+    })
+
+    test('getTemplateDir', async () => {
+        expect(getTemplateDir()).toBeUndefined()
+
+        const prefix = 'test'
+
+        // default path
+        const defaultPath = path.resolve(__dirname, '../../templates', prefix)
+        expect(getTemplateDir('', prefix)).toBeUndefined()
+        await rMkdir(defaultPath)
+        expect(getTemplateDir('', prefix)).toBe(defaultPath)
+
+        // absolute path
+        const customDir = '/foo/bar/a/b/c/'
+        expect(getTemplateDir(customDir, prefix)).toBe(defaultPath)
+        await rMkdir(customDir + prefix)
+        expect(getTemplateDir(customDir, prefix)).toBe(customDir + prefix)
     })
 
     test('readConfigFile', () => {

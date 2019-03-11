@@ -29,7 +29,7 @@ const rMkdir = async (dir) => {
  */
 const fsExistsFallback = (files = []) => {
     for (const file of files) {
-        if (!fs.existsSync(file)) continue
+        if (!exists(file)) continue
 
         return file
     }
@@ -44,6 +44,12 @@ const readConfigFile = (base = process.cwd()) => {
     return exists(configPath) ? require(configPath) : {}
 }
 
+const cwd = process.cwd()
+const getTemplateDir = (dir, prefix = '') => fsExistsFallback([
+    path.resolve(cwd, dir || '.templates', prefix),
+    path.resolve(__dirname, '../../templates', prefix),
+])
+
 module.exports = {
     mkdir,
     exists,
@@ -52,6 +58,7 @@ module.exports = {
     readFile,
     writeFile,
     appendFile,
+    getTemplateDir,
     readConfigFile,
     fsExistsFallback,
 }
