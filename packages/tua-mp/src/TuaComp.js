@@ -46,6 +46,7 @@ export const TuaComp = ({
         rest.beforeCreate && rest.beforeCreate.apply(this, options)
         rest.created && rest.created.apply(this, options)
 
+        /* istanbul ignore next */
         if (process.env.NODE_ENV === 'test') {
             this.$props = {
                 ...properties,
