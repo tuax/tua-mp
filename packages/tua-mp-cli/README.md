@@ -97,7 +97,7 @@ $ tuamp a comp <name>
 
 > 注意使用 `<Tab>` 键补全路径，输入不存在的文件夹时会自动创建。
 
-### 导出模板命令 `eject`
+### 导出模板命令 `eject` <Badge text="0.3.0+"/>
 这个命令将包中的默认模板导出到 `.templates/` 中。
 
 这样通过修改`.templates/` 下的模板文件，即可实现自定义模板功能。
@@ -111,7 +111,7 @@ $ tuamp e
 ## 配置
 配置文件和 `@tua-mp/service` 一样，都是使用 `tua.config.js`。
 
-### templateDir
+### templateDir <Badge text="0.3.0+"/>
 * 类型：`String`
 * 默认值：`.templates`
 
