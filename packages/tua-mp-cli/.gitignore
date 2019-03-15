@@ -5,6 +5,6 @@ yarn.lock
 yarn-error.log
 package-lock.json
 
-src/
+.temp/
 .templates/
 tua.config.js

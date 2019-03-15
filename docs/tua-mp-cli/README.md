@@ -19,4 +19,14 @@ sidebar: auto
 
 ### `add comp`
 
+注意这里用的是本地模板 `.templates/comp`
+
 <p><img :src="$withBase('/cli/add-comp-local.gif')" alt="add comp"></p>
+
+### `eject`
+
+<p><img :src="$withBase('/cli/eject.gif')" alt="eject"></p>
+
+### `add api with custom template`
+
+<p><img :src="$withBase('/cli/custom-template.gif')" alt="custom template"></p>

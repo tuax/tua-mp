@@ -92,9 +92,7 @@ $ tuamp add comp <name>
 $ tuamp a comp <name>
 ```
 
-::: tip
-注意使用 `<Tab>` 键补全路径，输入不存在的文件夹时会自动创建。
-:::
+> 注意使用 `<Tab>` 键补全路径，输入不存在的文件夹时会自动创建。
 
 ### 导出模板命令 `eject`
 这个命令将包中的默认模板导出到 `.templates/` 中。
@@ -107,16 +105,6 @@ $ tuamp eject
 $ tuamp e
 ```
 
-### 模板路径选项 `-t, --template`
-对于所有 `add` 命令还有 `-t, --template` 选项，用于指定模板。
-
-```bash
-$ tuamp add api --template=<template> <name>
-$ tuamp add page -t=<template> <name>
-$ tuamp add comp -t=<template> <name>
-$ tuamp add comp -t=<template> -g <name>
-```
-
 ## 配置
 配置文件和 `@tua-mp/service` 一样，都是使用 `tua.config.js`。
 
@@ -125,3 +113,9 @@ $ tuamp add comp -t=<template> -g <name>
 * 默认值：`.templates`
 
 自定义模板的路径。
+
+**读取模板的优先级逻辑是：**
+
+1. 首先尝试使用 `tua.config.js` 中的 `templateDir` 字段
+2. 接着尝试读取 `.templates/`
+3. 最后读取默认模板

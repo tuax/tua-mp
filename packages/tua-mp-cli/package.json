@@ -11,7 +11,7 @@
         "test": "cross-env NODE_ENV=test jest",
         "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix lib/ bin/ test/",
-        "clean": "rimraf src && mkdir src/ src/app/ src/apis/ src/pages/ src/comps/ && echo {} > src/app/app.json",
+        "clean": "rimraf .temp && mkdir .temp/ .temp/src/ .temp/src/app/ .temp/src/apis/ .temp/src/pages/ .temp/src/comps/ && echo {} > .temp/src/app/app.json && echo \"module.exports = {\n\ttemplateDir: '.templates',\n}\" > .temp/tua.config.js",
         "precommit": "lint-staged",
         "pub": "npm test && npm publish"
     },
