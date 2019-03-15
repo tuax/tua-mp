@@ -6,14 +6,10 @@ exports.command = 'comp <name>'
 
 exports.builder = (yargs) => yargs
     .option('global', {
+        type: 'boolean',
         alias: 'g',
         default: false,
         describe: 'add a global component in src/comps/',
     })
 
-exports.handler = (argv) => {
-    const name = argv.name
-    const global = argv.global
-
-    require('../../lib/addComp')({ name, global })
-}
+exports.handler = require('../../../lib/addComp')

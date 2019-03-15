@@ -46,7 +46,7 @@ const fsExistsFallback = (files = []) => {
 /**
  * 读取项目中的 tua.config.js 中的配置
  */
-const readConfigFile = (base = process.cwd()) => {
+const readConfigFile = (base = cwd) => {
     const tuaConfigPath = path.resolve(base, `tua.config.js`)
     const tuaMpConfigPath = path.resolve(base, `tua-mp.config.js`)
 

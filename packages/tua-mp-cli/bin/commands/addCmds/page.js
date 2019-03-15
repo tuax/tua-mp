@@ -6,8 +6,4 @@ exports.command = 'page <name>'
 
 exports.builder = {}
 
-exports.handler = (argv) => {
-    const name = argv.name
-
-    require('../../lib/addPage')({ name })
-}
+exports.handler = require('../../../lib/addPage')

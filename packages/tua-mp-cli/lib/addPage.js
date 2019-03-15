@@ -16,6 +16,8 @@ const {
 } = require('./utils')
 const { defaultTuaConfig } = require('./constants')
 
+const cwd = process.cwd()
+
 /**
  * 添加页面功能
  * 如果是连字符形式的页面地址，需要将 .vue 文件的文件名转成大驼峰
@@ -37,25 +39,27 @@ module.exports = (options = {}) => {
     // 大驼峰的名称
     const uccName = hyphenCaseToUpperCamelCase(name)
     const outputStr = `小程序页面 -> ${hcName}`
+
+    const pagesPath = 'src/pages'
+    const appJsonPath = 'src/app/app.json'
+
     const treeLog = treeify.asTree({
-        'src/pages': {
-            '...': null,
-            [hcName]: {
-                [`${uccName}.vue`]: null,
-                'index.js': null,
-            },
+        [`${pagesPath}/${hcName}`]: {
+            [`${pagesPath}/${hcName}/index.js`]: null,
+            [`${pagesPath}/${hcName}/${uccName}.vue`]: null,
         },
     })
 
     // 应用配置默认放在 src/app/app.json 下
     const targetApp = process.env.TUA_CLI_TEST_APP ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), './src/app/app.json')
+        path.resolve(cwd, appJsonPath)
 
     // 默认放在 src/pages/ 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), './src/pages/')
+        path.resolve(cwd, pagesPath)
+
     const targetPath = process.env.TUA_CLI_TEST_DIST ||
         /* istanbul ignore next */
         path.join(targetDir, `${hcName}`)
@@ -64,8 +68,8 @@ module.exports = (options = {}) => {
     if (!exists(targetDir) || !exists(targetApp)) {
         return catchAndThrow(
             `请检查以下文件（夹）是否存在!\n` +
-            `\t- src/pages/\n` +
-            `\t- src/app/app.json\n`
+            `\t- ${pagesPath}/\n` +
+            `\t- ${appJsonPath}\n`
         )
     }
 
@@ -91,6 +95,7 @@ module.exports = (options = {}) => {
         // 添加
         if (appJson.pages.indexOf(pagePath) === -1) {
             appJson.pages.push(pagePath)
+            log(`成功将页面 ${pagePath} 写入 src/app/app.json`)
         }
 
         // 排序（排除首页）
@@ -98,7 +103,6 @@ module.exports = (options = {}) => {
         appJson.pages.shift()
         appJson.pages.sort((a, b) => a.length - b.length)
         appJson.pages.unshift(firstPage)
-        log(`成功写入 app.json -> ${pagePath}`)
 
         return appJson
     }

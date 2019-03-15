@@ -34,19 +34,19 @@ module.exports = (options = {}) => {
 
     // 小驼峰的名称
     const ccName = hyphenCaseToCamelCase(name)
-    const outputStr = `小程序 api -> ${name}.js`
+    const outputStr = `小程序 api -> ${name}`
+    const relativePath = 'src/apis'
     const treeLog = treeify.asTree({
-        'src/apis': {
-            '...': null,
-            [`${name}.js`]: null,
-            'index.js': null,
+        [relativePath]: {
+            [`${relativePath}/index.js`]: null,
+            [`${relativePath}/${name}.js`]: null,
         },
     })
 
     // 默认放在 src/apis/ 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(cwd, './src/apis/')
+        path.resolve(cwd, relativePath)
 
     // 检查父文件夹是否存在
     if (!exists(targetDir)) {

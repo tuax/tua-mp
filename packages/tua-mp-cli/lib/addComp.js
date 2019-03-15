@@ -38,21 +38,23 @@ module.exports = (options = {}) => {
     // 大驼峰的名称
     const uccName = hyphenCaseToUpperCamelCase(name)
     const outputStr = `${global ? '全局' : '页面'}小程序组件 -> ${uccName}`
-    const relativePath = 'src/comps/'
-    const getTreeLog = (relativePath) => treeify.asTree({
-        [relativePath]: {
-            '...': null,
-            [uccName]: {
-                [`${uccName}.vue`]: null,
-                'index.js': null,
-            },
-        },
-    })
+    const compsPath = 'src/comps'
 
-    // 全局组件放在 src/comps/ 下
+    const getTreeLog = (prefix) => {
+        const relativePath = `${prefix}/${uccName}`
+
+        return treeify.asTree({
+            [relativePath]: {
+                [`${relativePath}/index.js`]: null,
+                [`${relativePath}/${uccName}.vue`]: null,
+            },
+        })
+    }
+
+    // 全局组件放在 compsPath 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(cwd, relativePath)
+        path.resolve(cwd, compsPath)
     const targetPath = process.env.TUA_CLI_TEST_DIST ||
         /* istanbul ignore next */
         path.join(targetDir, `${uccName}`)
@@ -65,7 +67,7 @@ module.exports = (options = {}) => {
     const srcIdx = path.join(templateDir, 'index.js')
     const srcComp = path.join(templateDir, 'Comp.vue')
 
-    const runByTargetPath = (targetPath, relativePath) => (isCover = false) => {
+    const runByTargetPath = (targetPath, pathPrefix) => (isCover = false) => {
         // dist
         const distIdx = path.join(targetPath, 'index.js')
         const distComp = path.join(targetPath, `${uccName}.vue`)
@@ -85,8 +87,7 @@ module.exports = (options = {}) => {
         return Promise.all(tasks)
             .then(() => log(
                 `成功${isCover ? '覆盖' : '添加'}${outputStr}\n` +
-                // 展示树状结构
-                getTreeLog(relativePath)
+                getTreeLog(pathPrefix)
             ))
             .catch(catchAndThrow)
     }
@@ -108,17 +109,16 @@ module.exports = (options = {}) => {
         }]
 
         return inquirer.prompt(questions).then((answer) => {
-            const relativePath = answer.path
             const targetDir = process.env.TUA_CLI_TEST_DIR ||
                 /* istanbul ignore next */
-                path.resolve(cwd, relativePath)
+                path.resolve(cwd, answer.path)
 
             const targetPath = process.env.TUA_CLI_TEST_DIST ||
                 /* istanbul ignore next */
                 path.join(targetDir, `${uccName}`)
 
             return promptAndRun({
-                run: runByTargetPath(targetPath, relativePath),
+                run: runByTargetPath(targetPath, answer.path),
                 message: 'Target directory exists. Continue?',
                 beforeFn: () => rMkdir(targetPath),
                 targetPath,
@@ -130,12 +130,12 @@ module.exports = (options = {}) => {
     if (!exists(targetDir)) {
         return catchAndThrow(
             `请检查以下文件夹是否存在!\n` +
-            `\t- src/comps/\n`
+            `\t- ${compsPath}\n`
         )
     }
 
     return promptAndRun({
-        run: runByTargetPath(targetPath, relativePath),
+        run: runByTargetPath(targetPath, compsPath),
         message: 'Target directory exists. Continue?',
         beforeFn: () => mkdir(targetPath),
         targetPath,
