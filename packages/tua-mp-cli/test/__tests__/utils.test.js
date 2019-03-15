@@ -66,11 +66,16 @@ describe('fs', () => {
     test('readConfigFile', () => {
         expect(readConfigFile()).toEqual({})
 
+        const tuaMpConfig = `/tua-mp.config.js`
+        fs.writeFileSync(tuaMpConfig, ``)
+        jest.doMock(tuaMpConfig, () => ({ mp: 1 }), { virtual: true })
+        expect(readConfigFile('/')).toEqual({ mp: 1 })
+
         const tuaConfig = `/tua.config.js`
         fs.writeFileSync(tuaConfig, ``)
-        jest.doMock(tuaConfig, () => ({ a: 1 }), { virtual: true })
+        jest.doMock(tuaConfig, () => ({ tua: 1 }), { virtual: true })
 
-        expect(readConfigFile('/')).toEqual({ a: 1 })
+        expect(readConfigFile('/')).toEqual({ tua: 1 })
     })
 })
 

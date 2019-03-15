@@ -2,6 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const { promisify } = require('util')
 
+const { info, warn } = require('./logFns')
+
+const cwd = process.cwd()
 const mkdir = promisify(fs.mkdir)
 const exists = fs.existsSync
 const copyFile = promisify(fs.copyFile)
@@ -31,6 +34,11 @@ const fsExistsFallback = (files = []) => {
     for (const file of files) {
         if (!exists(file)) continue
 
+        const filePath = file.indexOf(cwd) === 0
+            ? path.relative(cwd, file)
+            : file
+
+        info(`templateDir: ${filePath}\n`)
         return file
     }
 }
@@ -39,12 +47,20 @@ const fsExistsFallback = (files = []) => {
  * 读取项目中的 tua.config.js 中的配置
  */
 const readConfigFile = (base = process.cwd()) => {
-    const configPath = path.resolve(base, `tua.config.js`)
+    const tuaConfigPath = path.resolve(base, `tua.config.js`)
+    const tuaMpConfigPath = path.resolve(base, `tua-mp.config.js`)
 
-    return exists(configPath) ? require(configPath) : {}
+    if (exists(tuaMpConfigPath)) {
+        warn(`请将 tua-mp.config.js 改名为 tua.config.js`)
+    }
+
+    return exists(tuaConfigPath)
+        ? require(tuaConfigPath)
+        : exists(tuaMpConfigPath)
+            ? require(tuaMpConfigPath)
+            : {}
 }
 
-const cwd = process.cwd()
 const getTemplateDir = (dir, prefix = '') => fsExistsFallback([
     path.resolve(cwd, dir || '.templates', prefix),
     path.resolve(__dirname, '../../templates', prefix),
