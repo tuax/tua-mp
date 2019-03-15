@@ -50,12 +50,12 @@ module.exports = (options = {}) => {
         },
     })
 
-    // 应用配置默认放在 src/app/app.json 下
+    // 应用配置默认放在 appJsonPath 下
     const targetApp = process.env.TUA_CLI_TEST_APP ||
         /* istanbul ignore next */
         path.resolve(cwd, appJsonPath)
 
-    // 默认放在 src/pages/ 下
+    // 默认放在 pagesPath 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
         path.resolve(cwd, pagesPath)
@@ -95,7 +95,7 @@ module.exports = (options = {}) => {
         // 添加
         if (appJson.pages.indexOf(pagePath) === -1) {
             appJson.pages.push(pagePath)
-            log(`成功将页面 ${pagePath} 写入 src/app/app.json`)
+            log(`成功将页面 ${pagePath} 写入 ${appJsonPath}`)
         }
 
         // 排序（排除首页）

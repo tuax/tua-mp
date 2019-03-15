@@ -8,7 +8,7 @@ jest.mock('inquirer')
 
 describe('eject', () => {
     // TODO: use memory fs
-    const root = path.join('src', 'tua-mp-cli')
+    const root = path.join('.temp/src', 'tua-mp-cli')
     const srcDir = path.join(root, 'eject-src')
     const distDir = path.join(root, 'eject-dist')
     const srcMd = path.join(srcDir, 'README.md')

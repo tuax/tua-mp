@@ -104,7 +104,7 @@ module.exports = (options = {}) => {
                 isDirectory => isDirectory,
             // default 不起作用...
             // https://github.com/mokkabonna/inquirer-autocomplete-prompt/pull/38
-            default: 'src/comps/',
+            default: compsPath,
             suggestOnly: true,
         }]
 

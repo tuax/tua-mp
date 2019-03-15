@@ -47,11 +47,17 @@ const fsExistsFallback = (files = []) => {
  * 读取项目中的 tua.config.js 中的配置
  */
 const readConfigFile = (base = cwd) => {
-    const tuaConfigPath = path.resolve(base, `tua.config.js`)
-    const tuaMpConfigPath = path.resolve(base, `tua-mp.config.js`)
+    const TUA_FILE_NAME = `tua.config.js`
+    const TUA_MP_FILE_NAME = `tua-mp.config.js`
+
+    const tuaConfigPath = path.resolve(base, TUA_FILE_NAME)
+    const tuaMpConfigPath = path.resolve(base, TUA_MP_FILE_NAME)
 
     if (exists(tuaMpConfigPath)) {
-        warn(`请将 tua-mp.config.js 改名为 tua.config.js`)
+        warn(
+            `"${TUA_MP_FILE_NAME}" is DEPRECATED.\n` +
+            `Please rename it to "${TUA_FILE_NAME}" instead.`
+        )
     }
 
     return exists(tuaConfigPath)

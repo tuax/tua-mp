@@ -43,7 +43,7 @@ module.exports = (options = {}) => {
         },
     })
 
-    // 默认放在 src/apis/ 下
+    // 默认放在 relativePath 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
         path.resolve(cwd, relativePath)
@@ -52,7 +52,7 @@ module.exports = (options = {}) => {
     if (!exists(targetDir)) {
         return catchAndThrow(
             `请检查以下文件夹是否存在!\n` +
-            `\t- src/apis/\n`
+            `\t- ${relativePath}/\n`
         )
     }
 

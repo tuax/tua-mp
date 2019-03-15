@@ -109,7 +109,7 @@ module.exports = class Service {
 
         if (fsExistsFallback([tuaMpConfigPath])) {
             warn(
-                `"${TUA_MP_FILE_NAME}" is deprecated.\n` +
+                `"${TUA_MP_FILE_NAME}" is DEPRECATED.\n` +
                 `Please rename it to "${TUA_FILE_NAME}" instead.`
             )
         }
