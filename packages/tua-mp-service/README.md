@@ -3,8 +3,11 @@
 > inspired by [@vue/cli-service](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service)
 
 <p align="center">
-    <a href="https://www.npmjs.com/package/@tua-mp/service"><img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@tua-mp/service"><img src="https://img.shields.io/npm/l/@tua-mp/service.svg" alt="License"></a>
+    <a href="https://www.npmjs.com/package/@tua-mp/service">
+        <img src="https://img.shields.io/npm/v/@tua-mp/service.svg" alt="Version">
+        <img src="https://img.shields.io/npm/v/@tua-mp/service/next.svg" alt="Next Version">
+        <img src="https://img.shields.io/npm/l/@tua-mp/service.svg" alt="License">
+    </a>
 </p>
 
 ## 介绍

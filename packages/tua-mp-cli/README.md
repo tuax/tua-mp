@@ -1,8 +1,11 @@
 <h1 align="center">@tua-mp/cli</h1>
 
 <p align="center">
-    <a href="https://www.npmjs.com/package/@tua-mp/cli"><img src="https://img.shields.io/npm/v/@tua-mp/cli.svg" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@tua-mp/cli"><img src="https://img.shields.io/npm/l/@tua-mp/cli.svg" alt="License"></a>
+    <a href="https://www.npmjs.com/package/@tua-mp/cli">
+        <img src="https://img.shields.io/npm/v/@tua-mp/cli.svg" alt="Version">
+        <img src="https://img.shields.io/npm/v/@tua-mp/cli/next.svg" alt="Next Version">
+        <img src="https://img.shields.io/npm/l/@tua-mp/cli.svg" alt="License">
+    </a>
 </p>
 
 ## 介绍
