@@ -9,65 +9,75 @@ const {
     writeFile,
     promptAndRun,
     catchAndThrow,
+    getTemplateDir,
     compileTmplToTarget,
     camelCaseToHyphenCase,
     hyphenCaseToUpperCamelCase,
 } = require('./utils')
+const { defaultTuaConfig } = require('./constants')
 
-// TODO: 读取 .tuarc 和 tua-mp.config.js 中的配置
+const cwd = process.cwd()
 
 /**
  * 添加页面功能
  * 如果是连字符形式的页面地址，需要将 .vue 文件的文件名转成大驼峰
  * 但在 app.json 中的页面名称保持原样
- * @param {String} name 接口名称（连字符）
+ * @param {Object} options
+ * @param {String} options.name 接口名称（连字符）
+ * @param {Object} options.tuaConfig 项目自定义配置
  */
-const addPage = (name) => {
-    if (!name) {
-        return catchAndThrow(`页面名称不能为空\n`)
-    }
+module.exports = (options = {}) => {
+    const {
+        name,
+        tuaConfig = defaultTuaConfig,
+    } = options
+
+    if (!name) return catchAndThrow(`页面名称不能为空\n`)
 
     // 连字符的名称
     const hcName = camelCaseToHyphenCase(name)
     // 大驼峰的名称
     const uccName = hyphenCaseToUpperCamelCase(name)
     const outputStr = `小程序页面 -> ${hcName}`
+
+    const pagesPath = 'src/pages'
+    const appJsonPath = 'src/app/app.json'
+
     const treeLog = treeify.asTree({
-        'src/pages': {
-            '...': null,
-            [hcName]: {
-                [`${uccName}.vue`]: null,
-                'index.js': null,
-            },
+        [`${pagesPath}/${hcName}`]: {
+            [`${pagesPath}/${hcName}/index.js`]: null,
+            [`${pagesPath}/${hcName}/${uccName}.vue`]: null,
         },
     })
 
-    // 应用配置默认放在 src/app/app.json 下
+    // 应用配置默认放在 appJsonPath 下
     const targetApp = process.env.TUA_CLI_TEST_APP ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), './src/app/app.json')
+        path.resolve(cwd, appJsonPath)
 
-    // 默认放在 src/pages/ 下
+    // 默认放在 pagesPath 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), './src/pages/')
+        path.resolve(cwd, pagesPath)
+
     const targetPath = process.env.TUA_CLI_TEST_DIST ||
         /* istanbul ignore next */
         path.join(targetDir, `${hcName}`)
 
     // 检查父文件夹和 app.json 是否存在
-    if (!exists(targetApp) || !exists(targetDir)) {
+    if (!exists(targetDir) || !exists(targetApp)) {
         return catchAndThrow(
             `请检查以下文件（夹）是否存在!\n` +
-            `\t- src/app/app.json\n` +
-            `\t- src/pages/\n`
+            `\t- ${pagesPath}/\n` +
+            `\t- ${appJsonPath}\n`
         )
     }
 
     // src
+    const prefix = 'page'
     const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        path.resolve(__dirname, '../templates/page/')
+        getTemplateDir(tuaConfig.templateDir, prefix)
     const srcIdx = path.join(templateDir, 'index.js')
     const srcPage = path.join(templateDir, 'Page.vue')
 
@@ -85,6 +95,7 @@ const addPage = (name) => {
         // 添加
         if (appJson.pages.indexOf(pagePath) === -1) {
             appJson.pages.push(pagePath)
+            log(`成功将页面 ${pagePath} 写入 ${appJsonPath}`)
         }
 
         // 排序（排除首页）
@@ -92,7 +103,6 @@ const addPage = (name) => {
         appJson.pages.shift()
         appJson.pages.sort((a, b) => a.length - b.length)
         appJson.pages.unshift(firstPage)
-        log(`成功写入 app.json -> ${pagePath}`)
 
         return appJson
     }
@@ -135,5 +145,3 @@ const addPage = (name) => {
         targetPath,
     })
 }
-
-module.exports = addPage

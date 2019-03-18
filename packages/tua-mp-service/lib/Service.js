@@ -6,17 +6,18 @@ const WebpackChain = require('webpack-chain')
 const {
     map,
     pipe,
+    warn,
     error,
     filter,
     flatten,
     compose,
     mergeAll,
     isDirectory,
+    fsExistsFallback,
 } = require('./utils')
 
 const webpackConfig = new WebpackChain()
 const VALID_COMMENDS = ['build', 'serve']
-const TUA_MP_FILE_NAME = 'tua-mp.config.js'
 
 module.exports = class Service {
     constructor (context) {
@@ -32,7 +33,7 @@ module.exports = class Service {
         name = name.toLowerCase()
 
         if (VALID_COMMENDS.indexOf(name) === -1) {
-            console.warn(
+            warn(
                 `INVALID command [${name}]!!!` +
                 `valid commands are: ${VALID_COMMENDS.join(', ')}`
             )
@@ -100,21 +101,37 @@ module.exports = class Service {
 
     // 读取用户配置
     loadUserOptions () {
-        const configPath = this.tools.resolve(TUA_MP_FILE_NAME)
+        const TUA_FILE_NAME = 'tua.config.js'
+        const TUA_MP_FILE_NAME = 'tua-mp.config.js'
 
-        if (!fs.existsSync(configPath)) return {}
+        const tuaConfigPath = this.tools.resolve(TUA_FILE_NAME)
+        const tuaMpConfigPath = this.tools.resolve(TUA_MP_FILE_NAME)
+
+        if (fsExistsFallback([tuaMpConfigPath])) {
+            warn(
+                `"${TUA_MP_FILE_NAME}" is DEPRECATED.\n` +
+                `Please rename it to "${TUA_FILE_NAME}" instead.`
+            )
+        }
+
+        const configPath = fsExistsFallback([
+            tuaConfigPath,
+            tuaMpConfigPath,
+        ])
+
+        if (!configPath) return {}
 
         try {
             const fileConfig = require(configPath)
 
             if (!fileConfig || typeof fileConfig !== 'object') {
-                error(`Error loading ${TUA_MP_FILE_NAME}: should export an object.`)
+                error(`Error loading ${configPath}: should export an object.`)
                 return {}
             }
 
             return fileConfig
         } catch (e) {
-            error(`Error loading ${TUA_MP_FILE_NAME}:`)
+            error(`Error loading ${configPath}:`)
             throw e
         }
     }

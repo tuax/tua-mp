@@ -23,6 +23,6 @@ require('yargs')
     .alias('v', 'version')
     .alias('h', 'help')
     // 命令目录
-    .commandDir('../commands/')
+    .commandDir('./commands/')
     .demandCommand(1)
     .parse()

@@ -5,4 +5,5 @@ exports.aliases = 'i'
 exports.command = 'init <template> <name>'
 
 exports.builder = {}
+
 exports.handler = () => { require('@vue/cli-init') }

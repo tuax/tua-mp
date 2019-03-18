@@ -27,14 +27,14 @@ $ tuamp init tua-mp-templates/simple my-project
 ├── README.md
 ├── dist/
 ├── package.json
-├── tua-mp.config.js
+├── tua.config.js
 ├── project.config.json
 └── src/
 ```
 
 * src/: 源码
 * dist/: 打包后代码
-* tua-mp.config.js: `@tua-mp/service` 的配置文件
+* tua.config.js: `@tua-mp/service` 的配置文件
 * project.config.json: 小程序开发工具配置文件
 
 ::: tip
@@ -90,13 +90,13 @@ $ tuamp init tua-mp-templates/simple my-project
 * `styles/`: 公用样式
 * `templates/`: 模板
 
-## tua-mp.config.js
+## tua.config.js
 以上那些特性的支持是因为底层调用了 webpack 将源代码转换成小程序的代码。由于 webpack 配置太繁琐了，因此受到 [@vue/cli-service](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service) 的启发，这部分配置也用 [@tua-mp/service](../tua-mp-service/) 进行了封装。
 
 这个配置文件提供了一个入口让开发者可以对于 webpack 进行二次配置。
 
 ```js
-// tua-mp.config.js
+// tua.config.js
 module.exports = {
     // 简单配置
     // 这部分的配置最终会通过 webpack-merge 和已有的 webpack 配置合并。

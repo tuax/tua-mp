@@ -22,16 +22,21 @@ const promptAndRun = ({
     targetPath,
 }) => {
     // 不存在或明确要覆盖，则直接运行
-    if (!exists(targetPath) || isCover) return beforeFn().then(run).catch(catchAndThrow)
+    if (!exists(targetPath) || isCover) {
+        return beforeFn().then(run).catch(catchAndThrow)
+    }
+
+    const msgs = [{ type: 'confirm', message, name: 'ok' }]
 
     // 已存在则询问
-    return inquirer.prompt([{ type: 'confirm', message, name: 'ok' }])
+    return inquirer.prompt(msgs)
         .then((answer) => answer.ok
             // 覆盖
             ? run(true)
             // 取消覆盖
             : ({ isCancel: true })
-        ).catch(catchAndThrow)
+        )
+        .catch(catchAndThrow)
 }
 
 /**

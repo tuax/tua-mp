@@ -8,50 +8,59 @@ const {
     copyFile,
     appendFile,
     catchAndThrow,
+    getTemplateDir,
     compileTmplToTarget,
     hyphenCaseToCamelCase,
 } = require('./utils')
+const { defaultTuaConfig } = require('./constants')
 
-// TODO: 读取 .tuarc 和 tua-mp.config.js 中的配置
+const cwd = process.cwd()
 
 /**
  * 添加 api 功能
  * 如果是连字符形式的中间接口路径需要将文件名转成小驼峰
- * 但 config 中的 prefix 依然保持原样
- * @param {String} name 接口名称
+ * 但 api 配置中的 prefix 依然保持原样
+ * @param {Object} options
+ * @param {String} options.name 接口名称
+ * @param {Object} options.tuaConfig 项目自定义配置
  */
-const addApi = (name) => {
-    if (!name) {
-        return catchAndThrow(`api 名称不能为空\n`)
-    }
+module.exports = (options = {}) => {
+    const {
+        name,
+        tuaConfig = defaultTuaConfig,
+    } = options
+
+    if (!name) return catchAndThrow(`api 名称不能为空\n`)
 
     // 小驼峰的名称
     const ccName = hyphenCaseToCamelCase(name)
-    const outputStr = `小程序 api -> ${name}.js`
+    const outputStr = `小程序 api -> ${name}`
+    const relativePath = 'src/apis'
     const treeLog = treeify.asTree({
-        'src/apis': {
-            '...': null,
-            [`${name}.js`]: null,
-            'index.js': null,
+        [relativePath]: {
+            [`${relativePath}/index.js`]: null,
+            [`${relativePath}/${name}.js`]: null,
         },
     })
 
-    // 默认放在 src/apis/ 下
+    // 默认放在 relativePath 下
     const targetDir = process.env.TUA_CLI_TEST_DIR ||
         /* istanbul ignore next */
-        path.resolve(process.cwd(), './src/apis/')
+        path.resolve(cwd, relativePath)
 
     // 检查父文件夹是否存在
     if (!exists(targetDir)) {
         return catchAndThrow(
-            `请检查以下文件夹是否存在!\n\t- src/apis/\n`
+            `请检查以下文件夹是否存在!\n` +
+            `\t- ${relativePath}/\n`
         )
     }
 
     // src
+    const prefix = 'api'
     const templateDir = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
-        path.resolve(__dirname, '../templates/api/')
+        getTemplateDir(tuaConfig.templateDir, prefix)
     const srcIdx = path.join(templateDir, 'index.js')
     const srcApi = path.join(templateDir, 'api.js')
 
@@ -90,5 +99,3 @@ const addApi = (name) => {
         )
         .catch(catchAndThrow)
 }
-
-module.exports = addApi

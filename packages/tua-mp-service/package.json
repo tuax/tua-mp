@@ -1,6 +1,6 @@
 {
     "name": "@tua-mp/service",
-    "version": "0.1.6",
+    "version": "0.2.0",
     "description": "local service for tua-mp projects, inspired by @vue/cli-service",
     "main": "lib/Service.js",
     "bin": {

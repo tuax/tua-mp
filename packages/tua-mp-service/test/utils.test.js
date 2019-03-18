@@ -6,6 +6,7 @@ const {
     compose,
     mergeAll,
     isDirectory,
+    fsExistsFallback,
 } = require('../lib/utils')
 
 test('map', () => {
@@ -65,4 +66,22 @@ test('mergeAll', () => {
         b: 'b',
         c: 'c',
     })
+})
+
+test('fsExistsFallback', () => {
+    const result1 = fsExistsFallback([
+        'foo',
+        'foobar',
+        'whatever',
+        __filename,
+    ])
+    const result2 = fsExistsFallback([
+        'foo',
+        __filename,
+        'whatever',
+    ])
+
+    expect(result1).toBe(__filename)
+    expect(result2).toBe(__filename)
+    expect(fsExistsFallback()).toBeUndefined()
 })

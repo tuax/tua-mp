@@ -1,9 +1,13 @@
 const fs = require('fs')
+const path = require('path')
 const { promisify } = require('util')
 const { expectPrompts } = require('inquirer')
 const {
     rMkdir,
     upperFirst,
+    getTemplateDir,
+    readConfigFile,
+    fsExistsFallback,
     compileTmplToTarget,
     camelCaseToHyphenCase,
     hyphenCaseToCamelCase,
@@ -19,6 +23,59 @@ describe('fs', () => {
         expect(fs.__mockDirMap[dir]).toBeFalsy()
         await rMkdir(dir)
         expect(fs.__mockDirMap[dir]).toBeTruthy()
+    })
+
+    test('fsExistsFallback', () => {
+        const file = '/a.js'
+        fs.writeFileSync(file, '')
+        const result1 = fsExistsFallback([
+            'foo',
+            'foobar',
+            'whatever',
+            file,
+        ])
+        const result2 = fsExistsFallback([
+            'foo',
+            file,
+            'whatever',
+        ])
+
+        expect(result1).toBe(file)
+        expect(result2).toBe(file)
+        expect(fsExistsFallback()).toBeUndefined()
+    })
+
+    test('getTemplateDir', async () => {
+        expect(getTemplateDir()).toBeUndefined()
+
+        const prefix = 'test'
+
+        // default path
+        const defaultPath = path.resolve(__dirname, '../../templates', prefix)
+        expect(getTemplateDir('', prefix)).toBeUndefined()
+        await rMkdir(defaultPath)
+        expect(getTemplateDir('', prefix)).toBe(defaultPath)
+
+        // absolute path
+        const customDir = '/foo/bar/a/b/c/'
+        expect(getTemplateDir(customDir, prefix)).toBe(defaultPath)
+        await rMkdir(customDir + prefix)
+        expect(getTemplateDir(customDir, prefix)).toBe(customDir + prefix)
+    })
+
+    test('readConfigFile', () => {
+        expect(readConfigFile()).toEqual({})
+
+        const tuaMpConfig = `/tua-mp.config.js`
+        fs.writeFileSync(tuaMpConfig, ``)
+        jest.doMock(tuaMpConfig, () => ({ mp: 1 }), { virtual: true })
+        expect(readConfigFile('/')).toEqual({ mp: 1 })
+
+        const tuaConfig = `/tua.config.js`
+        fs.writeFileSync(tuaConfig, ``)
+        jest.doMock(tuaConfig, () => ({ tua: 1 }), { virtual: true })
+
+        expect(readConfigFile('/')).toEqual({ tua: 1 })
     })
 })
 
