@@ -108,6 +108,31 @@ $ tuamp eject
 $ tuamp e
 ```
 
+### 生成接口声明命令 `declare` <Badge text="0.4.0+"/>
+这个命令将读取导出的 apis 然后自动生成 `index.d.ts`。
+
+```bash
+$ tuamp declare [apisPath]
+# OR
+$ tuamp d [apisPath]
+```
+
+* `apisPath` 默认值为 `src/apis/index.js`
+* `index.d.ts` 将生成在 `apisPath` 同级目录下
+
+由于使用 `require` 读取导出 apis 对象的文件，所以可能会碰到 `alias` 问题。例如项目中设置了 `@` 作为 `./src/` 的别名。虽然 `@tua-mp/cli` 已内置了一些 `alias`，但你仍然可以自由配置。
+
+在 `tua.config.js` 中的 `alias` 选项会透传给 [babel-plugin-module-resolver](https://github.com/tleunen/babel-plugin-module-resolver)，例如将 `foobar` 指向 './src/foobar' 可以这么配置：
+
+```js
+// tua.config.js
+module.exports = {
+    alias: {
+        'foobar': './src/foobar',
+    },
+}
+```
+
 ## 配置
 配置文件和 `@tua-mp/service` 一样，都是使用 `tua.config.js`。
 
@@ -116,6 +141,12 @@ $ tuamp e
 * 默认值：`.templates`
 
 自定义模板的路径。
+
+### alias <Badge text="0.4.0+"/>
+* 类型：`Object`
+* 默认值：[请点击这里查看源码](https://github.com/tuateam/tua-mp/blob/master/packages/tua-mp-cli/lib/constants.js)
+
+设置路径别名对象。
 
 **读取模板的优先级逻辑是：**
 

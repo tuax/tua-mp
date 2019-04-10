@@ -1,5 +1,3 @@
-require('@babel/register')
-
 const fs = require('fs')
 const path = require('path')
 
@@ -10,22 +8,31 @@ const {
     promptAndRun,
     catchAndThrow,
 } = require('./utils')
+const { defaultTuaConfig } = require('./constants')
 
 const cwd = process.cwd()
 
 /**
  * 根据导出的 apis，生成相应的 index.d.ts 声明
+ * @param {Object} options
+ * @param {String} options.apisPath 导出 apis 对象的文件地址
+ * @param {Object} options.tuaConfig 项目自定义配置
  */
 module.exports = (options = {}) => {
-    const { apisPath = 'src/apis/index.js' } = options
+    /* istanbul ignore next */
+    const {
+        apisPath = 'src/apis/index.js',
+        tuaConfig: {
+            alias = defaultTuaConfig.alias,
+        } = defaultTuaConfig,
+    } = options
 
     const sourcePath = process.env.TUA_CLI_TEST_SRC ||
         /* istanbul ignore next */
         path.resolve(cwd, apisPath)
 
     try {
-        // mock wx
-        global.wx = global.wx || {}
+        mockGlobalVars()
 
         const isDir = fs.lstatSync(sourcePath).isDirectory()
 
@@ -36,6 +43,12 @@ module.exports = (options = {}) => {
         const targetPath = process.env.TUA_CLI_TEST_DIST ||
             /* istanbul ignore next */
             path.resolve(cwd, dist)
+
+        require('@babel/register')({
+            plugins: [
+                [require('babel-plugin-module-resolver'), { root: cwd, alias }],
+            ],
+        })
 
         // get apis
         const apis = require(sourcePath)
@@ -48,10 +61,36 @@ module.exports = (options = {}) => {
 
         return promptAndRun({ run, message, targetPath })
     } catch (e) {
-        error(`Error loading ${sourcePath}:\n`)
+        error(`Error loading ${sourcePath}:`)
 
         return catchAndThrow(e)
     }
+}
+
+// mock global vars
+function mockGlobalVars () {
+    const location = {
+        hash: '',
+        host: '',
+        href: '',
+        port: '',
+        origin: '',
+        search: '',
+        hostname: '',
+        protocol: '',
+        pathname: '',
+    }
+    const navigator = {
+        appName: '',
+        platform: '',
+        userAgent: '',
+        appCodeName: '',
+    }
+
+    global.wx = global.wx || {}
+    global.window = global.window || { location, navigator }
+    global.location = global.location || location
+    global.navigator = global.navigator || navigator
 }
 
 /**
