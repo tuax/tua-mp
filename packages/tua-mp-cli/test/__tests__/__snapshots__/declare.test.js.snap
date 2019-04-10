@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`declare cancel 1`] = `"test cancel"`;
+
+exports[`declare cover 1`] = `
+"interface result { code: number, data: any }
+
+export declare namespace api1 {
+	export const a: <T = result>() => Promise<T>
+	export const b: <T = result>() => Promise<T>
+	export const c: <T = result>() => Promise<T>
+	export const d: <T = result>(params: {
+		q?: string | number,
+		w?: string | number,
+	}) => Promise<T>
+}
+
+export declare namespace api2 {
+	export const a: <T = result>(params: {
+		q: string | number,
+		w?: string | number,
+	}) => Promise<T>
+	export const b: <T = result>(params: {
+		q: string | number,
+		w?: string | number,
+	}) => Promise<T>
+}"
+`;
+
+exports[`declare directory 1`] = `
+"interface result { code: number, data: any }
+
+export declare namespace api1 {
+	export const a: <T = result>() => Promise<T>
+	export const b: <T = result>() => Promise<T>
+	export const c: <T = result>() => Promise<T>
+	export const d: <T = result>(params: {
+		q?: string | number,
+		w?: string | number,
+	}) => Promise<T>
+}
+
+export declare namespace api2 {
+	export const a: <T = result>(params: {
+		q: string | number,
+		w?: string | number,
+	}) => Promise<T>
+	export const b: <T = result>(params: {
+		q: string | number,
+		w?: string | number,
+	}) => Promise<T>
+}"
+`;
+
+exports[`declare generate 1`] = `
+"interface result { code: number, data: any }
+
+export declare namespace api1 {
+	export const a: <T = result>() => Promise<T>
+	export const b: <T = result>() => Promise<T>
+	export const c: <T = result>() => Promise<T>
+	export const d: <T = result>(params: {
+		q?: string | number,
+		w?: string | number,
+	}) => Promise<T>
+}
+
+export declare namespace api2 {
+	export const a: <T = result>(params: {
+		q: string | number,
+		w?: string | number,
+	}) => Promise<T>
+	export const b: <T = result>(params: {
+		q: string | number,
+		w?: string | number,
+	}) => Promise<T>
+}"
+`;

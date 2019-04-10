@@ -17,7 +17,7 @@ const error = out => logByType('error')(logSymbols.error + ' ' + chalk.red(out))
 const catchAndThrow = (err) => {
     err instanceof Error ? logByType('error')(logSymbols.error, err) : error(err)
 
-    return process.env.NODE_ENV === 'test' && Promise.reject(Error())
+    return process.env.NODE_ENV === 'test' && Promise.reject(Error(err))
 }
 
 module.exports = {
