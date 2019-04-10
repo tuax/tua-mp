@@ -16,7 +16,7 @@
         "watch": "cross-env NODE_ENV=production rollup -c -w",
         "start": "npm run watch",
         "pub": "npm run build && npm publish",
-        "precommit": "npm run build && lint-staged"
+        "precommit": "npm test && lint-staged"
     },
     "lint-staged": {
         "{src,test}/**/*.{js,vue}": [
