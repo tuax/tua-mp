@@ -13,7 +13,10 @@
         "lint": "eslint --fix lib/ bin/ test/",
         "clean": "rimraf .temp && mkdir .temp/ .temp/src/ .temp/src/app/ .temp/src/apis/ .temp/src/pages/ .temp/src/comps/ && echo {} > .temp/src/app/app.json && echo \"module.exports = {\n\ttemplateDir: '.templates',\n}\" > .temp/tua.config.js",
         "precommit": "lint-staged",
-        "pub": "npm test && npm publish"
+        "next:pm": "npm --no-git-tag-version version preminor",
+        "next:pr": "npm --no-git-tag-version version prerelease",
+        "pub": "npm test && npm publish",
+        "pub:n": "npm test && npm publish --tag next"
     },
     "lint-staged": {
         "bin/*": [

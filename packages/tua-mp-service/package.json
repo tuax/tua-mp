@@ -13,7 +13,10 @@
         "test:tdd": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint --fix lib/ bin/ test/",
         "precommit": "lint-staged",
-        "pub": "npm test && npm publish"
+        "next:pm": "npm --no-git-tag-version version preminor",
+        "next:pr": "npm --no-git-tag-version version prerelease",
+        "pub": "npm test && npm publish",
+        "pub:n": "npm test && npm publish --tag next"
     },
     "lint-staged": {
         "bin/*": [
