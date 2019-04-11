@@ -1,0 +1,141 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`declare cancel 1`] = `"test cancel"`;
+
+exports[`declare cover 1`] = `
+"// default response result
+interface Result { code: number, data: any, msg?: string }
+interface ReqFn {
+	key: string
+	mock: any
+	params: object | string[]
+}
+interface RuntimeOptions {
+	// for jsonp
+	callbackName?: string
+	[key: string]: any
+}
+// request function without params
+interface NoParamsReqFn extends ReqFn {
+	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+}
+
+export const api1: {
+	a: NoParamsReqFn
+	b: NoParamsReqFn
+	c: NoParamsReqFn
+	d: ReqFn & {
+		<T = Result>(
+			params: { q?: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+}
+
+export const api2: {
+	a: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+	b: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+}"
+`;
+
+exports[`declare directory 1`] = `
+"// default response result
+interface Result { code: number, data: any, msg?: string }
+interface ReqFn {
+	key: string
+	mock: any
+	params: object | string[]
+}
+interface RuntimeOptions {
+	// for jsonp
+	callbackName?: string
+	[key: string]: any
+}
+// request function without params
+interface NoParamsReqFn extends ReqFn {
+	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+}
+
+export const api1: {
+	a: NoParamsReqFn
+	b: NoParamsReqFn
+	c: NoParamsReqFn
+	d: ReqFn & {
+		<T = Result>(
+			params: { q?: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+}
+
+export const api2: {
+	a: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+	b: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+}"
+`;
+
+exports[`declare generate 1`] = `
+"// default response result
+interface Result { code: number, data: any, msg?: string }
+interface ReqFn {
+	key: string
+	mock: any
+	params: object | string[]
+}
+interface RuntimeOptions {
+	// for jsonp
+	callbackName?: string
+	[key: string]: any
+}
+// request function without params
+interface NoParamsReqFn extends ReqFn {
+	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+}
+
+export const api1: {
+	a: NoParamsReqFn
+	b: NoParamsReqFn
+	c: NoParamsReqFn
+	d: ReqFn & {
+		<T = Result>(
+			params: { q?: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+}
+
+export const api2: {
+	a: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+	b: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+}"
+`;

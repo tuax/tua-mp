@@ -15,8 +15,11 @@
         "build": "cross-env NODE_ENV=production rollup -c",
         "watch": "cross-env NODE_ENV=production rollup -c -w",
         "start": "npm run watch",
+        "precommit": "lint-staged",
+        "next:pm": "npm --no-git-tag-version version preminor",
+        "next:pr": "npm --no-git-tag-version version prerelease",
         "pub": "npm run build && npm publish",
-        "precommit": "npm run build && lint-staged"
+        "pub:n": "npm run build && npm publish --tag next"
     },
     "lint-staged": {
         "{src,test}/**/*.{js,vue}": [

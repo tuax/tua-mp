@@ -1,6 +1,6 @@
 {
     "name": "@tua-mp/cli",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "tua-mp 命令行工具",
     "bin": {
         "tuamp": "bin/tuamp.js"
@@ -13,7 +13,10 @@
         "lint": "eslint --fix lib/ bin/ test/",
         "clean": "rimraf .temp && mkdir .temp/ .temp/src/ .temp/src/app/ .temp/src/apis/ .temp/src/pages/ .temp/src/comps/ && echo {} > .temp/src/app/app.json && echo \"module.exports = {\n\ttemplateDir: '.templates',\n}\" > .temp/tua.config.js",
         "precommit": "lint-staged",
-        "pub": "npm test && npm publish"
+        "next:pm": "npm --no-git-tag-version version preminor",
+        "next:pr": "npm --no-git-tag-version version prerelease",
+        "pub": "npm test && npm publish",
+        "pub:n": "npm test && npm publish --tag next"
     },
     "lint-staged": {
         "bin/*": [
@@ -37,7 +40,10 @@
         "package.json"
     ],
     "dependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/register": "^7.4.0",
         "@vue/cli-init": "^3.5.1",
+        "babel-plugin-module-resolver": "^3.2.0",
         "babel-preset-env": "^1.7.0",
         "chalk": "^2.4.2",
         "fs-extra": "^7.0.1",

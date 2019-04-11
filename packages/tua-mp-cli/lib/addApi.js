@@ -34,7 +34,7 @@ module.exports = (options = {}) => {
 
     // 小驼峰的名称
     const ccName = hyphenCaseToCamelCase(name)
-    const outputStr = `小程序 api -> ${name}`
+    const outputStr = ` api -> ${name}`
     const relativePath = 'src/apis'
     const treeLog = treeify.asTree({
         [relativePath]: {

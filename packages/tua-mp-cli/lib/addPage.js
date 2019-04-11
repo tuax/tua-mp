@@ -38,7 +38,7 @@ module.exports = (options = {}) => {
     const hcName = camelCaseToHyphenCase(name)
     // 大驼峰的名称
     const uccName = hyphenCaseToUpperCamelCase(name)
-    const outputStr = `小程序页面 -> ${hcName}`
+    const outputStr = `页面 -> ${hcName}`
 
     const pagesPath = 'src/pages'
     const appJsonPath = 'src/app/app.json'
