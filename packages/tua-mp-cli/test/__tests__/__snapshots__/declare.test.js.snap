@@ -3,79 +3,139 @@
 exports[`declare cancel 1`] = `"test cancel"`;
 
 exports[`declare cover 1`] = `
-"interface Result { code: number, data: any, msg?: string }
-type NoParamsFn = <T = Result>() => Promise<T>
+"// default response result
+interface Result { code: number, data: any, msg?: string }
+interface ReqFn {
+	key: string
+	mock: any
+	params: object | string[]
+}
+interface RuntimeOptions {
+	// for jsonp
+	callbackName?: string
+	[key: string]: any
+}
+// request function without params
+interface NoParamsReqFn extends ReqFn {
+	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+}
 
 export const api1: {
-	a: NoParamsFn
-	b: NoParamsFn
-	c: NoParamsFn
-	d: <T = Result>(params: {
-		q?: any,
-		w?: any,
-	}) => Promise<T>
+	a: NoParamsReqFn
+	b: NoParamsReqFn
+	c: NoParamsReqFn
+	d: ReqFn & {
+		<T = Result>(
+			params: { q?: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
 }
 
 export const api2: {
-	a: <T = Result>(params: {
-		q: any,
-		w?: any,
-	}) => Promise<T>
-	b: <T = Result>(params: {
-		q: any,
-		w?: any,
-	}) => Promise<T>
+	a: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+	b: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
 }"
 `;
 
 exports[`declare directory 1`] = `
-"interface Result { code: number, data: any, msg?: string }
-type NoParamsFn = <T = Result>() => Promise<T>
+"// default response result
+interface Result { code: number, data: any, msg?: string }
+interface ReqFn {
+	key: string
+	mock: any
+	params: object | string[]
+}
+interface RuntimeOptions {
+	// for jsonp
+	callbackName?: string
+	[key: string]: any
+}
+// request function without params
+interface NoParamsReqFn extends ReqFn {
+	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+}
 
 export const api1: {
-	a: NoParamsFn
-	b: NoParamsFn
-	c: NoParamsFn
-	d: <T = Result>(params: {
-		q?: any,
-		w?: any,
-	}) => Promise<T>
+	a: NoParamsReqFn
+	b: NoParamsReqFn
+	c: NoParamsReqFn
+	d: ReqFn & {
+		<T = Result>(
+			params: { q?: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
 }
 
 export const api2: {
-	a: <T = Result>(params: {
-		q: any,
-		w?: any,
-	}) => Promise<T>
-	b: <T = Result>(params: {
-		q: any,
-		w?: any,
-	}) => Promise<T>
+	a: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+	b: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
 }"
 `;
 
 exports[`declare generate 1`] = `
-"interface Result { code: number, data: any, msg?: string }
-type NoParamsFn = <T = Result>() => Promise<T>
+"// default response result
+interface Result { code: number, data: any, msg?: string }
+interface ReqFn {
+	key: string
+	mock: any
+	params: object | string[]
+}
+interface RuntimeOptions {
+	// for jsonp
+	callbackName?: string
+	[key: string]: any
+}
+// request function without params
+interface NoParamsReqFn extends ReqFn {
+	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+}
 
 export const api1: {
-	a: NoParamsFn
-	b: NoParamsFn
-	c: NoParamsFn
-	d: <T = Result>(params: {
-		q?: any,
-		w?: any,
-	}) => Promise<T>
+	a: NoParamsReqFn
+	b: NoParamsReqFn
+	c: NoParamsReqFn
+	d: ReqFn & {
+		<T = Result>(
+			params: { q?: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
 }
 
 export const api2: {
-	a: <T = Result>(params: {
-		q: any,
-		w?: any,
-	}) => Promise<T>
-	b: <T = Result>(params: {
-		q: any,
-		w?: any,
-	}) => Promise<T>
+	a: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
+	b: ReqFn & {
+		<T = Result>(
+			params: { q: any, w?: any },
+			options?: RuntimeOptions
+		): Promise<T>
+	}
 }"
 `;

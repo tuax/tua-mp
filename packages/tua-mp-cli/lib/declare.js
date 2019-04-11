@@ -99,52 +99,82 @@ function mockGlobalVars () {
  */
 function genApiDeclarationCode (apis) {
     // 类型声明
-    const interfaceAndTypeCode = (
-        `interface Result { code: number, data: any, msg?: string }\n` +
-        `type NoParamsFn = <T = Result>() => Promise<T>\n\n`
-    )
+    const headCode = genCodeByLevel(`
+        // default response result
+        interface Result { code: number, data: any, msg?: string }
+        interface ReqFn {
+            key: string
+            mock: any
+            params: object | string[]
+        }
+        interface RuntimeOptions {
+            // for jsonp
+            callbackName?: string
+            [key: string]: any
+        }
+        // request function without params
+        interface NoParamsReqFn extends ReqFn {
+            <T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+        }`, 2)
 
     // 各个 api 生成的声明代码
-    const apiCode = Object.keys(apis)
-        .map(key => `export const ${key}: {\n\t${genApiFnsCode(apis[key])}\n}`)
+    const apisCode = Object.keys(apis)
+        .map((key) => genCodeByLevel(`
+            export const ${key}: {
+                ${genApiFnsCode(apis[key])}
+            }`, 3)
+        )
         .join(`\n\n`)
 
-    return interfaceAndTypeCode + apiCode
+    return headCode + `\n\n` + apisCode
+}
 
-    /**
-     * 生成单个 api 下各个函数的声明代码
-     * @param {Object} api tua-api 生成的请求对象
-     */
-    function genApiFnsCode (api) {
-        return Object.keys(api)
-            .map((fnKey) => {
-                const attrsCode = genAttrsCode(api[fnKey].params)
-                const paramsCode = attrsCode
-                    ? `params: {\n\t\t${attrsCode}\n\t}`
-                    : ``
-                const typeCode = paramsCode
-                    ? `<T = Result>(${paramsCode}) => Promise<T>`
-                    : `NoParamsFn`
+function genCodeByLevel (rawCode, level) {
+    const sep = RegExp(`\\n\\s{${4 * level}}`)
 
-                return `${fnKey}: ${typeCode}`
-            })
-            .join(`\n\t`)
-    }
+    return rawCode
+        .split(sep)
+        .filter(x => x)
+        .join(`\n`)
+        .replace(/ {4}/g, `\t`)
+}
 
-    /**
-     * 生成参数声明代码
-     * @param {Object|Array} params 接口参数配置
-     */
-    function genAttrsCode (params = []) {
-        const attrsCodeArr = Array.isArray(params)
-            // 数组形式的参数都认为是可选的
-            ? params.map(key => `${key}?: any,`)
-            : Object.keys(params).map((key) => {
-                const param = params[key]
-                const isRequired = param.required || param.isRequired
-                return `${key}${isRequired ? '' : '?'}: any,`
-            })
+/**
+ * 生成单个 api 下各个函数的声明代码
+ * @param {Object} api tua-api 生成的请求对象
+ */
+function genApiFnsCode (api) {
+    return Object.keys(api)
+        .map((fnKey) => {
+            const attrsCode = genAttrsCode(api[fnKey].params)
+            if (!attrsCode) return `${fnKey}: NoParamsReqFn`
 
-        return attrsCodeArr.join(`\n\t\t`)
-    }
+            return genCodeByLevel(
+                `${fnKey}: ReqFn & {
+                    <T = Result>(
+                        params: { ${attrsCode} },
+                        options?: RuntimeOptions
+                    ): Promise<T>
+                }`, 3)
+        })
+        // 短的排前面
+        .sort((x, y) => x.length - y.length)
+        .join(`\n\t`)
+}
+
+/**
+ * 生成参数声明代码
+ * @param {Object|Array} params 接口参数配置
+ */
+function genAttrsCode (params = []) {
+    const attrsCodeArr = Array.isArray(params)
+        // 数组形式的参数都认为是可选的
+        ? params.map(key => `${key}?: any`)
+        : Object.keys(params).map((key) => {
+            const param = params[key]
+            const isRequired = param.required || param.isRequired
+            return `${key}${isRequired ? '' : '?'}: any`
+        })
+
+    return attrsCodeArr.join(`, `)
 }
