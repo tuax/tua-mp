@@ -3,76 +3,79 @@
 exports[`declare cancel 1`] = `"test cancel"`;
 
 exports[`declare cover 1`] = `
-"interface result { code: number, data: any }
+"interface Result { code: number, data: any, msg?: string }
+type NoParamsFn = <T = Result>() => Promise<T>
 
-export declare namespace api1 {
-	export const a: <T = result>() => Promise<T>
-	export const b: <T = result>() => Promise<T>
-	export const c: <T = result>() => Promise<T>
-	export const d: <T = result>(params: {
-		q?: string | number,
-		w?: string | number,
+export const api1: {
+	a: NoParamsFn
+	b: NoParamsFn
+	c: NoParamsFn
+	d: <T = Result>(params: {
+		q?: any,
+		w?: any,
 	}) => Promise<T>
 }
 
-export declare namespace api2 {
-	export const a: <T = result>(params: {
-		q: string | number,
-		w?: string | number,
+export const api2: {
+	a: <T = Result>(params: {
+		q: any,
+		w?: any,
 	}) => Promise<T>
-	export const b: <T = result>(params: {
-		q: string | number,
-		w?: string | number,
+	b: <T = Result>(params: {
+		q: any,
+		w?: any,
 	}) => Promise<T>
 }"
 `;
 
 exports[`declare directory 1`] = `
-"interface result { code: number, data: any }
+"interface Result { code: number, data: any, msg?: string }
+type NoParamsFn = <T = Result>() => Promise<T>
 
-export declare namespace api1 {
-	export const a: <T = result>() => Promise<T>
-	export const b: <T = result>() => Promise<T>
-	export const c: <T = result>() => Promise<T>
-	export const d: <T = result>(params: {
-		q?: string | number,
-		w?: string | number,
+export const api1: {
+	a: NoParamsFn
+	b: NoParamsFn
+	c: NoParamsFn
+	d: <T = Result>(params: {
+		q?: any,
+		w?: any,
 	}) => Promise<T>
 }
 
-export declare namespace api2 {
-	export const a: <T = result>(params: {
-		q: string | number,
-		w?: string | number,
+export const api2: {
+	a: <T = Result>(params: {
+		q: any,
+		w?: any,
 	}) => Promise<T>
-	export const b: <T = result>(params: {
-		q: string | number,
-		w?: string | number,
+	b: <T = Result>(params: {
+		q: any,
+		w?: any,
 	}) => Promise<T>
 }"
 `;
 
 exports[`declare generate 1`] = `
-"interface result { code: number, data: any }
+"interface Result { code: number, data: any, msg?: string }
+type NoParamsFn = <T = Result>() => Promise<T>
 
-export declare namespace api1 {
-	export const a: <T = result>() => Promise<T>
-	export const b: <T = result>() => Promise<T>
-	export const c: <T = result>() => Promise<T>
-	export const d: <T = result>(params: {
-		q?: string | number,
-		w?: string | number,
+export const api1: {
+	a: NoParamsFn
+	b: NoParamsFn
+	c: NoParamsFn
+	d: <T = Result>(params: {
+		q?: any,
+		w?: any,
 	}) => Promise<T>
 }
 
-export declare namespace api2 {
-	export const a: <T = result>(params: {
-		q: string | number,
-		w?: string | number,
+export const api2: {
+	a: <T = Result>(params: {
+		q: any,
+		w?: any,
 	}) => Promise<T>
-	export const b: <T = result>(params: {
-		q: string | number,
-		w?: string | number,
+	b: <T = Result>(params: {
+		q: any,
+		w?: any,
 	}) => Promise<T>
 }"
 `;

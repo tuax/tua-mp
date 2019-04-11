@@ -98,15 +98,18 @@ function mockGlobalVars () {
  * @param {object} apis 属性为 tua-api 生成的请求对象
  */
 function genApiDeclarationCode (apis) {
-    // 接口响应的类型声明
-    const interfaceCode = `interface result { code: number, data: any }\n\n`
+    // 类型声明
+    const interfaceAndTypeCode = (
+        `interface Result { code: number, data: any, msg?: string }\n` +
+        `type NoParamsFn = <T = Result>() => Promise<T>\n\n`
+    )
 
     // 各个 api 生成的声明代码
     const apiCode = Object.keys(apis)
-        .map(key => `export declare namespace ${key} {\n\t${genApiFnsCode(apis[key])}\n}`)
+        .map(key => `export const ${key}: {\n\t${genApiFnsCode(apis[key])}\n}`)
         .join(`\n\n`)
 
-    return interfaceCode + apiCode
+    return interfaceAndTypeCode + apiCode
 
     /**
      * 生成单个 api 下各个函数的声明代码
@@ -116,9 +119,14 @@ function genApiDeclarationCode (apis) {
         return Object.keys(api)
             .map((fnKey) => {
                 const attrsCode = genAttrsCode(api[fnKey].params)
-                const paramsCode = attrsCode ? `params: {\n\t\t${attrsCode}\n\t}` : ``
+                const paramsCode = attrsCode
+                    ? `params: {\n\t\t${attrsCode}\n\t}`
+                    : ``
+                const typeCode = paramsCode
+                    ? `<T = Result>(${paramsCode}) => Promise<T>`
+                    : `NoParamsFn`
 
-                return `export const ${fnKey}: <T = result>(${paramsCode}) => Promise<T>`
+                return `${fnKey}: ${typeCode}`
             })
             .join(`\n\t`)
     }
@@ -130,11 +138,11 @@ function genApiDeclarationCode (apis) {
     function genAttrsCode (params = []) {
         const attrsCodeArr = Array.isArray(params)
             // 数组形式的参数都认为是可选的
-            ? params.map(key => `${key}?: string | number,`)
+            ? params.map(key => `${key}?: any,`)
             : Object.keys(params).map((key) => {
                 const param = params[key]
                 const isRequired = param.required || param.isRequired
-                return `${key}${isRequired ? '' : '?'}: string | number,`
+                return `${key}${isRequired ? '' : '?'}: any,`
             })
 
         return attrsCodeArr.join(`\n\t\t`)
