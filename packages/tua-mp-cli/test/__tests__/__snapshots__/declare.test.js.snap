@@ -15,16 +15,15 @@ interface RuntimeOptions {
 	callbackName?: string
 	[key: string]: any
 }
-// request function without params
-interface NoParamsReqFn extends ReqFn {
-	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+interface ReqFnWithAnyParams extends ReqFn {
+	<T = Result>(params?: any, options?: RuntimeOptions): Promise<T>
 }
 
 export const api1: {
-	a: NoParamsReqFn
-	b: NoParamsReqFn
-	c: NoParamsReqFn
-	d: ReqFn & {
+	'a': ReqFnWithAnyParams
+	'b': ReqFnWithAnyParams
+	'c': ReqFnWithAnyParams
+	'd': ReqFn & {
 		<T = Result>(
 			params: { q?: any, w?: any },
 			options?: RuntimeOptions
@@ -33,13 +32,13 @@ export const api1: {
 }
 
 export const api2: {
-	a: ReqFn & {
+	'a': ReqFn & {
 		<T = Result>(
 			params: { q: any, w?: any },
 			options?: RuntimeOptions
 		): Promise<T>
 	}
-	b: ReqFn & {
+	'b': ReqFn & {
 		<T = Result>(
 			params: { q: any, w?: any },
 			options?: RuntimeOptions
@@ -61,16 +60,15 @@ interface RuntimeOptions {
 	callbackName?: string
 	[key: string]: any
 }
-// request function without params
-interface NoParamsReqFn extends ReqFn {
-	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+interface ReqFnWithAnyParams extends ReqFn {
+	<T = Result>(params?: any, options?: RuntimeOptions): Promise<T>
 }
 
 export const api1: {
-	a: NoParamsReqFn
-	b: NoParamsReqFn
-	c: NoParamsReqFn
-	d: ReqFn & {
+	'a': ReqFnWithAnyParams
+	'b': ReqFnWithAnyParams
+	'c': ReqFnWithAnyParams
+	'd': ReqFn & {
 		<T = Result>(
 			params: { q?: any, w?: any },
 			options?: RuntimeOptions
@@ -79,13 +77,13 @@ export const api1: {
 }
 
 export const api2: {
-	a: ReqFn & {
+	'a': ReqFn & {
 		<T = Result>(
 			params: { q: any, w?: any },
 			options?: RuntimeOptions
 		): Promise<T>
 	}
-	b: ReqFn & {
+	'b': ReqFn & {
 		<T = Result>(
 			params: { q: any, w?: any },
 			options?: RuntimeOptions
@@ -107,16 +105,15 @@ interface RuntimeOptions {
 	callbackName?: string
 	[key: string]: any
 }
-// request function without params
-interface NoParamsReqFn extends ReqFn {
-	<T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+interface ReqFnWithAnyParams extends ReqFn {
+	<T = Result>(params?: any, options?: RuntimeOptions): Promise<T>
 }
 
 export const api1: {
-	a: NoParamsReqFn
-	b: NoParamsReqFn
-	c: NoParamsReqFn
-	d: ReqFn & {
+	'a': ReqFnWithAnyParams
+	'b': ReqFnWithAnyParams
+	'c': ReqFnWithAnyParams
+	'd': ReqFn & {
 		<T = Result>(
 			params: { q?: any, w?: any },
 			options?: RuntimeOptions
@@ -125,13 +122,13 @@ export const api1: {
 }
 
 export const api2: {
-	a: ReqFn & {
+	'a': ReqFn & {
 		<T = Result>(
 			params: { q: any, w?: any },
 			options?: RuntimeOptions
 		): Promise<T>
 	}
-	b: ReqFn & {
+	'b': ReqFn & {
 		<T = Result>(
 			params: { q: any, w?: any },
 			options?: RuntimeOptions
