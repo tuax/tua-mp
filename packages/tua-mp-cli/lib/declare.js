@@ -112,9 +112,8 @@ function genApiDeclarationCode (apis) {
             callbackName?: string
             [key: string]: any
         }
-        // request function without params
-        interface NoParamsReqFn extends ReqFn {
-            <T = Result>(params?: void, options?: RuntimeOptions): Promise<T>
+        interface ReqFnWithAnyParams extends ReqFn {
+            <T = Result>(params?: any, options?: RuntimeOptions): Promise<T>
         }`, 2)
 
     // 各个 api 生成的声明代码
@@ -147,10 +146,10 @@ function genApiFnsCode (api) {
     return Object.keys(api)
         .map((fnKey) => {
             const attrsCode = genAttrsCode(api[fnKey].params)
-            if (!attrsCode) return `${fnKey}: NoParamsReqFn`
+            if (!attrsCode) return `'${fnKey}': ReqFnWithAnyParams`
 
             return genCodeByLevel(
-                `${fnKey}: ReqFn & {
+                `'${fnKey}': ReqFn & {
                     <T = Result>(
                         params: { ${attrsCode} },
                         options?: RuntimeOptions
