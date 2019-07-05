@@ -61,7 +61,7 @@ $ tuamp a page <name>
 
 该命令会自动读取 `src/app/app.json` 中的 `pages` 字段，并将新页面加入。
 
-### 添加页面命令 `add comp`
+### 添加组件命令 `add comp`
 由于组件一般分为两种：
 
 * 全局组件（位于 `src/comps/` 下）
