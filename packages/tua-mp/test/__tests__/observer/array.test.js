@@ -98,7 +98,7 @@ describe('patch methods to array', () => {
         afterSetData(() => {
             expect(arr[0][0].arrObj).toBe('b')
             expect(arr[1].a).toBe('a')
-            expect(arr.hasOwnProperty('push')).toBe(false)
+            expect(Array.prototype.hasOwnProperty.call(arr, 'push')).toBe(false)
             expect(asyncSetData).toHaveBeenCalledTimes(4)
             expect(observeDeep).toBeCalledWith(arr, path)
             done()

@@ -1,8 +1,4 @@
 /* tua-mp version 0.8.3 */
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function _typeof(obj) {
   if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
     _typeof = function (obj) {
@@ -1311,5 +1307,4 @@ var TuaPage = function TuaPage(_ref) {
 
 logger.log("Version ".concat(version));
 
-exports.TuaComp = TuaComp;
-exports.TuaPage = TuaPage;
+export { TuaComp, TuaPage };

@@ -7,7 +7,7 @@ export const hackSetData = (vm) => {
     const originalSetData = vm.setData
 
     Object.defineProperties(vm, {
-        'setData': {
+        setData: {
             get: () => (newVal, cb) => {
                 Object.keys(newVal)
                     .forEach((path) => {
@@ -21,6 +21,6 @@ export const hackSetData = (vm) => {
                 isFn(cb) && Promise.resolve().then(cb)
             },
         },
-        '__setData__': { get: () => originalSetData },
+        __setData__: { get: () => originalSetData },
     })
 }

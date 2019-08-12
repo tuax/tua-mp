@@ -1,6 +1,6 @@
 {
     "name": "@tua-mp/cli",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "tua-mp 命令行工具",
     "bin": {
         "tuamp": "bin/tuamp.js"

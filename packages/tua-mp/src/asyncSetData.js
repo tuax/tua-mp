@@ -22,7 +22,7 @@ export const getAsyncSetData = (vm, watchObj) => ({
     const watch = Object.keys(watchObj)
         .map((key) => Array.isArray(watchObj[key])
             ? { [key]: watchObj[key] }
-            : { [key]: [ watchObj[key] ] }
+            : { [key]: [watchObj[key]] }
         )
         .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 

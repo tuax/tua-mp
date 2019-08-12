@@ -1,10 +1,13 @@
 {
     "name": "tua-mp",
-    "version": "0.8.2",
+    "version": "0.8.3",
     "description": "🖖一款类 Vue 的渐进式小程序框架(A progressive miniprogram framework for coding like Vue)",
     "main": "examples/basic/utils/tua-mp.js",
+    "module": "examples/basic/utils/tua-mp.esm.js",
     "files": [
-        "examples/basic/utils/tua-mp.js"
+        "src",
+        "examples/basic/utils/tua-mp.js",
+        "examples/basic/utils/tua-mp.esm.js"
     ],
     "scripts": {
         "cov": "open coverage/lcov-report/index.html",
@@ -53,6 +56,7 @@
         "babel-jest": "^24.8.0",
         "codecov": "^3.5.0",
         "cross-env": "^5.2.0",
+        "eslint": "^6.1.0",
         "jest": "^24.8.0",
         "rollup": "^1.19.4"
     },
