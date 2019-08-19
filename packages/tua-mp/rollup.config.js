@@ -1,16 +1,24 @@
 import json from 'rollup-plugin-json'
 import babel from 'rollup-plugin-babel'
-import { eslint } from 'rollup-plugin-eslint'
 import replace from 'rollup-plugin-replace'
+import { eslint } from 'rollup-plugin-eslint'
+
+import * as pkg from './package.json'
+
+const input = `src/index.js`
+const banner = `/* ${pkg.name} version ${pkg.version} */`
 
 export default {
-    input: 'src/index.js',
-    output: {
-        file: 'examples/basic/utils/tua-mp.js',
-        name: 'TuaMp',
-        format: 'es',
-        exports: 'named',
-    },
+    input,
+    output: [{
+        file: pkg.module,
+        banner,
+        format: 'esm',
+    }, {
+        file: pkg.main,
+        banner,
+        format: 'cjs',
+    }],
     plugins: [
         eslint(),
         json(),

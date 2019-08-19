@@ -24,7 +24,7 @@ export const assertProp = ({ prop, name, value }) => {
 
     if (type) {
         const typeList = !Array.isArray(type)
-            ? [ type ]
+            ? [type]
             : type
 
         typeList.forEach((type) => {

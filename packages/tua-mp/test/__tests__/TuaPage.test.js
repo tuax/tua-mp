@@ -163,14 +163,14 @@ describe('TuaPage', () => {
                 },
             },
             watch: {
-                'steve': {
+                steve: {
                     immediate: true,
                     handler (newVal, oldVal) {
                         this.oldYoung = oldVal
                         this.young = newVal
                     },
                 },
-                'steveLen': {
+                steveLen: {
                     immediate: true,
                     handler: 'onSteveLen',
                 },
@@ -340,7 +340,7 @@ describe('TuaPage', () => {
             data () {
                 return {
                     strArr: ['a', 'b'],
-                    nestedArr: [ { num: n++, e: [{ v: { e: 'e' } }] } ],
+                    nestedArr: [{ num: n++, e: [{ v: { e: 'e' } }] }],
                 }
             },
             computed: {
@@ -357,7 +357,7 @@ describe('TuaPage', () => {
         })
 
         vm.strArr = ['c']
-        vm.nestedArr = [ { num: n++ }, { num: n++ } ]
+        vm.nestedArr = [{ num: n++ }, { num: n++ }]
         vm.nestedArr.push({ num: n++, s: { t: 't' } })
 
         expect(vm.fromNestedArr.length).toBe(2)

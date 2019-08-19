@@ -1,6 +1,6 @@
 {
     "name": "@tua-mp/cli",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "tua-mp 命令行工具",
     "bin": {
         "tuamp": "bin/tuamp.js"
@@ -40,26 +40,26 @@
         "package.json"
     ],
     "dependencies": {
-        "@babel/core": "^7.4.3",
-        "@babel/register": "^7.4.0",
-        "@vue/cli-init": "^3.5.1",
+        "@babel/core": "^7.5.5",
+        "@babel/register": "^7.5.5",
+        "@vue/cli-init": "^3.10.0",
         "babel-plugin-module-resolver": "^3.2.0",
         "babel-preset-env": "^1.7.0",
         "chalk": "^2.4.2",
-        "fs-extra": "^7.0.1",
-        "handlebars": "^4.1.0",
-        "inquirer": "^6.2.2",
-        "inquirer-fuzzy-path": "^2.0.2",
-        "log-symbols": "^2.2.0",
-        "semver": "^5.6.0",
+        "fs-extra": "^8.1.0",
+        "handlebars": "^4.1.2",
+        "inquirer": "^6.5.1",
+        "inquirer-fuzzy-path": "^2.1.0",
+        "log-symbols": "^3.0.0",
+        "semver": "^6.3.0",
         "treeify": "^1.1.0",
-        "yargs": "^13.2.2"
+        "yargs": "^13.3.0"
     },
     "devDependencies": {
-        "codecov": "^3.2.0",
+        "codecov": "^3.5.0",
         "cross-env": "^5.2.0",
-        "eslint": "^5.15.1",
-        "jest": "^24.5.0",
+        "eslint": "^6.1.0",
+        "jest": "^24.8.0",
         "rimraf": "^2.6.3"
     },
     "repository": {
