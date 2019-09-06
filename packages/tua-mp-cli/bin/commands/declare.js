@@ -4,7 +4,13 @@ exports.desc = 'generate api declaration file by [apisPath]'
 exports.aliases = 'd'
 exports.command = 'declare [apisPath]'
 
-exports.builder = {}
+exports.builder = (yargs) => yargs
+    .option('yes', {
+        type: 'boolean',
+        alias: 'y',
+        default: false,
+        describe: 'overwrite existing index.d.ts',
+    })
 
 exports.handler = (argv) => {
     argv.tuaConfig = readConfigFile()
