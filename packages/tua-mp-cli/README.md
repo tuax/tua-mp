@@ -120,6 +120,14 @@ $ tuamp d [apisPath]
 * `apisPath` 默认值为 `src/apis/index.js`
 * `index.d.ts` 将生成在 `apisPath` 同级目录下
 
+在 `index.d.ts` 已存在的情况下，默认会提示是否覆盖，每次都要手动确认有点儿不方便。所以添加了一个参数 `--yes, -y`，表示默认覆盖文件。<Badge text="0.5.0+"/>
+
+```bash
+$ tuamp declare --yes [apisPath]
+# OR
+$ tuamp d -y [apisPath]
+```
+
 由于使用 `require` 读取导出 apis 对象的文件，所以可能会碰到 `alias` 问题。例如项目中设置了 `@` 作为 `./src/` 的别名。虽然 `@tua-mp/cli` 已内置了一些 `alias`，但你仍然可以自由配置。
 
 在 `tua.config.js` 中的 `alias` 选项会透传给 [babel-plugin-module-resolver](https://github.com/tleunen/babel-plugin-module-resolver)，例如将 `foobar` 指向 './src/foobar' 可以这么配置：

@@ -1,6 +1,6 @@
 {
     "name": "@tua-mp/cli",
-    "version": "0.4.2",
+    "version": "0.5.0",
     "description": "tua-mp 命令行工具",
     "bin": {
         "tuamp": "bin/tuamp.js"
@@ -42,25 +42,25 @@
     "dependencies": {
         "@babel/core": "^7.5.5",
         "@babel/register": "^7.5.5",
-        "@vue/cli-init": "^3.10.0",
+        "@vue/cli-init": "^3.11.0",
         "babel-plugin-module-resolver": "^3.2.0",
-        "babel-preset-env": "^1.7.0",
         "chalk": "^2.4.2",
         "fs-extra": "^8.1.0",
-        "handlebars": "^4.1.2",
-        "inquirer": "^6.5.1",
+        "handlebars": "^4.2.0",
+        "inquirer": "^7.0.0",
         "inquirer-fuzzy-path": "^2.1.0",
         "log-symbols": "^3.0.0",
         "semver": "^6.3.0",
         "treeify": "^1.1.0",
-        "yargs": "^13.3.0"
+        "yargs": "^14.0.0"
     },
     "devDependencies": {
+        "@babel/preset-env": "^7.5.5",
         "codecov": "^3.5.0",
-        "cross-env": "^5.2.0",
-        "eslint": "^6.1.0",
-        "jest": "^24.8.0",
-        "rimraf": "^2.6.3"
+        "cross-env": "^5.2.1",
+        "eslint": "^6.3.0",
+        "jest": "^24.9.0",
+        "rimraf": "^3.0.0"
     },
     "repository": {
         "type": "git",

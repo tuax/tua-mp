@@ -21,6 +21,7 @@ const cwd = process.cwd()
 module.exports = (options = {}) => {
     /* istanbul ignore next */
     const {
+        yes,
         apisPath = 'src/apis/index.js',
         tuaConfig: {
             alias = defaultTuaConfig.alias,
@@ -59,7 +60,7 @@ module.exports = (options = {}) => {
             })
         const message = 'Target file exists. Continue?'
 
-        return promptAndRun({ run, message, targetPath })
+        return promptAndRun({ run, message, targetPath, isCover: yes })
     } catch (e) {
         error(`Error loading ${sourcePath}:`)
 
