@@ -30,6 +30,8 @@ export const TuaPage = ({
     computed = {},
     ...rest
 }) => Page({
+    // 设置初始值，不然自定义组件的 props 中将先接收到非值
+    data: isFn(rawData) ? rawData() : rawData,
     ...rest,
     ...methods,
     onLoad (...options) {

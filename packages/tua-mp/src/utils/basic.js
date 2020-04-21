@@ -86,7 +86,7 @@ export const setObjByPath = ({ obj, path, val, isCheckDef = false }) => pathStr2
 
             logger.error(
                 `Property "${cur}" is not found in "${parentStr}": ` +
-                `Make sure that this property has initialized in the data option.`
+                'Make sure that this property has initialized in the data option.'
             )
         }
 
@@ -156,7 +156,7 @@ export const checkReservedKeys = (data, computed, methods) => {
 
     if (reservedKeysInVm) {
         throw Error(
-            `请勿在 data、computed、methods ` +
+            '请勿在 data、computed、methods ' +
             `中使用下列保留字:\n ${reservedKeysInVm}`
         )
     }

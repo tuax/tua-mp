@@ -1,5 +1,7 @@
-/* tua-mp version 0.8.3 */
+/* tua-mp version 0.8.4 */
 function _typeof(obj) {
+  "@babel/helpers - typeof";
+
   if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
     _typeof = function (obj) {
       return typeof obj;
@@ -69,13 +71,13 @@ function _objectSpread2(target) {
     var source = arguments[i] != null ? arguments[i] : {};
 
     if (i % 2) {
-      ownKeys(source, true).forEach(function (key) {
+      ownKeys(Object(source), true).forEach(function (key) {
         _defineProperty(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(source).forEach(function (key) {
+      ownKeys(Object(source)).forEach(function (key) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
       });
     }
@@ -175,7 +177,7 @@ var logByType = function logByType(type) {
       out[_key] = arguments[_key];
     }
 
-    (_console = console)[type].apply(_console, ["[TUA-MP]:"].concat(out));
+    (_console = console)[type].apply(_console, ['[TUA-MP]:'].concat(out));
   };
 };
 
@@ -266,7 +268,7 @@ var setObjByPath = function setObjByPath(_ref) {
       var parentStr = arr.slice(0, idx).reduce(function (acc, cur) {
         return /\d/.test(cur) ? "".concat(acc, "[").concat(cur, "]") : "".concat(acc, ".").concat(cur);
       }, 'this');
-      logger.error("Property \"".concat(cur, "\" is not found in \"").concat(parentStr, "\": ") + "Make sure that this property has initialized in the data option.");
+      logger.error("Property \"".concat(cur, "\" is not found in \"").concat(parentStr, "\": ") + 'Make sure that this property has initialized in the data option.');
     }
 
     if (idx === arr.length - 1) {
@@ -336,7 +338,7 @@ var checkReservedKeys = function checkReservedKeys(data, computed, methods) {
   var reservedKeysInVm = getObjHasReservedKeys(data).concat(getObjHasReservedKeys(computed)).concat(getObjHasReservedKeys(methods)).join(', ');
 
   if (reservedKeysInVm) {
-    throw Error("\u8BF7\u52FF\u5728 data\u3001computed\u3001methods " + "\u4E2D\u4F7F\u7528\u4E0B\u5217\u4FDD\u7559\u5B57:\n ".concat(reservedKeysInVm));
+    throw Error('请勿在 data、computed、methods ' + "\u4E2D\u4F7F\u7528\u4E0B\u5217\u4FDD\u7559\u5B57:\n ".concat(reservedKeysInVm));
   }
 };
 /**
@@ -543,7 +545,7 @@ var hackSetData = function hackSetData(vm) {
   });
 };
 
-var version = "0.8.3";
+var version = "0.8.4";
 
 /**
  * 根据 vm 生成 key
@@ -586,9 +588,7 @@ var getWatchFnArrByVm = function getWatchFnArrByVm(vm) {
  */
 
 
-var VmStatus =
-/*#__PURE__*/
-function () {
+var VmStatus = /*#__PURE__*/function () {
   function VmStatus() {
     _classCallCheck(this, VmStatus);
 
@@ -849,9 +849,7 @@ var patchMethods2Array = function patchMethods2Array(_ref2) {
   return arr;
 };
 
-var Dep =
-/*#__PURE__*/
-function () {
+var Dep = /*#__PURE__*/function () {
   function Dep() {
     _classCallCheck(this, Dep);
 
@@ -1257,7 +1255,10 @@ var TuaPage = function TuaPage(_ref) {
       computed = _ref$computed === void 0 ? {} : _ref$computed,
       rest = _objectWithoutProperties(_ref, ["data", "watch", "methods", "computed"]);
 
-  return Page(_objectSpread2({}, rest, {}, methods, {
+  return Page(_objectSpread2({
+    // 设置初始值，不然自定义组件的 props 中将先接收到非值
+    data: isFn(rawData) ? rawData() : rawData
+  }, rest, {}, methods, {
     onLoad: function onLoad() {
       for (var _len = arguments.length, options = new Array(_len), _key = 0; _key < _len; _key++) {
         options[_key] = arguments[_key];
