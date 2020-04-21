@@ -334,13 +334,11 @@ describe('TuaPage', () => {
     })
 
     test('array item change should change computed', (done) => {
-        let n = 0
-
         const vm = TuaPage({
             data () {
                 return {
                     strArr: ['a', 'b'],
-                    nestedArr: [{ num: n++, e: [{ v: { e: 'e' } }] }],
+                    nestedArr: [{ num: 0, e: [{ v: { e: 'e' } }] }],
                 }
             },
             computed: {
@@ -357,8 +355,8 @@ describe('TuaPage', () => {
         })
 
         vm.strArr = ['c']
-        vm.nestedArr = [{ num: n++ }, { num: n++ }]
-        vm.nestedArr.push({ num: n++, s: { t: 't' } })
+        vm.nestedArr = [{ num: 1 }, { num: 2 }]
+        vm.nestedArr.push({ num: 3, s: { t: 't' } })
 
         expect(vm.fromNestedArr.length).toBe(2)
 

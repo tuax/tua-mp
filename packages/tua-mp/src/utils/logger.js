@@ -8,7 +8,7 @@ const logByType = (type) => (...out) => {
     if (process.env.NODE_ENV === 'test') return
 
     /* istanbul ignore next */
-    console[type](`[TUA-MP]:`, ...out)
+    console[type]('[TUA-MP]:', ...out)
 }
 
 export const logger = {

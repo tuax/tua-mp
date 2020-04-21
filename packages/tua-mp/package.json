@@ -1,6 +1,6 @@
 {
     "name": "tua-mp",
-    "version": "0.8.3",
+    "version": "0.8.4",
     "description": "🖖一款类 Vue 的渐进式小程序框架(A progressive miniprogram framework for coding like Vue)",
     "main": "examples/basic/utils/tua-mp.js",
     "module": "examples/basic/utils/tua-mp.esm.js",
