@@ -10,7 +10,7 @@ module.exports = (webpackConfig) => {
     addExtract(webpackConfig.module.rule('less').test(/\.less$/))
         .use('less-loader').loader('less-loader').end()
     addExtract(webpackConfig.module.rule('scss').test(/\.s[ac]ss$/))
-        .use('scss-loader').loader('sass-loader').end()
+        .use('scss-loader').loader('sass-loader').options({ implementation: require('sass') }).end()
     addExtract(webpackConfig.module.rule('stylus').test(/\.styl$/))
         .use('stylus-loader').loader('stylus-loader').end()
 }
