@@ -31,7 +31,7 @@ test('module.style', () => {
         use: [
             { loader },
             { loader: 'css-loader' },
-            { loader: 'sass-loader' },
+            { loader: 'sass-loader', options: { implementation: require('sass') } },
         ],
     })
     expect(rules[3]).toEqual({
